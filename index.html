@@ -21,15 +21,42 @@
         header {
             background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: white;
-            padding: 25px;
+            padding: 20px;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         header h1 {
             font-size: 32px;
             font-weight: 700;
-            letter-spacing: 1px;
+            margin-bottom: 15px;
         }
+        .subject-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .subject-btn {
+            padding: 10px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .btn-math { background-color: #ff9f43; color: white; }
+        .btn-marathi { background-color: #ee5253; color: white; }
+        .btn-english { background-color: #10ac84; color: white; }
+        
+        .subject-btn.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255,255,255,0.6);
+            border: 2px solid white;
+        }
+
         .main-layout {
             display: flex;
             flex: 1;
@@ -78,12 +105,10 @@
             font-weight: bold;
             font-size: 14px;
             color: #475569;
-            transition: all 0.3s;
         }
         .level-btn.active {
             background-color: #2a5298;
             color: white;
-            border-color: #1e3c72;
         }
         .score-board {
             font-size: 16px;
@@ -95,6 +120,10 @@
             font-weight: bold;
             display: inline-block;
         }
+        
+        .subject-section { display: none; }
+        .subject-section.active { display: block; }
+
         .math-wrapper {
             display: flex;
             flex-direction: column;
@@ -112,106 +141,59 @@
             justify-content: flex-start;
             width: 100%;
             max-width: 500px;
-            margin-bottom: 10px;
             background: #fff;
             padding: 10px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        .num-display {
-            font-size: 40px;
-            font-weight: bold;
-            width: 60px;
-            text-align: center;
-            color: #1e293b;
+        .num-display { font-size: 40px; font-weight: bold; width: 60px; text-align: center; color: #1e293b; }
+        .design-display { flex: 1; font-size: 26px; letter-spacing: 5px; text-align: left; padding-left: 15px; }
+        .count-box { width: 70px; font-size: 20px; padding: 5px; text-align: center; border: 2px solid #ff9f43; border-radius: 6px; background-color: #fffaf0; }
+        .sign-row { font-size: 35px; font-weight: bold; width: 100%; max-width: 500px; text-align: left; padding-left: 15px; color: #64748b; }
+        .line { border-bottom: 4px solid #1e293b; width: 100%; max-width: 500px; margin: 10px 0; }
+        
+        .language-wrapper {
+            background-color: #fafbfc;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin: 20px 0;
         }
-        .design-display {
-            flex: 1;
-            font-size: 26px;
-            letter-spacing: 5px;
-            text-align: left;
-            padding-left: 15px;
-        }
-        .count-box {
-            width: 70px;
-            font-size: 20px;
-            padding: 5px;
-            text-align: center;
-            border: 2px solid #ff9f43;
-            border-radius: 6px;
-            background-color: #fffaf0;
-        }
-        .sign-row {
-            font-size: 35px;
-            font-weight: bold;
-            width: 100%;
-            max-width: 500px;
-            text-align: left;
-            padding-left: 15px;
-            color: #64748b;
-        }
-        .line {
-            border-bottom: 4px solid #1e293b;
-            width: 100%;
-            max-width: 500px;
-            margin: 10px 0;
-        }
-        .final-input-row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .lang-question-display { font-size: 70px; margin-bottom: 20px; }
+        .lang-instruction { font-size: 20px; font-weight: bold; color: #475569; margin-bottom: 20px; }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-top: 15px;
+            max-width: 400px;
+            margin: 0 auto;
         }
-        input[type="number"].final-ans {
-            font-size: 35px;
-            width: 130px;
-            text-align: center;
-            padding: 8px;
-            border: 3px solid #2a5298;
-            border-radius: 8px;
-            outline: none;
-            background-color: #f0f7ff;
-        }
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .submit-btn {
-            font-size: 18px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
-            padding: 12px 25px;
+        .option-btn {
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: white;
+            border: 2px solid #cbd5e1;
             border-radius: 8px;
             cursor: pointer;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 200px;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s;
         }
-        .result {
-            font-size: 22px;
-            font-weight: bold;
-            margin-top: 20px;
-            height: 30px;
-        }
+        .option-btn:hover { background-color: #f8fafc; border-color: #2a5298; }
+
+        .final-input-row { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; }
+        input[type="number"].final-ans { font-size: 35px; width: 130px; text-align: center; padding: 8px; border: 3px solid #2a5298; border-radius: 8px; outline: none; background-color: #f0f7ff; }
+        
+        .submit-btn { font-size: 18px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; margin-top: 20px; width: 100%; max-width: 200px; font-weight: bold; }
+        .result { font-size: 22px; font-weight: bold; margin-top: 20px; min-height: 40px; }
         .correct { color: #10b981; }
         .wrong { color: #ef4444; }
-        footer {
-            background-color: #1e293b;
-            color: #94a3b8;
-            text-align: center;
-            padding: 15px;
-            font-size: 13px;
-            margin-top: auto;
-        }
+        
+        footer { background-color: #1e293b; color: #94a3b8; text-align: center; padding: 15px; font-size: 13px; margin-top: auto; }
         @media (max-width: 768px) {
             .main-layout { flex-direction: column; }
             .ad-sidebar { display: none; }
-            .design-display { font-size: 20px; letter-spacing: 3px; }
+            .options-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -219,49 +201,66 @@
 
 <header>
     <h1>Digital Shala</h1>
+    <div class="subject-container">
+        <button class="subject-btn btn-math active" onclick="switchSubject('math', this)">🔢 गणित (Maths)</button>
+        <button class="subject-btn btn-marathi" onclick="switchSubject('marathi', this)">🍎 मराठी (Marathi)</button>
+        <button class="subject-btn btn-english" onclick="switchSubject('english', this)">🅰 इंग्रजी (English)</button>
+    </div>
 </header>
 
 <div class="main-layout">
-    <div class="ad-sidebar">जाहिरातीसाठी जागा<br>(Google AdSense Space)</div>
+    <div class="ad-sidebar">जाहिरातीसाठी जागा</div>
 
     <div class="game-content">
-        <div class="level-container">
-            <button class="level-btn active" onclick="changeLevel(1, this)">लेव्हल १ (१ अंकी)</button>
-            <button class="level-btn" onclick="changeLevel(2, this)">लेव्हल २ (२ अंकी सोपी)</button>
-            <button class="level-btn" onclick="changeLevel(3, this)">लेव्हल ३ (२ अंकी हातचा)</button>
-            <button class="level-btn" onclick="changeLevel(4, this)">लेव्हल ४ (३ अंकी)</button>
+        <div class="score-board" id="score-board">एकूण गुण: ०</div>
+
+        <div id="math-section" class="subject-section active">
+            <div class="level-container">
+                <button class="level-btn active" id="m-lvl1" onclick="changeMathLevel(1)">लेव्हल १ (१ अंकी)</button>
+                <button class="level-btn" id="m-lvl2" onclick="changeMathLevel(2)">लेव्हल २ (२ अंकी सोपी)</button>
+            </div>
+            
+            <div class="math-wrapper">
+                <div class="row-item">
+                    <div class="num-display" id="num1">0</div>
+                    <div class="design-display" id="design1">🎈🎈🎈</div>
+                    <input type="number" class="count-box" id="box1" placeholder="मोजा">
+                </div>
+                <div class="sign-row">+</div>
+                <div class="row-item">
+                    <div class="num-display" id="num2">0</div>
+                    <div class="design-display" id="design2">🎈🎈</div>
+                    <input type="number" class="count-box" id="box2" placeholder="मोजा">
+                </div>
+                <div class="line"></div>
+                <div class="final-input-row">
+                    <span style="font-size: 24px; font-weight: bold;">एकूण उत्तर = </span>
+                    <input type="number" class="final-ans" id="user-answer" placeholder="?">
+                </div>
+            </div>
+            <button id="action-btn" class="submit-btn" onclick="checkMathAnswer()">उत्तर तपासा</button>
         </div>
 
-        <div class="score-board" id="score-board">सोडवलेले प्रश्न: ० | एकूण गुण: ०</div>
-        
-        <div class="math-wrapper">
-            <div class="row-item">
-                <div class="num-display" id="num1">0</div>
-                <div class="design-display" id="design1">🎈🎈🎈</div>
-                <input type="number" class="count-box" id="box1" placeholder="मोजा" pattern="[0-9]*" inputmode="numeric">
-            </div>
-            
-            <div class="sign-row">+</div>
-            
-            <div class="row-item">
-                <div class="num-display" id="num2">0</div>
-                <div class="design-display" id="design2">🎈🎈</div>
-                <input type="number" class="count-box" id="box2" placeholder="मोजा" pattern="[0-9]*" inputmode="numeric">
-            </div>
-            
-            <div class="line"></div>
-            
-            <div class="final-input-row">
-                <span style="font-size: 24px; font-weight: bold;">एकूण उत्तर = </span>
-                <input type="number" class="final-ans" id="user-answer" placeholder="?" pattern="[0-9]*" inputmode="numeric">
+        <div id="marathi-section" class="subject-section">
+            <div class="lang-instruction">हे चित्र कशाचे आहे? योग्य नाव निवडा:</div>
+            <div class="language-wrapper">
+                <div class="lang-question-display" id="marathi-pic">🍎</div>
+                <div class="options-container" id="marathi-options"></div>
             </div>
         </div>
-        
-        <button id="action-btn" class="submit-btn" onclick="checkAnswer()">उत्तर तपासा</button>
+
+        <div id="english-section" class="subject-section">
+            <div class="lang-instruction">चित्रे मोजा आणि योग्य इंग्रजी संख्या स्पेलिंग निवडा:</div>
+            <div class="language-wrapper">
+                <div class="lang-question-display" id="english-pic">⚽⚽⚽</div>
+                <div class="options-container" id="english-options"></div>
+            </div>
+        </div>
+
         <div class="result" id="result-message"></div>
     </div>
 
-    <div class="ad-sidebar">जाहिरातीसाठी जागा<br>(Google AdSense Space)</div>
+    <div class="ad-sidebar">जाहिरातीसाठी जागा</div>
 </div>
 
 <footer>
@@ -269,114 +268,170 @@
 </footer>
 
 <script>
-    let totalAttempted = 0;
     let score = 0;
-    let n1 = 0;
-    let n2 = 0;
-    let currentLevel = 1;
-    let isAnswerChecked = false;
+    let currentSubject = 'math';
+    let n1 = 0, n2 = 0, mathLevel = 1;
+    const mathDesigns = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦", "🍇", "🌻", "🚗", "🦉"];
 
-    const designs = ["🎈", "⭐", "🍎", "⚽", "🌸", "💎", "🐱", "🍦"];
+    // विस्तीर्ण मराठी डेटाबेस (चित्रे आणि पर्याय)
+    const marathiData = [
+        { pic: "🍎", correct: "सफरचंद", options: ["आंबा", "सफरचंद", "केळे", "पेरू"] },
+        { pic: "🐱", correct: "मांजर", options: ["कुत्रा", "वाघ", "मांजर", "उंदीर"] },
+        { pic: "🍦", correct: "आईस्क्रीम", options: ["दूध", "आईस्क्रीम", "चॉकलेट", "पॅटीस"] },
+        { pic: "🚗", correct: "गाडी", options: ["सायकल", "विमान", "गाडी", "हत्ती"] },
+        { pic: "🌹", correct: "गुलाब", options: ["कमळ", "गुलाब", "चाफा", "झाड"] },
+        { pic: "🐶", correct: "कुत्रा", options: ["मांजर", "कोल्हा", "सिंहा", "कुत्रा"] },
+        { pic: "🦁", correct: "सिंह", options: ["वाघ", "हत्ती", "सिंह", "चित्ता"] },
+        { pic: "🐒", correct: "माकड", options: ["माकड", "अस्वल", "ससा", "हरण"] },
+        { pic: "🐘", correct: "हत्ती", options: ["घोडा", "उंट", "हत्ती", "बैल"] },
+        { pic: "🥭", correct: "आंबा", options: ["सफरचंद", "आंबा", "द्राक्षे", "पपई"] },
+        { pic: "🍌", correct: "केळे", options: ["अननस", "कलिंगड", "केळे", "चिकू"] },
+        { pic: "🍇", correct: "द्राक्षे", options: ["द्राक्षे", "पेरू", "बोर", "अंजीर"] },
+        { pic: "🍉", correct: "कलिंगड", options: ["खरबूज", "नारळ", "संत्री", "कलिंगड"] },
+        { pic: "🌻", correct: "सूर्यफूल", options: ["गुलाब", "कमळ", "सूर्यफूल", "मोगरा"] },
+        { pic: "🚲", correct: "सायकल", options: ["गाडी", "सायकल", "रिक्षा", "विमान"] },
+        { pic: "✈️", correct: "विमान", options: ["जहाज", "बस", "ट्रेन", "विमान"] },
+        { pic: "🐟", correct: "मासा", options: ["कासव", "मासा", "बेडूक", "मगर"] },
+        { pic: "🦉", correct: "घुबड", options: ["पोपट", "कावळा", "घुबड", "चिमणी"] },
+        { pic: "🦚", correct: "मोर", options: ["बगळा", "मोर", "कबुतर", "गरुड"] },
+        { pic: "🦋", correct: "फुलपाखरू", options: ["मधमाशी", "फुलपाखरू", "डास", "मुंगी"] }
+    ];
+    let currentMarathiObj = {};
 
-    function changeLevel(level, btnElement) {
-        currentLevel = level;
-        let buttons = document.getElementsByClassName("level-btn");
-        for (let b of buttons) { b.classList.remove("active"); }
-        btnElement.classList.add("active");
-        generateNumbers();
-    }
+    // विस्तीर्ण इंग्रजी संख्या मोजणी डेटाबेस (१ ते १० पर्यंत)
+    const englishData = [
+        { count: 1, pic: "⭐", correct: "ONE", options: ["TWO", "ONE", "THREE", "FIVE"] },
+        { count: 2, pic: "⚽", correct: "TWO", options: ["ONE", "FOUR", "TWO", "THREE"] },
+        { count: 3, pic: "🎈", correct: "THREE", options: ["FOUR", "TWO", "THREE", "ONE"] },
+        { count: 4, pic: "💎", correct: "FOUR", options: ["THREE", "FIVE", "FOUR", "TWO"] },
+        { count: 5, pic: "🌸", correct: "FIVE", options: ["FIVE", "THREE", "SIX", "FOUR"] },
+        { count: 6, pic: "🍎", correct: "SIX", options: ["FIVE", "SEVEN", "SIX", "EIGHT"] },
+        { count: 7, pic: "🍦", correct: "SEVEN", options: ["SIX", "EIGHT", "NINE", "SEVEN"] },
+        { count: 8, pic: "🚗", correct: "EIGHT", options: ["SEVEN", "NINE", "EIGHT", "TEN"] },
+        { count: 9, pic: "🍇", correct: "NINE", options: ["EIGHT", "TEN", "NINE", "SEVEN"] },
+        { count: 10, pic: "🌻", correct: "TEN", options: ["NINE", "TEN", "FIVE", "EIGHT"] },
+        { count: 2, pic: "🐱", correct: "TWO", options: ["THREE", "ONE", "FIVE", "TWO"] },
+        { count: 4, pic: "🦉", correct: "FOUR", options: ["TWO", "FOUR", "SIX", "THREE"] },
+        { count: 6, pic: "⭐", correct: "SIX", options: ["FOUR", "EIGHT", "SIX", "FIVE"] },
+        { count: 7, pic: "🎈", correct: "SEVEN", options: ["TEN", "SEVEN", "NINE", "SIX"] },
+        { count: 3, pic: "🌸", correct: "THREE", options: ["TWO", "FIVE", "THREE", "FOUR"] }
+    ];
+    let currentEnglishObj = {};
 
-    function getDesignHTML(num, icon) {
-        if (num > 15) return "🔢 (मोठी संख्या)";
-        let iconsStr = "";
-        for (let i = 0; i < num; i++) { iconsStr += icon; }
-        return iconsStr;
-    }
-
-    function generateNumbers() {
-        if (currentLevel === 1) {
-            n1 = Math.floor(Math.random() * 9) + 1;
-            n2 = Math.floor(Math.random() * 9) + 1;
-        } else if (currentLevel === 2) {
-            n1 = Math.floor(Math.random() * 7) + 5;
-            n2 = Math.floor(Math.random() * 7) + 5;
-        } else if (currentLevel === 3) {
-            n1 = Math.floor(Math.random() * 80) + 15;
-            n2 = Math.floor(Math.random() * 80) + 15;
-            while ((n1 % 10) + (n2 % 10) < 10) {
-                n2 = Math.floor(Math.random() * 80) + 15;
-            }
-        } else if (currentLevel === 4) {
-            n1 = Math.floor(Math.random() * 899) + 100;
-            n2 = Math.floor(Math.random() * 899) + 100;
-        }
+    function switchSubject(subject, btn) {
+        currentSubject = subject;
+        document.querySelectorAll('.subject-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
         
+        document.getElementById(`${subject}-section`).classList.add('active');
+        btn.classList.add('active');
+        document.getElementById("result-message").innerText = "";
+        
+        if(subject === 'math') generateMathQuestion();
+        if(subject === 'marathi') generateMarathiQuestion();
+        if(subject === 'english') generateEnglishQuestion();
+    }
+
+    function changeMathLevel(lvl) {
+        mathLevel = lvl;
+        document.getElementById("m-lvl1").classList.toggle("active", lvl === 1);
+        document.getElementById("m-lvl2").classList.toggle("active", lvl === 2);
+        generateMathQuestion();
+    }
+
+    function generateMathQuestion() {
+        if (mathLevel === 1) {
+            n1 = Math.floor(Math.random() * 8) + 1;
+            n2 = Math.floor(Math.random() * 8) + 1;
+        } else {
+            n1 = Math.floor(Math.random() * 6) + 6;
+            n2 = Math.floor(Math.random() * 6) + 6;
+        }
         document.getElementById("num1").innerText = n1;
         document.getElementById("num2").innerText = n2;
-        
-        let randomIcon = designs[Math.floor(Math.random() * designs.length)];
-
-        if (currentLevel <= 2) {
-            document.getElementById("design1").style.display = "block";
-            document.getElementById("design2").style.display = "block";
-            document.getElementById("box1").style.display = "block";
-            document.getElementById("box2").style.display = "block";
-            document.getElementById("design1").innerText = getDesignHTML(n1, randomIcon);
-            document.getElementById("design2").innerText = getDesignHTML(n2, randomIcon);
-        } else {
-            document.getElementById("design1").style.display = "none";
-            document.getElementById("design2").style.display = "none";
-            document.getElementById("box1").style.display = "none";
-            document.getElementById("box2").style.display = "none";
-        }
-
+        let icon = mathDesigns[Math.floor(Math.random() * mathDesigns.length)];
+        document.getElementById("design1").innerText = icon.repeat(n1);
+        document.getElementById("design2").innerText = icon.repeat(n2);
         document.getElementById("box1").value = "";
         document.getElementById("box2").value = "";
         document.getElementById("user-answer").value = "";
-        document.getElementById("result-message").innerText = "";
-        document.getElementById("action-btn").innerText = "उत्तर तपासा";
-        document.getElementById("action-btn").style.background = "linear-gradient(135deg, #10b981, #059669)";
-        document.getElementById("action-btn").setAttribute("onclick", "checkAnswer()");
-        isAnswerChecked = false;
         
-        setTimeout(() => { document.getElementById("user-answer").focus(); }, 100);
+        let actionBtn = document.getElementById("action-btn");
+        actionBtn.innerText = "उत्तर तपासा";
+        actionBtn.style.display = "inline-block";
+        actionBtn.setAttribute("onclick", "checkMathAnswer()");
     }
 
-    function checkAnswer() {
-        const userAnswer = parseInt(document.getElementById("user-answer").value);
-        if (isNaN(userAnswer)) {
-            alert("कृपया मुख्य उत्तर टाईप करा!");
-            return;
-        }
-
-        const correctAnswer = n1 + n2;
-        const resultMsg = document.getElementById("result-message");
-        totalAttempted++;
-
-        if (userAnswer === correctAnswer) {
-            resultMsg.innerText = "✓ अप्रतिम! बरोबर उत्तर! 🎉";
-            resultMsg.className = "result correct";
-            score++;
+    function checkMathAnswer() {
+        let ans = parseInt(document.getElementById("user-answer").value);
+        let correct = n1 + n2;
+        let res = document.getElementById("result-message");
+        if(ans === correct) {
+            res.innerText = "✓ बरोबर उत्तर! 🎉"; res.className = "result correct"; score++;
         } else {
-            resultMsg.innerText = `✗ चुकीचे! योग्य उत्तर: ${correctAnswer}`;
-            resultMsg.className = "result wrong";
+            res.innerText = "✗ चुकीचे! योग्य उत्तर: " + correct; res.className = "result wrong";
         }
-
-        document.getElementById("score-board").innerText = `सोडवलेले प्रश्न: ${totalAttempted} | एकूण गुण: ${score}`;
-        document.getElementById("action-btn").innerText = "पुढचे उदाहरण";
-        document.getElementById("action-btn").style.background = "linear-gradient(135deg, #3b82f6, #1d4ed8)";
-        document.getElementById("action-btn").setAttribute("onclick", "generateNumbers()");
-        isAnswerChecked = true;
+        updateScore();
+        let actionBtn = document.getElementById("action-btn");
+        actionBtn.innerText = "पुढचे उदाहरण";
+        actionBtn.setAttribute("onclick", "generateMathQuestion()");
     }
 
-    document.getElementById("user-answer").addEventListener("keyup", function(event) {
-        if (event.key === "Enter") {
-            if (!isAnswerChecked) { checkAnswer(); } else { generateNumbers(); }
+    function generateMarathiQuestion() {
+        // प्रश्न रँडम येतील
+        currentMarathiObj = marathiData[Math.floor(Math.random() * marathiData.length)];
+        document.getElementById("marathi-pic").innerText = currentMarathiObj.pic;
+        let optionsHtml = "";
+        currentMarathiObj.options.forEach(opt => {
+            optionsHtml += `<button class="option-btn" onclick="checkMarathiAnswer('${opt}')">${opt}</button>`;
+        });
+        document.getElementById("marathi-options").innerHTML = optionsHtml;
+    }
+
+    function checkMarathiAnswer(selected) {
+        let res = document.getElementById("result-message");
+        if(selected === currentMarathiObj.correct) {
+            res.innerText = "✓ छान! अगदी बरोबर! 👍"; res.className = "result correct"; score++;
+        } else {
+            res.innerText = "✗ चुकीचे! योग्य उत्तर: " + currentMarathiObj.correct; res.className = "result wrong";
         }
-    });
+        updateScore();
+        res.innerHTML += `<br><button class="submit-btn" onclick="clearAndNext(generateMarathiQuestion)">पुढचा प्रश्न</button>`;
+    }
 
-    window.onload = generateNumbers;
+    function generateEnglishQuestion() {
+        currentEnglishObj = englishData[Math.floor(Math.random() * englishData.length)];
+        document.getElementById("english-pic").innerText = currentEnglishObj.pic.repeat(currentEnglishObj.count);
+        let optionsHtml = "";
+        currentEnglishObj.options.forEach(opt => {
+            optionsHtml += `<button class="option-btn" onclick="checkEnglishAnswer('${opt}')">${opt}</button>`;
+        });
+        document.getElementById("english-options").innerHTML = optionsHtml;
+    }
+
+    function checkEnglishAnswer(selected) {
+        let res = document.getElementById("result-message");
+        if(selected === currentEnglishObj.correct) {
+            res.innerText = "✓ Well Done! Correct! ⭐"; res.className = "result correct"; score++;
+        } else {
+            res.innerText = "✗ Wrong! Correct is: " + currentEnglishObj.correct; res.className = "result wrong";
+        }
+        updateScore();
+        res.innerHTML += `<br><button class="submit-btn" onclick="clearAndNext(generateEnglishQuestion)">पुढचा प्रश्न</button>`;
+    }
+
+    function updateScore() {
+        document.getElementById("score-board").innerText = "एकूण गुण: " + score;
+    }
+
+    function clearAndNext(func) {
+        document.getElementById("result-message").innerText = "";
+        func();
+    }
+
+    window.onload = function() {
+        generateMathQuestion();
+    };
 </script>
-
 </body>
 </html>
