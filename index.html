@@ -38,7 +38,7 @@
             flex-wrap: wrap;
         }
         .subject-btn {
-            padding: 10px 25px;
+            padding: 12px 25px;
             font-size: 16px;
             font-weight: bold;
             border: none;
@@ -89,41 +89,22 @@
             text-align: center;
             border-top: 5px solid #2a5298;
         }
-        .level-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .level-btn {
-            background-color: #f1f5f9;
-            border: 2px solid #cbd5e1;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            color: #475569;
-        }
-        .level-btn.active {
-            background-color: #2a5298;
-            color: white;
-        }
         .score-board {
-            font-size: 16px;
+            font-size: 18px;
             color: #475569;
             background-color: #f1f5f9;
-            padding: 10px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 20px;
             margin-bottom: 25px;
             font-weight: bold;
             display: inline-block;
         }
         
+        /* विषय लपवणे आणि दाखवणे */
         .subject-section { display: none; }
         .subject-section.active { display: block; }
 
+        /* गणित डिझाईन */
         .math-wrapper {
             display: flex;
             flex-direction: column;
@@ -152,6 +133,7 @@
         .sign-row { font-size: 35px; font-weight: bold; width: 100%; max-width: 500px; text-align: left; padding-left: 15px; color: #64748b; }
         .line { border-bottom: 4px solid #1e293b; width: 100%; max-width: 500px; margin: 10px 0; }
         
+        /* भाषा डिझाईन */
         .language-wrapper {
             background-color: #fafbfc;
             padding: 30px;
@@ -159,8 +141,8 @@
             border: 1px solid #e2e8f0;
             margin: 20px 0;
         }
-        .lang-question-display { font-size: 70px; margin-bottom: 20px; }
-        .lang-instruction { font-size: 20px; font-weight: bold; color: #475569; margin-bottom: 20px; }
+        .lang-question-display { font-size: 80px; margin-bottom: 20px; }
+        .lang-instruction { font-size: 22px; font-weight: bold; color: #475569; margin-bottom: 20px; }
         
         .options-container {
             display: grid;
@@ -185,7 +167,7 @@
         input[type="number"].final-ans { font-size: 35px; width: 130px; text-align: center; padding: 8px; border: 3px solid #2a5298; border-radius: 8px; outline: none; background-color: #f0f7ff; }
         
         .submit-btn { font-size: 18px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; margin-top: 20px; width: 100%; max-width: 200px; font-weight: bold; }
-        .result { font-size: 22px; font-weight: bold; margin-top: 20px; min-height: 40px; }
+        .result { font-size: 22px; font-weight: bold; margin-top: 20px; min-height: 50px; }
         .correct { color: #10b981; }
         .wrong { color: #ef4444; }
         
@@ -215,11 +197,6 @@
         <div class="score-board" id="score-board">एकूण गुण: ०</div>
 
         <div id="math-section" class="subject-section active">
-            <div class="level-container">
-                <button class="level-btn active" id="m-lvl1" onclick="changeMathLevel(1)">लेव्हल १ (१ अंकी)</button>
-                <button class="level-btn" id="m-lvl2" onclick="changeMathLevel(2)">लेव्हल २ (२ अंकी सोपी)</button>
-            </div>
-            
             <div class="math-wrapper">
                 <div class="row-item">
                     <div class="num-display" id="num1">0</div>
@@ -238,7 +215,7 @@
                     <input type="number" class="final-ans" id="user-answer" placeholder="?">
                 </div>
             </div>
-            <button id="action-btn" class="submit-btn" onclick="checkMathAnswer()">उत्तर तपासा</button>
+            <button id="math-action-btn" class="submit-btn" onclick="checkMathAnswer()">उत्तर तपासा</button>
         </div>
 
         <div id="marathi-section" class="subject-section">
@@ -247,14 +224,16 @@
                 <div class="lang-question-display" id="marathi-pic">🍎</div>
                 <div class="options-container" id="marathi-options"></div>
             </div>
+            <button id="marathi-next-btn" class="submit-btn" style="display:none; margin: 20px auto;" onclick="generateMarathiQuestion()">पुढचा प्रश्न</button>
         </div>
 
         <div id="english-section" class="subject-section">
-            <div class="lang-instruction">चित्रे मोजा आणि योग्य इंग्रजी संख्या स्पेलिंग निवडा:</div>
+            <div class="lang-instruction">चित्रे मोजा आणि योग्य संख्या स्पेलिंग निवडा:</div>
             <div class="language-wrapper">
                 <div class="lang-question-display" id="english-pic">⚽⚽⚽</div>
                 <div class="options-container" id="english-options"></div>
             </div>
+            <button id="english-next-btn" class="submit-btn" style="display:none; margin: 20px auto;" onclick="generateEnglishQuestion()">पुढचा प्रश्न</button>
         </div>
 
         <div class="result" id="result-message"></div>
@@ -270,10 +249,9 @@
 <script>
     let score = 0;
     let currentSubject = 'math';
-    let n1 = 0, n2 = 0, mathLevel = 1;
+    let n1 = 0, n2 = 0;
     const mathDesigns = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦", "🍇", "🌻", "🚗", "🦉"];
 
-    // विस्तीर्ण मराठी डेटाबेस (चित्रे आणि पर्याय)
     const marathiData = [
         { pic: "🍎", correct: "सफरचंद", options: ["आंबा", "सफरचंद", "केळे", "पेरू"] },
         { pic: "🐱", correct: "मांजर", options: ["कुत्रा", "वाघ", "मांजर", "उंदीर"] },
@@ -298,7 +276,6 @@
     ];
     let currentMarathiObj = {};
 
-    // विस्तीर्ण इंग्रजी संख्या मोजणी डेटाबेस (१ ते १० पर्यंत)
     const englishData = [
         { count: 1, pic: "⭐", correct: "ONE", options: ["TWO", "ONE", "THREE", "FIVE"] },
         { count: 2, pic: "⚽", correct: "TWO", options: ["ONE", "FOUR", "TWO", "THREE"] },
@@ -309,22 +286,23 @@
         { count: 7, pic: "🍦", correct: "SEVEN", options: ["SIX", "EIGHT", "NINE", "SEVEN"] },
         { count: 8, pic: "🚗", correct: "EIGHT", options: ["SEVEN", "NINE", "EIGHT", "TEN"] },
         { count: 9, pic: "🍇", correct: "NINE", options: ["EIGHT", "TEN", "NINE", "SEVEN"] },
-        { count: 10, pic: "🌻", correct: "TEN", options: ["NINE", "TEN", "FIVE", "EIGHT"] },
-        { count: 2, pic: "🐱", correct: "TWO", options: ["THREE", "ONE", "FIVE", "TWO"] },
-        { count: 4, pic: "🦉", correct: "FOUR", options: ["TWO", "FOUR", "SIX", "THREE"] },
-        { count: 6, pic: "⭐", correct: "SIX", options: ["FOUR", "EIGHT", "SIX", "FIVE"] },
-        { count: 7, pic: "🎈", correct: "SEVEN", options: ["TEN", "SEVEN", "NINE", "SIX"] },
-        { count: 3, pic: "🌸", correct: "THREE", options: ["TWO", "FIVE", "THREE", "FOUR"] }
+        { count: 10, pic: "🌻", correct: "TEN", options: ["NINE", "TEN", "FIVE", "EIGHT"] }
     ];
     let currentEnglishObj = {};
 
+    // मुख्य विषय बदलणारे फंक्शन
     function switchSubject(subject, btn) {
         currentSubject = subject;
+        
+        // आधी सर्व सेक्शन्स लपवून टाका
         document.querySelectorAll('.subject-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
         
+        // निवडलेला सेक्शन दाखवा
         document.getElementById(`${subject}-section`).classList.add('active');
         btn.classList.add('active');
+        
+        // रिझल्ट मेसेज पुसा
         document.getElementById("result-message").innerText = "";
         
         if(subject === 'math') generateMathQuestion();
@@ -332,33 +310,25 @@
         if(subject === 'english') generateEnglishQuestion();
     }
 
-    function changeMathLevel(lvl) {
-        mathLevel = lvl;
-        document.getElementById("m-lvl1").classList.toggle("active", lvl === 1);
-        document.getElementById("m-lvl2").classList.toggle("active", lvl === 2);
-        generateMathQuestion();
-    }
-
+    // --- गणिताचे लॉजिक ---
     function generateMathQuestion() {
-        if (mathLevel === 1) {
-            n1 = Math.floor(Math.random() * 8) + 1;
-            n2 = Math.floor(Math.random() * 8) + 1;
-        } else {
-            n1 = Math.floor(Math.random() * 6) + 6;
-            n2 = Math.floor(Math.random() * 6) + 6;
-        }
+        n1 = Math.floor(Math.random() * 8) + 1;
+        n2 = Math.floor(Math.random() * 8) + 1;
+        
         document.getElementById("num1").innerText = n1;
         document.getElementById("num2").innerText = n2;
+        
         let icon = mathDesigns[Math.floor(Math.random() * mathDesigns.length)];
         document.getElementById("design1").innerText = icon.repeat(n1);
         document.getElementById("design2").innerText = icon.repeat(n2);
+        
         document.getElementById("box1").value = "";
         document.getElementById("box2").value = "";
         document.getElementById("user-answer").value = "";
+        document.getElementById("result-message").innerText = "";
         
-        let actionBtn = document.getElementById("action-btn");
+        let actionBtn = document.getElementById("math-action-btn");
         actionBtn.innerText = "उत्तर तपासा";
-        actionBtn.style.display = "inline-block";
         actionBtn.setAttribute("onclick", "checkMathAnswer()");
     }
 
@@ -366,21 +336,27 @@
         let ans = parseInt(document.getElementById("user-answer").value);
         let correct = n1 + n2;
         let res = document.getElementById("result-message");
+        
         if(ans === correct) {
             res.innerText = "✓ बरोबर उत्तर! 🎉"; res.className = "result correct"; score++;
         } else {
             res.innerText = "✗ चुकीचे! योग्य उत्तर: " + correct; res.className = "result wrong";
         }
         updateScore();
-        let actionBtn = document.getElementById("action-btn");
+        
+        let actionBtn = document.getElementById("math-action-btn");
         actionBtn.innerText = "पुढचे उदाहरण";
         actionBtn.setAttribute("onclick", "generateMathQuestion()");
     }
 
+    // --- मराठीचे लॉजिक ---
     function generateMarathiQuestion() {
-        // प्रश्न रँडम येतील
+        document.getElementById("result-message").innerText = "";
+        document.getElementById("marathi-next-btn").style.display = "none";
+        
         currentMarathiObj = marathiData[Math.floor(Math.random() * marathiData.length)];
         document.getElementById("marathi-pic").innerText = currentMarathiObj.pic;
+        
         let optionsHtml = "";
         currentMarathiObj.options.forEach(opt => {
             optionsHtml += `<button class="option-btn" onclick="checkMarathiAnswer('${opt}')">${opt}</button>`;
@@ -396,12 +372,18 @@
             res.innerText = "✗ चुकीचे! योग्य उत्तर: " + currentMarathiObj.correct; res.className = "result wrong";
         }
         updateScore();
-        res.innerHTML += `<br><button class="submit-btn" onclick="clearAndNext(generateMarathiQuestion)">पुढचा प्रश्न</button>`;
+        document.getElementById("marathi-options").innerHTML = ""; // पर्याय लपवा
+        document.getElementById("marathi-next-btn").style.display = "block"; // पुढचा प्रश्न बटन दाखवा
     }
 
+    // --- इंग्रजीचे लॉजिक ---
     function generateEnglishQuestion() {
+        document.getElementById("result-message").innerText = "";
+        document.getElementById("english-next-btn").style.display = "none";
+        
         currentEnglishObj = englishData[Math.floor(Math.random() * englishData.length)];
         document.getElementById("english-pic").innerText = currentEnglishObj.pic.repeat(currentEnglishObj.count);
+        
         let optionsHtml = "";
         currentEnglishObj.options.forEach(opt => {
             optionsHtml += `<button class="option-btn" onclick="checkEnglishAnswer('${opt}')">${opt}</button>`;
@@ -417,16 +399,12 @@
             res.innerText = "✗ Wrong! Correct is: " + currentEnglishObj.correct; res.className = "result wrong";
         }
         updateScore();
-        res.innerHTML += `<br><button class="submit-btn" onclick="clearAndNext(generateEnglishQuestion)">पुढचा प्रश्न</button>`;
+        document.getElementById("english-options").innerHTML = ""; // पर्याय लपवा
+        document.getElementById("english-next-btn").style.display = "block"; // पुढचा प्रश्न बटन दाखवा
     }
 
     function updateScore() {
         document.getElementById("score-board").innerText = "एकूण गुण: " + score;
-    }
-
-    function clearAndNext(func) {
-        document.getElementById("result-message").innerText = "";
-        func();
     }
 
     window.onload = function() {
