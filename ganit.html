@@ -10,7 +10,7 @@
         header { background: #ff9f43; color: white; padding: 15px; display: flex; align-items: center; justify-content: space-between; }
         .back-btn { color: white; text-decoration: none; font-weight: bold; background: rgba(0,0,0,0.2); padding: 8px 15px; border-radius: 20px; }
         
-        /* नवीन नेव्हिगेशन टॅब्ज */
+        /* नेव्हिगेशन टॅब्ज */
         .sub-nav { display: flex; justify-content: center; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .nav-tab { flex: 1; padding: 15px; font-size: 18px; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s; }
         .nav-tab.active { color: #ff9f43; border-bottom: 3px solid #ff9f43; background-color: #fffaf0; }
@@ -22,7 +22,6 @@
         .inst-mr { font-size: 20px; font-weight: bold; color: #d35400; margin-bottom: 5px; }
         .inst-en { font-size: 16px; font-weight: 600; color: #7f8c8d; font-style: italic; }
 
-        /* विभाग लपवण्यासाठी आणि दाखवण्यासाठी */
         .game-section { display: none; }
         .game-section.active { display: block; }
 
@@ -72,16 +71,16 @@
         </div>
         
         <div class="numbers-grid">
-            <button class="num-speak-btn" onclick="playAudio(1)"><span class="big-digit">1</span><span class="spelling-label">ONE</span><span class="audio-icon">🔊 ऐका</span></button>
-            <button class="num-speak-btn" onclick="playAudio(2)"><span class="big-digit">2</span><span class="spelling-label">TWO</span><span class="audio-icon">🔊 ऐका</span></button>
-            <button class="num-speak-btn" onclick="playAudio(3)"><span class="big-digit">3</span><span class="spelling-label">THREE</span><span class="audio-icon">🔊 ऐका</span></button>
-            <button class="num-speak-btn" onclick="playAudio(4)"><span class="big-digit">4</span><span class="spelling-label">FOUR</span><span class="audio-icon">🔊 ऐका</span></button>
-            <button class="num-speak-btn" onclick="playAudio(5)"><span class="big-digit">5</span><span class="spelling-label">FIVE</span><span class="audio-icon">🔊 ऐका</span></button>
-            <button class="num-speak-btn" onclick="playAudio(6)"><span class="big-digit">6</span><span class="spelling-label">SIX</span><span class="audio-icon">🔊 ऐका</span></button>
-            <button class="num-speak-btn" onclick="playAudio(7)"><span class="big-digit">7</span><span class="spelling-label">SEVEN</span><span class="audio-icon">🔊 ऐका</span></button>
-            <button class="num-speak-btn" onclick="playAudio(8)"><span class="big-digit">8</span><span class="spelling-label">EIGHT</span><span class="audio-icon">🔊 ऐका</span></button>
-            <button class="num-speak-btn" onclick="playAudio(9)"><span class="big-digit">9</span><span class="spelling-label">NINE</span><span class="audio-icon">🔊 ऐका</span></button>
-            <button class="num-speak-btn" onclick="playAudio(10)"><span class="big-digit">10</span><span class="spelling-label">TEN</span><span class="audio-icon">🔊 ऐका</span></button>
+            <button class="num-speak-btn" onclick="playAudio('one')"><span class="big-digit">1</span><span class="spelling-label">ONE</span><span class="audio-icon">🔊 ऐका</span></button>
+            <button class="num-speak-btn" onclick="playAudio('two')"><span class="big-digit">2</span><span class="spelling-label">TWO</span><span class="audio-icon">🔊 ऐका</span></button>
+            <button class="num-speak-btn" onclick="playAudio('three')"><span class="big-digit">3</span><span class="spelling-label">THREE</span><span class="audio-icon">🔊 ऐका</span></button>
+            <button class="num-speak-btn" onclick="playAudio('four')"><span class="big-digit">4</span><span class="spelling-label">FOUR</span><span class="audio-icon">🔊 ऐका</span></button>
+            <button class="num-speak-btn" onclick="playAudio('five')"><span class="big-digit">5</span><span class="spelling-label">FIVE</span><span class="audio-icon">🔊 ऐका</span></button>
+            <button class="num-speak-btn" onclick="playAudio('six')"><span class="big-digit">6</span><span class="spelling-label">SIX</span><span class="audio-icon">🔊 ऐका</span></button>
+            <button class="num-speak-btn" onclick="playAudio('seven')"><span class="big-digit">7</span><span class="spelling-label">SEVEN</span><span class="audio-icon">🔊 ऐका</span></button>
+            <button class="num-speak-btn" onclick="playAudio('eight')"><span class="big-digit">8</span><span class="spelling-label">EIGHT</span><span class="audio-icon">🔊 ऐका</span></button>
+            <button class="num-speak-btn" onclick="playAudio('nine')"><span class="big-digit">9</span><span class="spelling-label">NINE</span><span class="audio-icon">🔊 ऐका</span></button>
+            <button class="num-speak-btn" onclick="playAudio('ten')"><span class="big-digit">10</span><span class="spelling-label">TEN</span><span class="audio-icon">🔊 ऐका</span></button>
         </div>
     </div>
 
@@ -127,7 +126,6 @@
     const designs = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦"];
     let currentAudio = null;
 
-    // विभाग बदलण्याचे फंक्शन
     function switchGameMode(mode) {
         document.querySelectorAll('.game-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -142,11 +140,11 @@
         }
     }
 
-    // खात्रीशीर ऑडिओ प्ले करणारे फंक्शन
-    function playAudio(num) {
+    // १ ते १० साठी १00% काम करणारे ऑडिओ फंक्शन
+    function playAudio(wordName) {
         if(currentAudio) { currentAudio.pause(); }
-        let audioUrl = `https://ssl.gstatic.com/dictionary/static/sounds/oxford/${num}--_gb_1.mp3`;
-        if(num === 10) { audioUrl = `https://ssl.gstatic.com/dictionary/static/sounds/oxford/ten--_gb_1.mp3`; }
+        // गुगल डिक्शनरीवरून अचूक शब्दाचा उच्चार लोड केला जाईल
+        let audioUrl = `https://ssl.gstatic.com/dictionary/static/sounds/oxford/${wordName}--_gb_1.mp3`;
         currentAudio = new Audio(audioUrl);
         currentAudio.play().catch(e => console.log("Audio play error: ", e));
     }
@@ -187,7 +185,6 @@
     }
 
     window.onload = function() {
-        // सुरुवातीला अंक ओळख पॅनेल दाखवा
         switchGameMode('learn');
     };
 </script>
