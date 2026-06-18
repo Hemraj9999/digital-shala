@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>मराठी शब्द सराव</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; text-align: center; }
+        header { background: #ee5253; color: white; padding: 15px; display: flex; align-items: center; justify-content: space-between; }
+        .back-btn { color: white; text-decoration: none; font-weight: bold; background: rgba(0,0,0,0.2); padding: 8px 15px; border-radius: 20px; }
+        .game-container { max-width: 600px; margin: 30px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .score-board { font-size: 18px; font-weight: bold; background: #f1f5f9; padding: 10px; display: inline-block; border-radius: 10px; margin-bottom: 20px; }
+        .pic-display { font-size: 90px; margin: 20px 0; }
+        .instruction { font-size: 22px; font-weight: bold; color: #475569; margin-bottom: 20px; }
+        .options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 400px; margin: 0 auto; }
+        .option-btn { padding: 15px; font-size: 20px; font-weight: bold; background: white; border: 2px solid #cbd5e1; border-radius: 8px; cursor: pointer; }
+        .option-btn:hover { border-color: #ee5253; }
+        .submit-btn { font-size: 18px; background: #ee5253; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; display: none; }
+        .result { font-size: 22px; font-weight: bold; margin-top: 20px; min-height: 40px; }
+        .correct { color: #10b981; }
+        .wrong { color: #ef4444; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn">⬅ मुख्य पान</a>
+    <h2>🍎 मराठी शब्द ओळख शाल</h2>
+    <div style="width:70px;"></div>
+</header>
+
+<div class="game-container">
+    <div class="score-board" id="score-board">एकूण गुण: ०</div>
+    <div class="instruction">हे चित्र कशाचे आहे? योग्य नाव निवडा:</div>
+    <div class="pic-display" id="pic-box">🍎</div>
+    <div class="options-container" id="options-box"></div>
+    <button id="next-btn" class="submit-btn" onclick="generateQuestion()">पुढचा प्रश्न</button>
+    <div class="result" id="result-message"></div>
+</div>
+
+<script>
+    let score = 0, currentObj = {};
+    const data = [
+        { pic: "🍎", correct: "सफरचंद", options: ["आंबा", "सफरचंद", "केळे", "पेरू"] },
+        { pic: "🐱", correct: "मांजर", options: ["कुत्रा", "वाघ", "मांजर", "उंदीर"] },
+        { pic: "🍦", correct: "आईस्क्रीम", options: ["दूध", "आईस्क्रीम", "चॉकलेट", "पॅटीस"] },
+        { pic: "🚗", correct: "गाडी", options: ["सायकल", "विमान", "गाडी", "हत्ती"] },
+        { pic: "🌹", correct: "गुलाब", options: ["कमळ", "गुलाब", "चाफा", "झाड"] },
+        { pic: "🦁", correct: "सिंह", options: ["वाघ", "हत्ती", "सिंह", "चित्ता"] },
+        { pic: "🥭", correct: "आंबा", options: ["सफरचंद", "आंबा", "द्राक्षे", "पपई"] }
+    ];
+
+    function generateQuestion() {
+        document.getElementById("result-message").innerText = "";
+        document.getElementById("next-btn").style.display = "none";
+        currentObj = data[Math.floor(Math.random() * data.length)];
+        document.getElementById("pic-box").innerText = currentObj.pic;
+        
+        let html = "";
+        currentObj.options.forEach(opt => {
+            html += `<button class="option-btn" onclick="checkAnswer('${opt}')">${opt}</button>`;
+        });
+        document.getElementById("options-box").innerHTML = html;
+    }
+
+    function checkAnswer(selected) {
+        let res = document.getElementById("result-message");
+        if(selected === currentObj.correct) {
+            res.innerText = "✓ छान! अगदी देशात बरोबर! 👍"; res.className = "result correct"; score++;
+        } else {
+            res.innerText = "✗ चुकीचे! योग्य उत्तर: " + currentObj.correct; res.className = "result wrong";
+        }
+        document.getElementById("score-board").innerText = "एकूण गुण: " + score;
+        document.getElementById("options-box").innerHTML = "";
+        document.getElementById("next-btn").style.display = "inline-block";
+    }
+
+    window.onload = generateQuestion;
+</script>
+</body>
+</html>
