@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Practice - Digital Shala</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; text-align: center; }
+        header { background: #10ac84; color: white; padding: 15px; display: flex; align-items: center; justify-content: space-between; }
+        .back-btn { color: white; text-decoration: none; font-weight: bold; background: rgba(0,0,0,0.2); padding: 8px 15px; border-radius: 20px; }
+        .game-container { max-width: 600px; margin: 30px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .score-board { font-size: 18px; font-weight: bold; background: #f1f5f9; padding: 10px; display: inline-block; border-radius: 10px; margin-bottom: 20px; }
+        .pic-display { font-size: 60px; margin: 20px 0; letter-spacing: 5px; }
+        .instruction { font-size: 22px; font-weight: bold; color: #475569; margin-bottom: 20px; }
+        .options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 400px; margin: 0 auto; }
+        .option-btn { padding: 15px; font-size: 20px; font-weight: bold; background: white; border: 2px solid #cbd5e1; border-radius: 8px; cursor: pointer; }
+        .option-btn:hover { border-color: #10ac84; }
+        .submit-btn { font-size: 18px; background: #10ac84; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; display: none; }
+        .result { font-size: 22px; font-weight: bold; margin-top: 20px; min-height: 40px; }
+        .correct { color: #10b981; }
+        .wrong { color: #ef4444; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn">⬅ Home</a>
+    <h2>🅰 English Math Shala</h2>
+    <div style="width:70px;"></div>
+</header>
+
+<div class="game-container">
+    <div class="score-board" id="score-board">Score: 0</div>
+    <div class="instruction">Count the pictures and select correct spelling:</div>
+    <div class="pic-display" id="pic-box">⚽⚽⚽</div>
+    <div class="options-container" id="options-box"></div>
+    <button id="next-btn" class="submit-btn" onclick="generateQuestion()">Next Question</button>
+    <div class="result" id="result-message"></div>
+</div>
+
+<script>
+    let score = 0, currentObj = {};
+    const data = [
+        { count: 1, pic: "⭐", correct: "ONE", options: ["TWO", "ONE", "THREE", "FIVE"] },
+        { count: 2, pic: "⚽", correct: "TWO", options: ["ONE", "FOUR", "TWO", "THREE"] },
+        { count: 3, pic: "🎈", correct: "THREE", options: ["FOUR", "TWO", "THREE", "ONE"] },
+        { count: 4, pic: "💎", correct: "FOUR", options: ["THREE", "FIVE", "FOUR", "TWO"] },
+        { count: 5, pic: "🌸", correct: "FIVE", options: ["FIVE", "THREE", "SIX", "FOUR"] }
+    ];
+
+    function generateQuestion() {
+        document.getElementById("result-message").innerText = "";
+        document.getElementById("next-btn").style.display = "none";
+        currentObj = data[Math.floor(Math.random() * data.length)];
+        document.getElementById("pic-box").innerText = currentObj.pic.repeat(currentObj.count);
+        
+        let html = "";
+        currentObj.options.forEach(opt => {
+            html += `<button class="option-btn" onclick="checkAnswer('${opt}')">${opt}</button>`;
+        });
+        document.getElementById("options-box").innerHTML = html;
+    }
+
+    function checkAnswer(selected) {
+        let res = document.getElementById("result-message");
+        if(selected === currentObj.correct) {
+            res.innerText = "✓ Well Done! Correct! ⭐"; res.className = "result correct"; score++;
+        } else {
+            res.innerText = "✗ Wrong! Correct is: " + currentObj.correct; res.className = "result wrong";
+        }
+        document.getElementById("score-board").innerText = "Score: " + score;
+        document.getElementById("options-box").innerHTML = "";
+        document.getElementById("next-btn").style.display = "inline-block";
+    }
+
+    window.onload = generateQuestion;
+</script>
+</body>
+</html>
