@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>अंक ओळख - Digital Shala Pro</title>
+    <style>
+        :root { --primary: #ff9f43; --primary-glow: rgba(255, 159, 67, 0.4); --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); --card-bg: rgba(255, 255, 255, 0.06); --card-border: rgba(255, 255, 255, 0.1); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg-gradient); color: #f8fafc; min-height: 100vh; text-align: center; }
+        header { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border-bottom: 1px solid var(--card-border); padding: 15px 25px; display: flex; align-items: center; justify-content: space-between; }
+        .back-btn { color: #94a3b8; text-decoration: none; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 30px; font-size: 14px; border: 1px solid var(--card-border); }
+        header h2 { font-size: 20px; font-weight: 700; background: linear-gradient(90deg, #ff9f43, #ff5252); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .game-container { max-width: 550px; width: 92%; margin: 30px auto; background: var(--card-bg); padding: 30px 25px; border-radius: 24px; border: 1px solid var(--card-border); backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .instruction-box { background: rgba(255, 159, 67, 0.08); padding: 14px; border-radius: 16px; border-left: 4px solid var(--primary); margin-bottom: 25px; text-align: left; }
+        .inst-mr { font-size: 15px; font-weight: 600; color: #ffad5a; }
+        .lang-selector-box { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 16px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: center; border: 1px solid rgba(255,255,255,0.03); }
+        .lang-label { font-size: 15px; font-weight: 600; color: #cbd5e1; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 10px; }
+        .lang-label:has(input:checked) { background: rgba(255,255,255,0.08); color: var(--primary); }
+        .lang-label input { transform: scale(1.2); accent-color: var(--primary); }
+        .range-selector-box { margin-bottom: 25px; text-align: left; }
+        .range-selector-box label { font-size: 14px; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 8px; }
+        .select-input { font-size: 16px; padding: 14px; border-radius: 14px; border: 2px solid var(--card-border); width: 100%; font-weight: 600; color: #fff; background: #1e293b; cursor: pointer; outline: none; }
+        .numbers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 20px auto; }
+        .num-speak-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px 15px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s; }
+        .num-speak-btn:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 8px 20px rgba(255, 159, 67, 0.15); }
+        .num-speak-btn .big-digit { font-size: 46px; font-weight: 800; color: #fff; }
+        .num-speak-btn .audio-icon { font-size: 12px; margin-top: 8px; color: var(--primary); font-weight: 700; background: rgba(255,159,67,0.1); padding: 4px 12px; border-radius: 20px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="ganit.html" class="back-btn">⬅ मागे जा</a>
+    <h2>💎 १ ते १००० अंक ओळख</h2>
+    <div style="width:85px;"></div>
+</header>
+
+<div class="game-container">
+    <div class="lang-selector-box">
+        <span style="font-size: 14px; font-weight: 600; color: #64748b;">🗣️ MODE:</span>
+        <label class="lang-label"><input type="radio" name="lang-select" value="mr" checked onchange="changeLanguage()"> 🚩 मराठी</label>
+        <label class="lang-label"><input type="radio" name="lang-select" value="en" onchange="changeLanguage()"> 🔤 English</label>
+    </div>
+
+    <div class="instruction-box"><div class="inst-mr" id="inst-text">अंकांचा गट निवडा आणि ऐकण्यासाठी बतनावर दाबा!</div></div>
+    
+    <div class="range-selector-box">
+        <label id="dropdown-label">अंकांचा गट निवडा:</label>
+        <select id="ten-range-select" class="select-input" onchange="showNumbersGrid()"></select>
+    </div>
+
+    <div id="numbers-grid-container" class="numbers-grid"></div>
+</div>
+
+<script>
+    const marathiDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
+    function convertToMarathi(number) { return number.toString().split('').map(digit => marathiDigits[digit] || digit).join(''); }
+    function currentLanguage() { return document.querySelector('input[name="lang-select"]:checked').value; }
+
+    function changeLanguage() {
+        let lang = currentLanguage();
+        document.getElementById("inst-text").innerText = (lang === 'mr') ? "अंकांचा गट निवडा आणि ऐकण्यासाठी बतनावर दाबा!" : "Select number group and click to hear!";
+        document.getElementById("dropdown-label").innerText = (lang === 'mr') ? "अंकांचा गट निवडा:" : "Select Number Group:";
+        initializeDropdown(); showNumbersGrid();
+    }
+
+    function initializeDropdown() {
+        let select = document.getElementById("ten-range-select");
+        let currentSelection = select.value || 1; select.innerHTML = ""; let lang = currentLanguage();
+        for (let i = 1; i <= 1000; i += 10) {
+            let start = i, end = i + 9; if(end > 1000) end = 1000;
+            let option = document.createElement("option"); option.value = start;
+            option.innerText = (lang === 'mr') ? `${convertToMarathi(start)} ते ${convertToMarathi(end)}` : `${start} to ${end}`;
+            select.appendChild(option);
+        }
+        select.value = currentSelection;
+    }
+
+    function showNumbersGrid() {
+        let startNum = parseInt(document.getElementById("ten-range-select").value);
+        let gridContainer = document.getElementById("numbers-grid-container"); gridContainer.innerHTML = ""; 
+        let endNum = startNum + 9; if(endNum > 1000) endNum = 1000; let lang = currentLanguage();
+        for (let num = startNum; num <= endNum; num++) {
+            let displayNum = (lang === 'mr') ? convertToMarathi(num) : num;
+            gridContainer.innerHTML += `<button class="num-speak-btn" onclick="playNumberVoice(${num})"><span class="big-digit">${displayNum}</span><span class="audio-icon">${(lang === 'mr') ? "🔊 ऐका" : "🔊 Listen"}</span></button>`;
+        }
+    }
+
+    function playNumberVoice(num) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel(); let utterance = new SpeechSynthesisUtterance(num);
+            utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US'; utterance.rate = 0.8; window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    window.onload = function() { initializeDropdown(); showNumbersGrid(); };
+</script>
+</body>
+</html>
