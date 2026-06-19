@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>चित्रे व बेरीज - Digital Shala Pro</title>
+    <style>
+        :root { --primary: #ff9f43; --primary-glow: rgba(255, 159, 67, 0.4); --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); --card-bg: rgba(255, 255, 255, 0.06); --card-border: rgba(255, 255, 255, 0.1); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg-gradient); color: #f8fafc; min-height: 100vh; text-align: center; }
+        header { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border-bottom: 1px solid var(--card-border); padding: 15px 25px; display: flex; align-items: center; justify-content: space-between; }
+        .back-btn { color: #94a3b8; text-decoration: none; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 30px; font-size: 14px; border: 1px solid var(--card-border); }
+        header h2 { font-size: 20px; font-weight: 700; background: linear-gradient(90deg, #ff9f43, #ff5252); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .game-container { max-width: 550px; width: 92%; margin: 30px auto; background: var(--card-bg); padding: 30px 25px; border-radius: 24px; border: 1px solid var(--card-border); backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .score-board { font-size: 16px; font-weight: 700; background: #10b981; color: white; padding: 8px 18px; display: inline-block; border-radius: 30px; margin-bottom: 25px; }
+        .instruction-box { background: rgba(255, 159, 67, 0.08); padding: 14px; border-radius: 16px; border-left: 4px solid var(--primary); margin-bottom: 25px; }
+        .inst-mr { font-size: 15px; font-weight: 600; color: #ffad5a; text-align: left; }
+        .math-wrapper { display: flex; flex-direction: column; align-items: center; gap: 20px; margin: 25px 0; background: rgba(0,0,0,0.15); padding: 25px; border-radius: 20px; border: 1px solid var(--card-border); }
+        .row-item { display: flex; align-items: center; width: 100%; background: rgba(255,255,255,0.02); padding: 12px 18px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
+        .num-display { font-size: 42px; font-weight: 800; width: 70px; color: #fff; text-align: center; }
+        .design-display { flex: 1; font-size: 28px; letter-spacing: 6px; text-align: left; padding-left: 20px; }
+        .count-box { width: 90px; font-size: 18px; padding: 10px; text-align: center; border: 2px solid var(--card-border); border-radius: 10px; font-weight: 700; background: #0f172a; color: #fff; outline: none; }
+        .sign-row { font-size: 38px; font-weight: 800; width: 100%; text-align: left; padding-left: 25px; color: #94a3b8; }
+        .line { border-bottom: 3px dashed var(--card-border); width: 100%; margin: 5px 0; }
+        .final-input-row { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 10px; width: 100%; }
+        .final-ans { font-size: 38px; width: 140px; text-align: center; padding: 10px; border: 3px solid var(--primary); border-radius: 14px; outline: none; background: #0f172a; color: #fff; box-shadow: 0 0 15px var(--primary-glow); }
+        .submit-btn { font-size: 18px; background: linear-gradient(135deg, #ff9f43, #ff5252); color: white; border: none; padding: 16px 35px; border-radius: 16px; cursor: pointer; font-weight: 700; margin-top: 20px; width: 100%; box-shadow: 0 6px 20px var(--primary-glow); }
+        .result { font-size: 22px; font-weight: 700; margin-top: 20px; min-height: 40px; }
+        .correct { color: #34d399; }
+        .wrong { color: #f87171; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="ganit.html" class="back-btn">⬅ मागे जा</a>
+    <h2>⚡ चित्रे व बेरीज सराव</h2>
+    <div style="width:85px;"></div>
+</header>
+
+<div class="game-container">
+    <div style="text-align: center;"><div class="score-board" id="score-board-add">SCORE: ०</div></div>
+    <div class="instruction-box"><div class="inst-mr">चित्रे मोजा आणि अचूक बेरीज करा!</div></div>
+    
+    <div class="math-wrapper">
+        <div class="row-item">
+            <div class="num-display" id="num1">0</div>
+            <div class="design-display" id="design1">🎈🎈🎈</div>
+            <input type="number" class="count-box" id="box1" placeholder="?">
+        </div>
+        <div class="sign-row">+</div>
+        <div class="row-item">
+            <div class="num-display" id="num2">0</div>
+            <div class="design-display" id="design2">🎈🎈</div>
+            <input type="number" class="count-box" id="box2" placeholder="?">
+        </div>
+        <div class="line"></div>
+        <div class="final-input-row">
+            <span style="font-size: 20px; font-weight: 700; color: #94a3b8;">एकूण उत्तर =</span>
+            <input type="number" class="final-ans" id="user-answer" placeholder="?">
+        </div>
+    </div>
+    <button id="action-btn" class="submit-btn" onclick="checkAnswer()">उत्तर तपासा</button>
+    <div class="result" id="result-message"></div>
+</div>
+
+<script>
+    let scoreAdd = 0, n1 = 0, n2 = 0;
+    const designs = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦"];
+
+    function generateQuestion() {
+        n1 = Math.floor(Math.random() * 8) + 1; n2 = Math.floor(Math.random() * 8) + 1;
+        document.getElementById("num1").innerText = n1; document.getElementById("num2").innerText = n2;
+        let icon = designs[Math.floor(Math.random() * designs.length)];
+        document.getElementById("design1").innerText = icon.repeat(n1); document.getElementById("design2").innerText = icon.repeat(n2);
+        document.getElementById("box1").value = ""; document.getElementById("box2").value = ""; document.getElementById("user-answer").value = "";
+        document.getElementById("result-message").innerText = "";
+        let btn = document.getElementById("action-btn"); btn.innerText = "उत्तर तपासा"; btn.setAttribute("onclick", "checkAnswer()");
+    }
+
+    function checkAnswer() {
+        let ans = parseInt(document.getElementById("user-answer").value); let correct = n1 + n2;
+        let res = document.getElementById("result-message");
+        if(ans === correct) {
+            res.innerText = "✓ बरोबर उत्तर! 🎉"; res.className = "result correct"; scoreAdd++;
+        } else { res.innerText = "✗ चुकीचे! योग्य उत्तर: " + correct; res.className = "result wrong"; }
+        document.getElementById("score-board-add").innerText = "SCORE: " + scoreAdd;
+        let btn = document.getElementById("action-btn"); btn.innerText = "पुढचे उदाहरण"; btn.setAttribute("onclick", "generateQuestion()");
+    }
+
+    window.onload = generateQuestion;
+</script>
+</body>
+</html>
