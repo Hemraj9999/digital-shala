@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>संख्या मोजणे - Digital Shala Pro</title>
+    <style>
+        :root { --primary: #ff9f43; --primary-glow: rgba(255, 159, 67, 0.4); --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); --card-bg: rgba(255, 255, 255, 0.06); --card-border: rgba(255, 255, 255, 0.1); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg-gradient); color: #f8fafc; min-height: 100vh; text-align: center; }
+        header { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border-bottom: 1px solid var(--card-border); padding: 15px 25px; display: flex; align-items: center; justify-content: space-between; }
+        .back-btn { color: #94a3b8; text-decoration: none; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 30px; font-size: 14px; border: 1px solid var(--card-border); }
+        header h2 { font-size: 20px; font-weight: 700; background: linear-gradient(90deg, #ff9f43, #ff5252); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .game-container { max-width: 550px; width: 92%; margin: 30px auto; background: var(--card-bg); padding: 30px 25px; border-radius: 24px; border: 1px solid var(--card-border); backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .score-board { font-size: 16px; font-weight: 700; background: #10b981; color: white; padding: 8px 18px; display: inline-block; border-radius: 30px; margin-bottom: 25px; }
+        .instruction-box { background: rgba(255, 159, 67, 0.08); padding: 14px; border-radius: 16px; border-left: 4px solid var(--primary); margin-bottom: 25px; text-align: left; }
+        .inst-mr { font-size: 15px; font-weight: 600; color: #ffad5a; }
+        .display-board-count { background: rgba(255,255,255,0.02); border: 2px dashed rgba(255,255,255,0.1); border-radius: 20px; padding: 30px; font-size: 45px; letter-spacing: 12px; min-height: 120px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; margin-bottom: 25px; }
+        .target-drop-box { width: 90px; height: 90px; border: 4px dashed var(--primary); border-radius: 20px; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 800; color: #fff; margin: 20px auto; transition: all 0.3s; }
+        .target-drop-box.filled { border-style: solid; background: rgba(255, 159, 67, 0.1); border-color: #10b981; color: #10b981; }
+        .options-flex { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+        .opt-btn { background: #1e293b; border: 2px solid var(--card-border); border-radius: 16px; width: 75px; height: 75px; font-size: 32px; font-weight: 800; color: #fff; cursor: pointer; transition: all 0.2s; }
+        .opt-btn:hover { border-color: var(--primary); transform: translateY(-3px); }
+        .submit-btn { font-size: 18px; background: linear-gradient(135deg, #ff9f43, #ff5252); color: white; border: none; padding: 16px 35px; border-radius: 16px; cursor: pointer; font-weight: 700; margin-top: 20px; width: 100%; box-shadow: 0 6px 20px var(--primary-glow); }
+        .result { font-size: 22px; font-weight: 700; margin-top: 20px; min-height: 40px; }
+        .correct { color: #34d399; }
+        .wrong { color: #f87171; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="ganit.html" class="back-btn">⬅ मागे जा</a>
+    <h2>✨ संख्या मोजणे खेळ</h2>
+    <div style="width:85px;"></div>
+</header>
+
+<div class="game-container">
+    <div style="text-align: center;"><div class="score-board" id="score-board-count">SCORE: ०</div></div>
+    <div class="instruction-box"><div class="inst-mr">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div></div>
+    
+    <div class="display-board-count" id="count-image-board">🎈🎈🎈</div>
+    <span style="font-size:14px; font-weight:600; color:#94a3b8;">निवडलेला अंक:</span>
+    <div class="target-drop-box" id="drop-target-box">?</div>
+    <div class="options-flex" id="count-options-container"></div>
+    
+    <button id="action-btn-count" class="submit-btn" onclick="checkCountAnswer()">उत्तर तपासा</button>
+    <div class="result" id="result-message-count"></div>
+</div>
+
+<script>
+    let scoreCount = 0, correctCountAns = 0, selectedCountAns = null;
+    const designs = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦", "🍭", "🍩"];
+
+    function generateCountQuestion() {
+        correctCountAns = Math.floor(Math.random() * 9) + 1; selectedCountAns = null;
+        let icon = designs[Math.floor(Math.random() * designs.length)];
+        document.getElementById("count-image-board").innerText = icon.repeat(correctCountAns);
+        
+        let dropBox = document.getElementById("drop-target-box");
+        dropBox.innerText = "?"; dropBox.className = "target-drop-box";
+        document.getElementById("result-message-count").innerText = "";
+        
+        let optionsSet = new Set(); optionsSet.add(correctCountAns);
+        while(optionsSet.size < 4) { optionsSet.add(Math.floor(Math.random() * 9) + 1); }
+        let optionsArray = Array.from(optionsSet).sort(() => Math.random() - 0.5);
+
+        let optContainer = document.getElementById("count-options-container"); optContainer.innerHTML = "";
+        optionsArray.forEach(val => {
+            optContainer.innerHTML += `<button class="opt-btn" onclick="selectCountNumber(${val})">${val}</button>`;
+        });
+
+        let btn = document.getElementById("action-btn-count"); btn.innerText = "उत्तर तपासा"; btn.setAttribute("onclick", "checkCountAnswer()");
+    }
+
+    function selectCountNumber(val) {
+        selectedCountAns = val; let dropBox = document.getElementById("drop-target-box");
+        dropBox.innerText = val; dropBox.classList.add("filled");
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel(); let utterance = new SpeechSynthesisUtterance(val);
+            utterance.lang = 'mr-IN'; window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function checkCountAnswer() {
+        if(selectedCountAns === null) { alert("कृपया आधी एक अंक निवडा!"); return; }
+        let res = document.getElementById("result-message-count");
+        if(selectedCountAns === correctCountAns) {
+            res.innerText = "✓ अप्रतिम! बरोबर उत्तर आहे. 🎉"; res.className = "result correct"; scoreCount++;
+        } else {
+            res.innerText = "✗ चुकीचे! बरोबर उत्तर: " + correctCountAns; res.className = "result wrong";
+        }
+        document.getElementById("score-board-count").innerText = "SCORE: " + scoreCount;
+        let btn = document.getElementById("action-btn-count"); btn.innerText = "पुढचे उदाहरण"; btn.setAttribute("onclick", "generateCountQuestion()");
+    }
+
+    window.onload = generateCountQuestion;
+</script>
+</body>
+</html>
