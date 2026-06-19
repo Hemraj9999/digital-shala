@@ -17,8 +17,13 @@
         .game-container { max-width: 600px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .score-board { font-size: 18px; font-weight: bold; background: #f1f5f9; padding: 10px; display: inline-block; border-radius: 10px; margin-bottom: 20px; }
         
-        .instruction-box { background-color: #fffaf0; padding: 12px; border-radius: 8px; border: 1px dashed #ff9f43; margin-bottom: 20px; }
+        .instruction-box { background-color: #fffaf0; padding: 12px; border-radius: 8px; border: 1px dashed #ff9f43; margin-bottom: 15px; }
         .inst-mr { font-size: 18px; font-weight: bold; color: #d35400; margin-bottom: 5px; }
+
+        /* भाषा निवडण्यासाठी डिझाईन */
+        .lang-selector-box { background: #fffdf5; padding: 12px; border-radius: 10px; border: 1px dashed #ffa043; margin-bottom: 15px; display: flex; justify-content: center; gap: 25px; align-items: center; }
+        .lang-label { font-size: 18px; font-weight: bold; color: #2c3e50; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .lang-label input { transform: scale(1.3); cursor: pointer; }
 
         /* ड्रॉपडाऊन बॉक्स डिझाईन */
         .range-selector-box { margin: 15px 0; background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; }
@@ -31,7 +36,7 @@
         .numbers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 450px; margin: 20px auto; }
         .num-speak-btn { background: linear-gradient(135deg, #ffffff, #f8f9fa); border: 3px solid #ff9f43; border-radius: 15px; padding: 18px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.2s; }
         .num-speak-btn:active { transform: scale(0.95); background: #fffaf0; }
-        .num-speak-btn .big-digit { font-size: 38px; font-weight: bold; color: #2c3e50; }
+        .num-speak-btn .big-digit { font-size: 42px; font-weight: bold; color: #2c3e50; }
         .num-speak-btn .audio-icon { font-size: 13px; margin-top: 5px; color: #ff9f43; font-weight: bold; }
 
         /* बेरीज स्टाइल */
@@ -66,12 +71,23 @@
 <div class="game-container">
 
     <div id="section-learn" class="game-section active">
+        
+        <div class="lang-selector-box">
+            <span style="font-weight: bold; color: #d35400;">🗣️ भाषा निवडा:</span>
+            <label class="lang-label">
+                <input type="radio" name="lang-select" value="mr" checked onchange="changeLanguage()"> 🚩 मराठी
+            </label>
+            <label class="lang-label">
+                <input type="radio" name="lang-select" value="en" onchange="changeLanguage()"> 🔤 English
+            </label>
+        </div>
+
         <div class="instruction-box">
-            <div class="inst-mr">अंकांचा गट निवडा आणि ऐकण्यासाठी बटनावर दाबा!</div>
+            <div class="inst-mr" id="inst-text">अंकांचा गट निवडा आणि ऐकण्यासाठी बतनावर दाबा!</div>
         </div>
         
         <div class="range-selector-box">
-            <label style="font-weight: bold; display:block; margin-bottom: 8px; font-size: 16px;">अंकांचा गट निवडा:</label>
+            <label id="dropdown-label" style="font-weight: bold; display:block; margin-bottom: 8px; font-size: 16px;">अंकांचा गट निवडा:</label>
             <select id="ten-range-select" class="select-input" onchange="showNumbersGrid()">
                 </select>
         </div>
@@ -110,7 +126,19 @@
 <script>
     let score = 0, n1 = 0, n2 = 0;
     const designs = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦"];
-    let currentAudio = null;
+    
+    // इंग्रजी अंकांचे मराठी अंकात रूपांतर करण्यासाठी मॅपिंग
+    const marathiDigits = {
+        '0': '०', '1': '१', '2': '२', '3': '३', '4': '४', '5': '५', '6': '६', '7': '७', '8': '८', '9': '९'
+    };
+
+    function convertToMarathi(number) {
+        return number.toString().split('').map(digit => marathiDigits[digit] || digit).join('');
+    }
+
+    function currentLanguage() {
+        return document.querySelector('input[name="lang-select"]:checked').value;
+    }
 
     function switchGameMode(mode) {
         document.querySelectorAll('.game-section').forEach(s => s.classList.remove('active'));
@@ -125,10 +153,31 @@
         }
     }
 
-    // १ ते १००० पर्यंतचे १०-१० चे पर्याय ड्रॉपडाऊन मध्ये भरणे
+    // भाषा बदलल्यावर ड्रॉपडाऊन आणि ग्रीड रिफ्रेश करणे
+    function changeLanguage() {
+        let lang = currentLanguage();
+        let inst = document.getElementById("inst-text");
+        let dropLabel = document.getElementById("dropdown-label");
+
+        if(lang === 'mr') {
+            inst.innerText = "अंकांचा गट निवडा आणि ऐकण्यासाठी बतनावर दाबा!";
+            dropLabel.innerText = "अंकांचा गट निवडा:";
+        } else {
+            inst.innerText = "Select number group and click on button to hear sound!";
+            dropLabel.innerText = "Select Number Group:";
+        }
+
+        initializeDropdown();
+        showNumbersGrid();
+    }
+
+    // १ ते १००० पर्यंतचे गट ड्रॉपडाऊन मध्ये भरणे (भाषेनुसार)
     function initializeDropdown() {
         let select = document.getElementById("ten-range-select");
-        select.innerHTML = ""; // आधीचे साफ करा
+        let currentSelection = select.value || 1; // जुनी निवड लक्षात ठेवण्यासाठी
+        select.innerHTML = ""; 
+        
+        let lang = currentLanguage();
         
         for (let i = 1; i <= 1000; i += 10) {
             let start = i;
@@ -137,41 +186,58 @@
             
             let option = document.createElement("option");
             option.value = start;
-            option.innerText = `${start} to ${end}`;
+            
+            if(lang === 'mr') {
+                option.innerText = `${convertToMarathi(start)} ते ${convertToMarathi(end)}`;
+            } else {
+                option.innerText = `${start} to ${end}`;
+            }
             select.appendChild(option);
         }
+        select.value = currentSelection;
     }
 
-    // ड्रॉपडाऊनमध्ये निवडलेल्या १० अंकांचे बटन्स तयार करणे
+    // निवडलेल्या १० अंकांचे बटन्स तयार करणे (भाषेनुसार)
     function showNumbersGrid() {
         let startNum = parseInt(document.getElementById("ten-range-select").value);
         let gridContainer = document.getElementById("numbers-grid-container");
-        gridContainer.innerHTML = ""; // जुने अंक पुसा
+        gridContainer.innerHTML = ""; 
 
         let endNum = startNum + 9;
         if(endNum > 1000) endNum = 1000;
 
-        // नेमके तेच १० बटन्स तयार करणे
+        let lang = currentLanguage();
+
         for (let num = startNum; num <= endNum; num++) {
+            let displayNum = (lang === 'mr') ? convertToMarathi(num) : num;
+            let listenText = (lang === 'mr') ? "🔊 ऐका" : "🔊 Listen";
+            
             gridContainer.innerHTML += `
                 <button class="num-speak-btn" onclick="playNumberVoice(${num})">
-                    <span class="big-digit">${num}</span>
-                    <span class="audio-icon">🔊 ऐका</span>
+                    <span class="big-digit">${displayNum}</span>
+                    <span class="audio-icon">${listenText}</span>
                 </button>
             `;
         }
     }
 
-    // मोबाईल सिस्टीम मधून इंग्रजी आवाज काढणे
+    // मोबाईल सिस्टीम मधून मराठी किंवा इंग्रजी आवाज काढणे
     function playNumberVoice(num) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel(); 
             let utterance = new SpeechSynthesisUtterance(num);
-            utterance.lang = 'en-US'; 
-            utterance.rate = 0.85; // लहान मुलांसाठी अगदी स्पष्ट आणि योग्य गती
+            let lang = currentLanguage();
+            
+            if(lang === 'mr') {
+                utterance.lang = 'mr-IN'; // मराठी उच्चार
+                utterance.rate = 0.85;
+            } else {
+                utterance.lang = 'en-US'; // इंग्रजी उच्चार
+                utterance.rate = 0.85;
+            }
             window.speechSynthesis.speak(utterance);
         } else {
-            alert("तुमच्या मोबाईलमध्ये Speech सिस्टीम सपोर्ट करत नाही.");
+            alert("Speech system not supported.");
         }
     }
 
@@ -209,8 +275,8 @@
     }
 
     window.onload = function() {
-        initializeDropdown(); // ड्रॉपडाऊन बनवा
-        showNumbersGrid();    // पहिले १ ते १० चे बटन्स दाखवा
+        initializeDropdown(); 
+        showNumbersGrid();    
         switchGameMode('learn');
     };
 </script>
