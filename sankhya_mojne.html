@@ -124,15 +124,31 @@
             color: #00f2fe; 
         }
 
-        .audio-status-box {
-            background: rgba(0, 242, 254, 0.05);
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            border-radius: 12px;
-            padding: 8px 12px;
-            text-align: center;
+        /* १०-१० च्या गटाचा ड्रॉपडाऊन बॉक्स */
+        .range-dropdown-box {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--glass-border);
+            padding: 10px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .range-dropdown-box label {
             font-size: 11px;
-            color: #a7f3d0;
-            font-weight: 600;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+        .styled-select {
+            background: #101f32;
+            color: #00f2fe;
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            outline: none;
+            width: 100%;
         }
 
         .instruction-box { 
@@ -147,16 +163,18 @@
             background: rgba(0,0,0,0.3); 
             border: 1px solid rgba(255,255,255,0.05); 
             border-radius: 16px; 
-            padding: 8px; 
-            font-size: 32px; 
-            min-height: 70px; 
-            max-height: 100px;
+            padding: 12px; 
+            font-size: 22px; 
+            min-height: 100px; 
+            max-height: 160px;
             overflow-y: auto;
             display: flex; 
             align-items: center; 
             justify-content: center; 
             flex-wrap: wrap; 
-            gap: 6px;
+            gap: 4px;
+            letter-spacing: 1px;
+            line-height: 28px;
         }
         
         .target-drop-box { 
@@ -196,7 +214,7 @@
             border-radius: 12px; 
             width: 100%;
             height: 50px; 
-            font-size: 22px; 
+            font-size: 18px; 
             font-weight: 800; 
             color: #f8fafc; 
             cursor: pointer; 
@@ -249,8 +267,20 @@
             </div>
         </div>
 
-        <div class="audio-status-box" id="audio-status">
-            📢 स्मार्ट द्विभाषिक आवाज सक्रिय केला आहे 🌐
+        <div class="range-dropdown-box">
+            <label id="select-range-label" for="range-select-dropdown">🎯 अभ्यासासाठी संख्या गट निवडा:</label>
+            <select id="range-select-dropdown" class="styled-select" onchange="onRangeDropdownChange()">
+                <option value="1-10">🔢 गट: १ ते १०</option>
+                <option value="11-20">🔢 गट: ११ ते २०</option>
+                <option value="21-30">🔢 गट: २१ ते ३०</option>
+                <option value="31-40">🔢 गट: ३१ ते ४०</option>
+                <option value="41-50">🔢 गट: ४१ ते ५०</option>
+                <option value="51-60">🔢 गट: ५१ ते ६०</option>
+                <option value="61-70">🔢 गट: ६१ ते ७०</option>
+                <option value="71-80">🔢 गट: ७१ ते ८०</option>
+                <option value="81-90">🔢 गट: ८१ ते ९०</option>
+                <option value="91-100">🔢 गट: ९१ ते १००</option>
+            </select>
         </div>
 
         <div class="instruction-box">
@@ -274,6 +304,10 @@
     let isReviewState = false; 
     let generatedOptions = []; 
     
+    // डीफॉल्ट रेंज १ ते १०
+    let minRange = 1;
+    let maxRange = 10;
+    
     const originalDesigns = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦", "🍭", "🍩", "🚗", "🐱", "🦁", "🦖"];
     let availableDesigns = [...originalDesigns];
     const marathiDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
@@ -286,10 +320,22 @@
         return document.querySelector('input[name="lang-select"]:checked').value;
     }
 
-    // सुधारित द्विभाषिक ऑनलाईन आवाज सिस्टीम
+    // ड्रॉपडाऊन बदलल्यावर होणारा बदल
+    function onRangeDropdownChange() {
+        let dropdown = document.getElementById("range-select-dropdown");
+        let val = dropdown.value;
+        let parts = val.split("-");
+        minRange = parseInt(parts[0]);
+        maxRange = parseInt(parts[1]);
+        
+        scoreCount = 0; // रेंज बदलल्यावर स्कोर रीसेट
+        lastNumber = 0; // रिपीट लॉजिक क्लिअर करण्यासाठी
+        updateLanguageUI();
+        generateCountQuestion();
+    }
+
     function speakText(text, forceLang = null) {
         let lang = forceLang || currentLanguage();
-        // जर मराठी असेल तर mr-IN आणि इंग्रजी असेल तर en-IN (Indian English) चा वापर केला आहे
         let langCode = (lang === 'mr') ? 'mr-IN' : 'en-IN';
         
         let audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${langCode}&client=tw-ob&q=${encodeURIComponent(text)}`;
@@ -308,18 +354,45 @@
     function updateLanguageUI() {
         let lang = currentLanguage();
         let btn = document.getElementById("action-btn-count");
+        let dropdown = document.getElementById("range-select-dropdown");
         
         if(lang === 'mr') {
             document.getElementById("instruction-text").innerText = "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!";
-            document.getElementById("audio-status").innerText = "📢 स्मार्ट द्विभाषिक आवाज सक्रिय केला आहे 🌐";
+            document.getElementById("select-range-label").innerText = "🎯 अभ्यासासाठी संख्या गट निवडा:";
             document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(scoreCount);
+            
+            // ड्रॉपडाऊनचे मराठी नाव अपडेट करणे
+            dropdown.options[0].text = "🔢 गट: १ ते १०";
+            dropdown.options[1].text = "🔢 गट: ११ ते २०";
+            dropdown.options[2].text = "🔢 गट: २१ ते ३०";
+            dropdown.options[3].text = "🔢 गट: ३१ ते ४०";
+            dropdown.options[4].text = "🔢 गट: ४१ ते ५०";
+            dropdown.options[5].text = "🔢 गट: ५१ ते ६०";
+            dropdown.options[6].text = "🔢 गट: ६१ ते ७०";
+            dropdown.options[7].text = "🔢 गट: ७१ ते ८०";
+            dropdown.options[8].text = "🔢 गट: ८१ ते ९०";
+            dropdown.options[9].text = "🔢 गट: ९१ ते १००";
+
             if(btn.getAttribute("data-state") === "next") btn.innerText = "पुढचे उदाहरण";
             else if(btn.getAttribute("data-state") === "retry") btn.innerText = "पुन्हा प्रयत्न करा 🔄";
             else btn.innerText = "उत्तर तपासा";
         } else {
             document.getElementById("instruction-text").innerText = "Count the pictures and select the correct number!";
-            document.getElementById("audio-status").innerText = "📢 Smart Bilingual Voice Activated 🌐";
+            document.getElementById("select-range-label").innerText = "🎯 Select Number Group for Practice:";
             document.getElementById("score-board-count").innerText = "SCORE: " + scoreCount;
+            
+            // ड्रॉपडाऊनचे इंग्रजी नाव अपडेट करणे
+            dropdown.options[0].text = "🔢 Group: 1 to 10";
+            dropdown.options[1].text = "🔢 Group: 11 to 20";
+            dropdown.options[2].text = "🔢 Group: 21 to 30";
+            dropdown.options[3].text = "🔢 Group: 31 to 40";
+            dropdown.options[4].text = "🔢 Group: 41 to 50";
+            dropdown.options[5].text = "🔢 Group: 51 to 60";
+            dropdown.options[6].text = "🔢 Group: 61 to 70";
+            dropdown.options[7].text = "🔢 Group: 71 to 80";
+            dropdown.options[8].text = "🔢 Group: 81 to 90";
+            dropdown.options[9].text = "🔢 Group: 91 to 100";
+
             if(btn.getAttribute("data-state") === "next") btn.innerText = "Next Question";
             else if(btn.getAttribute("data-state") === "retry") btn.innerText = "Try Again 🔄";
             else btn.innerText = "Check Answer";
@@ -335,9 +408,13 @@
         isReviewState = false;
         
         let newNumber;
+        let rangeDiff = maxRange - minRange + 1;
+        
+        // 🎯 प्रश्न रिपीट न होण्याचे सॉलिड लॉजिक (Q NO REPEAT LOGIC)
         do {
-            newNumber = Math.floor(Math.random() * 9) + 1;
-        } while (newNumber === lastNumber);
+            newNumber = Math.floor(Math.random() * rangeDiff) + minRange;
+        } while (newNumber === lastNumber && rangeDiff > 1);
+        
         correctCountAns = newNumber;
         lastNumber = correctCountAns;
 
@@ -351,10 +428,13 @@
         resetDropBox();
         document.getElementById("result-message-count").innerText = "";
         
+        // पर्यायांचे लॉजिक
         let optionsSet = new Set();
         optionsSet.add(correctCountAns);
-        while(optionsSet.size < 4) {
-            optionsSet.add(Math.floor(Math.random() * 9) + 1);
+        
+        while(optionsSet.size < Math.min(4, rangeDiff)) {
+            let randOpt = Math.floor(Math.random() * rangeDiff) + minRange;
+            optionsSet.add(randOpt);
         }
         generatedOptions = Array.from(optionsSet).sort(() => Math.random() - 0.5);
 
@@ -388,7 +468,6 @@
         dropBox.innerText = (lang === 'mr') ? convertToMarathi(val) : val;
         dropBox.className = "target-drop-box filled";
         
-        // अंक निवडल्यावर त्यानुसार उच्चार
         if(lang === 'mr') {
             speakText(convertToMarathi(val), 'mr');
         } else {
@@ -452,39 +531,4 @@
             let btn = document.getElementById(`opt-${val}`);
             if(btn) btn.disabled = false;
         });
-        setButtonState("check");
-    }
-
-    function disableAllOptions() {
-        let btns = document.querySelectorAll(".opt-btn");
-        btns.forEach(b => b.disabled = true);
-    }
-
-    function setButtonState(state) {
-        let lang = currentLanguage();
-        let btn = document.getElementById("action-btn-count");
-        btn.setAttribute("data-state", state);
-        
-        if(state === "check") {
-            btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
-            btn.setAttribute("onclick", "checkCountAnswer()");
-        } else if(state === "retry") {
-            btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
-            btn.setAttribute("onclick", "retryCurrentQuestion()");
-        } else if(state === "next") {
-            btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
-            btn.setAttribute("onclick", "generateCountQuestion()");
-        }
-    }
-
-    window.onload = function() {
-        generateCountQuestion();
-        
-        if (!window.location.hash) {
-            window.location.hash = 'v1.4';
-            window.location.reload();
-        }
-    };
-</script>
-</body>
-</html>
+        setButtonState("check
