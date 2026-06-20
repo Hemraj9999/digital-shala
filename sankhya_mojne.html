@@ -26,7 +26,8 @@
             min-height: 100vh; 
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto; /* मोबाईलवर स्क्रीन स्क्रोल होऊ देईल जेणेकरून काहीच लपणार नाही */
         }
 
         @keyframes gradientBG {
@@ -39,56 +40,54 @@
             background: rgba(10, 20, 38, 0.6); 
             backdrop-filter: blur(15px); 
             border-bottom: 1px solid var(--glass-border); 
-            padding: 12px 20px; 
+            padding: 10px 20px; 
             display: flex; 
             align-items: center; 
             justify-content: space-between;
-            height: 60px;
+            height: 55px;
         }
         
         .back-btn { 
             color: #00f2fe; 
             text-decoration: none; 
             background: rgba(0, 242, 254, 0.05); 
-            padding: 8px 16px; 
+            padding: 6px 14px; 
             border-radius: 30px; 
             font-size: 13px; 
             font-weight: 600;
             border: 1px solid rgba(0, 242, 254, 0.2); 
             transition: 0.3s; 
-            box-shadow: 0 0 10px rgba(0, 242, 254, 0.1);
         }
         .back-btn:hover { background: rgba(0, 242, 254, 0.2); box-shadow: 0 0 15px var(--neon-glow); }
         
         header h2 { 
-            font-size: 16px; 
+            font-size: 15px; 
             font-weight: 800; 
             background: linear-gradient(90deg, #00f2fe, #4facfe); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
-            text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
         }
         
         .game-outer-wrapper {
             flex: 1;
             display: flex;
-            align-items: center;
+            align-items: flex-start; /* वरून सुरुवात होईल जेणेकरून जागा मिळेल */
             justify-content: center;
-            padding: 10px;
+            padding: 12px;
         }
 
         .game-container { 
-            max-width: 480px; 
+            max-width: 450px; 
             width: 100%; 
             background: var(--glass); 
-            padding: 20px; 
-            border-radius: 28px; 
+            padding: 16px; 
+            border-radius: 24px; 
             border: 1px solid var(--glass-border); 
             backdrop-filter: blur(20px); 
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
         
         .top-row {
@@ -99,34 +98,29 @@
         }
 
         .score-board { 
-            font-size: 14px; 
+            font-size: 13px; 
             font-weight: 800; 
             background: linear-gradient(135deg, #00e676, #00b0ff); 
             color: white; 
-            padding: 6px 14px; 
+            padding: 5px 12px; 
             border-radius: 30px; 
-            box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3); 
         }
         
         .lang-selector-box { 
             background: rgba(0,0,0,0.3); 
-            padding: 4px 8px; 
+            padding: 3px 6px; 
             border-radius: 30px; 
             display: flex; 
-            gap: 4px;
+            gap: 2px;
             border: 1px solid var(--glass-border);
         }
         .lang-label { 
-            font-size: 12px; 
+            font-size: 11px; 
             font-weight: 600; 
             color: #94a3b8; 
             cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            gap: 4px; 
-            padding: 4px 10px; 
+            padding: 4px 8px; 
             border-radius: 20px; 
-            transition: 0.2s;
         }
         .lang-label input { display: none; }
         .lang-label:has(input:checked) { 
@@ -137,76 +131,69 @@
         .voice-selector-container {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 10px 14px;
+            border-radius: 14px;
+            padding: 8px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 10px;
         }
-        .voice-label { font-size: 13px; font-weight: 600; color: #94a3b8; display: flex; align-items: center; gap: 6px; }
+        .voice-label { font-size: 12px; font-weight: 600; color: #94a3b8; }
         .voice-select {
             background: #101f32;
             color: #00f2fe;
             border: 1px solid rgba(0, 242, 254, 0.3);
-            padding: 6px 12px;
-            border-radius: 10px;
-            font-size: 13px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 600;
             outline: none;
-            width: 60%;
-            cursor: pointer;
+            width: 55%;
         }
 
         .instruction-box { 
-            background: rgba(0, 242, 254, 0.03); 
-            padding: 10px 14px; 
-            border-radius: 16px; 
-            border-left: 4px solid #00f2fe; 
-            text-align: left; 
+            background: rgba(0, 242, 254, 0.02); 
+            padding: 8px 12px; 
+            border-radius: 12px; 
+            border-left: 3px solid #00f2fe; 
         }
-        .inst-mr { font-size: 13px; font-weight: 600; color: #00f2fe; letter-spacing: 0.5px; }
+        .inst-mr { font-size: 12px; font-weight: 600; color: #00f2fe; }
         
         .display-board-count { 
             background: rgba(0,0,0,0.4); 
             border: 1px solid rgba(255,255,255,0.05); 
-            border-radius: 24px; 
-            padding: 15px; 
-            font-size: calc(28px + 2vw); 
-            line-height: 1.2;
-            min-height: 100px; 
-            max-height: 150px;
+            border-radius: 20px; 
+            padding: 12px; 
+            font-size: 32px; 
+            min-height: 80px; 
+            max-height: 120px;
             overflow-y: auto;
             display: flex; 
             align-items: center; 
             justify-content: center; 
             flex-wrap: wrap; 
-            gap: 10px;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.6);
+            gap: 8px;
         }
         
         .target-drop-box { 
-            width: 75px; 
-            height: 75px; 
+            width: 65px; 
+            height: 65px; 
             border: 2px dashed #00f2fe; 
-            border-radius: 20px; 
+            border-radius: 16px; 
             background: rgba(0, 242, 254, 0.02); 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            font-size: 36px; 
+            font-size: 30px; 
             font-weight: 900; 
             color: #fff; 
-            margin: 5px auto; 
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.1); 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            margin: 4px auto; 
         }
         .target-drop-box.filled { 
             border-style: solid; 
             background: rgba(0, 242, 254, 0.1); 
             border-color: #00f2fe; 
             color: #00f2fe; 
-            box-shadow: 0 0 25px var(--neon-glow);
         }
         
         .target-drop-box.error-state { 
@@ -214,7 +201,6 @@
             border-color: var(--error) !important; 
             color: var(--error) !important; 
             background: rgba(255, 23, 68, 0.15) !important; 
-            box-shadow: 0 0 25px rgba(255, 23, 68, 0.4) !important;
             animation: shake 0.4s ease-in-out; 
         }
         
@@ -223,74 +209,56 @@
             border-color: var(--success) !important; 
             color: var(--success) !important; 
             background: rgba(0, 230, 118, 0.15) !important; 
-            box-shadow: 0 0 30px rgba(0, 230, 118, 0.5) !important;
-            transform: scale(1.1); 
         }
         
+        /* ऑप्शन्सची रचना व्यवस्थित केली जेणेकरून ते स्क्रीनच्या आत राहतील */
         .options-flex { 
             display: flex; 
             justify-content: center; 
-            gap: 12px; 
-            margin: 5px 0;
-            min-height: 70px;
+            flex-wrap: wrap; /* एका ओळीत न बसल्यास खाली येतील */
+            gap: 10px; 
+            margin: 8px 0;
+            min-height: 60px;
         }
         .opt-btn { 
-            background: rgba(16, 31, 50, 0.7); 
+            background: rgba(16, 31, 50, 0.8); 
             border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 18px; 
-            width: 65px; 
-            height: 65px; 
-            font-size: 28px; 
+            border-radius: 14px; 
+            width: 55px; 
+            height: 55px; 
+            font-size: 24px; 
             font-weight: 800; 
             color: #f8fafc; 
             cursor: pointer; 
             transition: all 0.2s; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
         }
         .opt-btn:hover { 
             border-color: #00f2fe; 
             color: #00f2fe;
-            transform: translateY(-3px); 
-            background: rgba(0, 242, 254, 0.05);
         }
-        .opt-btn:disabled { opacity: 0.2; cursor: not-allowed; border-color: transparent !important; transform: none !important; }
+        .opt-btn:disabled { opacity: 0.2; cursor: not-allowed; }
         
         .submit-btn { 
-            font-size: 16px; 
+            font-size: 15px; 
             background: linear-gradient(135deg, #00f2fe, #4facfe); 
             color: #050b14; 
             border: none; 
-            padding: 14px; 
-            border-radius: 18px; 
+            padding: 12px; 
+            border-radius: 14px; 
             cursor: pointer; 
             font-weight: 800; 
             width: 100%; 
-            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.3); 
-            transition: all 0.3s; 
             text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .submit-btn:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 25px rgba(0, 242, 254, 0.5); 
         }
         
-        .result { font-size: 18px; font-weight: 700; min-height: 30px; text-align: center; }
-        .correct { color: #00e676; text-shadow: 0 0 15px rgba(0, 230, 118, 0.4); }
-        .wrong { color: #ff1744; text-shadow: 0 0 15px rgba(255, 23, 68, 0.4); }
+        .result { font-size: 16px; font-weight: 700; min-height: 25px; text-align: center; }
+        .correct { color: #00e676; }
+        .wrong { color: #ff1744; }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
-        }
-
-        @media (max-height: 650px) {
-            .game-container { padding: 15px; gap: 8px; }
-            .display-board-count { min-height: 80px; max-height: 110px; padding: 10px; }
-            .target-drop-box { width: 65px; height: 65px; font-size: 30px; }
-            .opt-btn { width: 55px; height: 55px; font-size: 24px; border-radius: 14px; }
-            .submit-btn { padding: 12px; font-size: 15px; }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
     </style>
 </head>
@@ -299,7 +267,7 @@
 <header>
     <a href="ganit.html" class="back-btn">⬅ मागे जा</a>
     <h2>✨ संख्या मोजणे खेळ (Pro)</h2>
-    <div style="width:85px;"></div>
+    <div style="width:70px;"></div>
 </header>
 
 <div class="game-outer-wrapper">
@@ -376,10 +344,8 @@
         filteredVoices.forEach((voice) => {
             let option = document.createElement("option");
             option.value = voice.name;
-            
             let gender = voice.name.toLowerCase().includes('female') ? 'स्त्री' : 'पुरुष/सामान्य';
             if(currentLanguage() === 'en') gender = voice.name.toLowerCase().includes('female') ? 'Female' : 'Male/Default';
-            
             option.textContent = `${gender} (${voice.name.split(' ')[0]})`;
             dropdown.appendChild(option);
         });
@@ -398,7 +364,6 @@
             document.getElementById("instruction-text").innerText = "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!";
             document.getElementById("voice-label-text").innerText = "आवाज निवडा:";
             document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(scoreCount);
-            
             if(btn.getAttribute("data-state") === "next") btn.innerText = "पुढचे उदाहरण";
             else if(btn.getAttribute("data-state") === "retry") btn.innerText = "पुन्हा प्रयत्न करा 🔄";
             else btn.innerText = "उत्तर तपासा";
@@ -406,7 +371,6 @@
             document.getElementById("instruction-text").innerText = "Count the pictures and select the correct number!";
             document.getElementById("voice-label-text").innerText = "Select Voice:";
             document.getElementById("score-board-count").innerText = "SCORE: " + scoreCount;
-            
             if(btn.getAttribute("data-state") === "next") btn.innerText = "Next Question";
             else if(btn.getAttribute("data-state") === "retry") btn.innerText = "Try Again 🔄";
             else btn.innerText = "Check Answer";
@@ -437,7 +401,6 @@
         let icon = availableDesigns.splice(randomIndex, 1)[0]; 
 
         document.getElementById("count-image-board").innerText = icon.repeat(correctCountAns);
-        
         resetDropBox();
         document.getElementById("result-message-count").innerText = "";
         
@@ -472,14 +435,11 @@
 
     function selectCountNumber(val) {
         if(document.getElementById(`opt-${val}`).disabled) return;
-
         selectedCountAns = val;
         let lang = currentLanguage();
         let dropBox = document.getElementById("drop-target-box");
-        
         dropBox.innerText = (lang === 'mr') ? convertToMarathi(val) : val;
         dropBox.className = "target-drop-box filled";
-        
         speakText(val);
     }
 
@@ -487,7 +447,6 @@
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             let utterance = new SpeechSynthesisUtterance(text);
-            
             let dropdown = document.getElementById("voice-select-dropdown");
             let selectedVoiceName = dropdown ? dropdown.value : "default";
             
@@ -497,7 +456,6 @@
             } else {
                 utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
             }
-            
             utterance.rate = 0.9;
             window.speechSynthesis.speak(utterance);
         }
@@ -518,18 +476,61 @@
             res.innerText = (lang === 'mr') ? "✓ अप्रतिम! बरोबर उत्तर आहे. 🎉" : "✓ Excellent! Correct Answer. 🎉";
             res.className = "result correct";
             dropBox.className = "target-drop-box success-state";
-            
-            let successMsg = (lang === 'mr') ? "शाब्बास! बरोबर उत्तर आहे" : "Excellent! Correct Answer";
-            speakText(successMsg);
+            speakText((lang === 'mr') ? "शाब्बास! बरोबर उत्तर आहे" : "Excellent! Correct Answer");
 
             if(!isReviewState) {
                 scoreCount++;
                 document.getElementById("score-board-count").innerText = "SCORE: " + ((lang === 'mr') ? convertToMarathi(scoreCount) : scoreCount);
             }
-            
             disableAllOptions();
             setButtonState("next");
         } else {
             res.innerText = (lang === 'mr') ? "✗ चुकीचे उत्तर! पुन्हा प्रयत्न करा." : "✗ Wrong Answer! Try again.";
             res.className = "result wrong";
-            dropBox.className = "target-drop-box error-
+            dropBox.className = "target-drop-box error-state";
+            
+            let wrongBtn = document.getElementById(`opt-${selectedCountAns}`);
+            if(wrongBtn) wrongBtn.disabled = true;
+            isReviewState = true; 
+            setButtonState("retry");
+            setTimeout(() => { speakText((lang === 'mr') ? "पुन्हा प्रयत्न करा" : "Try again"); }, 50);
+        }
+    }
+
+    function retryCurrentQuestion() {
+        selectedCountAns = null;
+        resetDropBox();
+        document.getElementById("result-message-count").innerText = "";
+        generatedOptions.forEach(val => {
+            let btn = document.getElementById(`opt-${val}`);
+            if(btn) btn.disabled = false;
+        });
+        setButtonState("check");
+    }
+
+    function disableAllOptions() {
+        let btns = document.querySelectorAll(".opt-btn");
+        btns.forEach(b => b.disabled = true);
+    }
+
+    function setButtonState(state) {
+        let lang = currentLanguage();
+        let btn = document.getElementById("action-btn-count");
+        btn.setAttribute("data-state", state);
+        
+        if(state === "check") {
+            btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
+            btn.setAttribute("onclick", "checkCountAnswer()");
+        } else if(state === "retry") {
+            btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
+            btn.setAttribute("onclick", "retryCurrentQuestion()");
+        } else if(state === "next") {
+            btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
+            btn.setAttribute("onclick", "generateCountQuestion()");
+        }
+    }
+
+    window.onload = function() {
+        loadAvailableVoices();
+        setTimeout(loadAvailableVoices, 500);
+        setTimeout(loadAvaila
