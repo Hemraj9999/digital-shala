@@ -61,7 +61,7 @@
         .back-btn:hover { background: rgba(0, 242, 254, 0.2); box-shadow: 0 0 15px var(--neon-glow); }
         
         header h2 { 
-            font-size: 18px; 
+            font-size: 16px; 
             font-weight: 800; 
             background: linear-gradient(90deg, #00f2fe, #4facfe); 
             -webkit-background-clip: text; 
@@ -85,7 +85,7 @@
             border-radius: 28px; 
             border: 1px solid var(--glass-border); 
             backdrop-filter: blur(20px); 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -132,30 +132,30 @@
         .lang-label:has(input:checked) { 
             background: rgba(0, 242, 254, 0.15); 
             color: #00f2fe; 
-            box-shadow: inset 0 0 8px rgba(0, 242, 254, 0.2);
         }
 
+        /* ड्रॉपडाऊन स्टाईल सुधारली */
         .voice-selector-container {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            padding: 8px 12px;
+            border-radius: 16px;
+            padding: 10px 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 10px;
         }
-        .voice-label { font-size: 12px; font-weight: 600; color: #94a3b8; display: flex; align-items: center; gap: 5px; }
+        .voice-label { font-size: 13px; font-weight: 600; color: #94a3b8; display: flex; align-items: center; gap: 6px; }
         .voice-select {
             background: #101f32;
             color: #00f2fe;
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 12px;
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 13px;
             font-weight: 600;
             outline: none;
-            width: 65%;
+            width: 60%;
             cursor: pointer;
         }
 
@@ -173,16 +173,16 @@
             border: 1px solid rgba(255,255,255,0.05); 
             border-radius: 24px; 
             padding: 15px; 
-            font-size: calc(24px + 2vw); 
+            font-size: calc(28px + 2vw); 
             line-height: 1.2;
             min-height: 100px; 
-            max-height: 160px;
+            max-height: 150px;
             overflow-y: auto;
             display: flex; 
             align-items: center; 
             justify-content: center; 
             flex-wrap: wrap; 
-            gap: 8px;
+            gap: 10px;
             box-shadow: inset 0 5px 15px rgba(0,0,0,0.6);
         }
         
@@ -199,7 +199,7 @@
             font-weight: 900; 
             color: #fff; 
             margin: 5px auto; 
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.1), inset 0 0 15px rgba(0, 242, 254, 0.05); 
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.1); 
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
         .target-drop-box.filled { 
@@ -228,19 +228,21 @@
             transform: scale(1.1); 
         }
         
+        /* अंकांचे ऑप्शन्स व्यवस्थित दिसण्यासाठी */
         .options-flex { 
             display: flex; 
             justify-content: center; 
             gap: 12px; 
-            margin-top: 5px; 
+            margin: 5px 0;
+            min-height: 70px;
         }
         .opt-btn { 
-            background: rgba(16, 31, 50, 0.6); 
-            border: 1px solid var(--glass-border); 
+            background: rgba(16, 31, 50, 0.7); 
+            border: 1px solid rgba(255,255,255,0.1); 
             border-radius: 18px; 
             width: 65px; 
             height: 65px; 
-            font-size: 26px; 
+            font-size: 28px; 
             font-weight: 800; 
             color: #f8fafc; 
             cursor: pointer; 
@@ -252,9 +254,8 @@
             color: #00f2fe;
             transform: translateY(-3px); 
             background: rgba(0, 242, 254, 0.05);
-            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.2);
         }
-        .opt-btn:disabled { opacity: 0.2; cursor: not-allowed; border-color: transparent !important; transform: none !important; box-shadow: none; }
+        .opt-btn:disabled { opacity: 0.2; cursor: not-allowed; border-color: transparent !important; transform: none !important; }
         
         .submit-btn { 
             font-size: 16px; 
@@ -276,7 +277,7 @@
             box-shadow: 0 8px 25px rgba(0, 242, 254, 0.5); 
         }
         
-        .result { font-size: 18px; font-weight: 700; min-height: 30px; margin-top: 5px; }
+        .result { font-size: 18px; font-weight: 700; min-height: 30px; text-align: center; }
         .correct { color: #00e676; text-shadow: 0 0 15px rgba(0, 230, 118, 0.4); }
         .wrong { color: #ff1744; text-shadow: 0 0 15px rgba(255, 23, 68, 0.4); }
 
@@ -290,7 +291,7 @@
             .game-container { padding: 15px; gap: 8px; }
             .display-board-count { min-height: 80px; max-height: 110px; padding: 10px; }
             .target-drop-box { width: 65px; height: 65px; font-size: 30px; }
-            .opt-btn { width: 55px; height: 55px; font-size: 22px; border-radius: 14px; }
+            .opt-btn { width: 55px; height: 55px; font-size: 24px; border-radius: 14px; }
             .submit-btn { padding: 12px; font-size: 15px; }
         }
     </style>
@@ -327,6 +328,7 @@
         <div class="display-board-count" id="count-image-board">🎈🎈🎈</div>
         
         <div class="target-drop-box" id="drop-target-box">?</div>
+        
         <div class="options-flex" id="count-options-container"></div>
         
         <button id="action-btn-count" class="submit-btn" onclick="checkCountAnswer()">उत्तर तपासा</button>
@@ -339,6 +341,7 @@
     let lastNumber = 0; 
     let isReviewState = false; 
     let sysVoices = [];
+    let generatedOptions = []; 
     
     const originalDesigns = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦", "🍭", "🍩", "🚗", "🐱", "🦁", "🦖"];
     let availableDesigns = [...originalDesigns];
@@ -357,8 +360,8 @@
         
         sysVoices = window.speechSynthesis.getVoices();
         let dropdown = document.getElementById("voice-select-dropdown");
+        if(!dropdown) return;
         
-        // आधीची यादी साफ करून सुरुवातीला डीफॉल्ट पर्याय ठेवूया
         dropdown.innerHTML = "";
         let defaultOpt = document.createElement("option");
         defaultOpt.value = "default";
@@ -384,10 +387,8 @@
         });
     }
 
-    // वेगवेळ्या ब्राउझरच्या सपोर्टसाठी तीनही प्रकारे लोड करूया
     if ('speechSynthesis' in window) {
         window.speechSynthesis.onvoiceschanged = loadAvailableVoices;
-        // लगेच एकदा कॉल करूया
         loadAvailableVoices();
     }
 
@@ -418,8 +419,6 @@
         loadAvailableVoices();
         renderOptions();
     }
-
-    let generatedOptions = []; 
 
     function generateCountQuestion() {
         let lang = currentLanguage();
@@ -464,6 +463,7 @@
     function renderOptions() {
         let lang = currentLanguage();
         let optContainer = document.getElementById("count-options-container");
+        if(!optContainer) return;
         optContainer.innerHTML = "";
         
         generatedOptions.forEach(val => {
@@ -490,7 +490,8 @@
             window.speechSynthesis.cancel();
             let utterance = new SpeechSynthesisUtterance(text);
             
-            let selectedVoiceName = document.getElementById("voice-select-dropdown").value;
+            let dropdown = document.getElementById("voice-select-dropdown");
+            let selectedVoiceName = dropdown ? dropdown.value : "default";
             
             if(selectedVoiceName !== "default") {
                 let matchedVoice = sysVoices.find(v => v.name === selectedVoiceName);
@@ -531,4 +532,5 @@
             disableAllOptions();
             setButtonState("next");
         } else {
-     
+            res.innerText = (lang === 'mr') ? "✗ चुकीचे उत्तर! पुन्हा प्रयत्न करा." : "✗ Wrong Answer! Try again.";
+        
