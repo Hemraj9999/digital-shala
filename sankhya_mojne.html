@@ -114,7 +114,7 @@
             border-radius: 30px; 
             display: flex; 
             gap: 4px;
-            border: 1px solid var(--glass-border); Thames;
+            border: 1px solid var(--glass-border);
         }
         .lang-label { 
             font-size: 12px; 
@@ -135,12 +135,11 @@
             box-shadow: inset 0 0 8px rgba(0, 242, 254, 0.2);
         }
 
-        /* आवाज बदलण्यासाठी नवीन ड्रॉपडाऊन स्टाईल */
         .voice-selector-container {
             background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--glass-border);
             border-radius: 14px;
-            padding: 6px 12px;
+            padding: 8px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -151,12 +150,12 @@
             background: #101f32;
             color: #00f2fe;
             border: 1px solid rgba(0, 242, 254, 0.2);
-            padding: 4px 8px;
+            padding: 6px 10px;
             border-radius: 8px;
             font-size: 12px;
             font-weight: 600;
             outline: none;
-            max-width: 60%;
+            width: 65%;
             cursor: pointer;
         }
 
@@ -316,7 +315,9 @@
 
         <div class="voice-selector-container">
             <span class="voice-label">🗣️ <span id="voice-label-text">आवाज निवडा:</span></span>
-            <select id="voice-select-dropdown" class="voice-select"></select>
+            <select id="voice-select-dropdown" class="voice-select">
+                <option value="default">सिस्टीम आवाज (Default)</option>
+            </select>
         </div>
 
         <div class="instruction-box">
@@ -351,27 +352,30 @@
         return document.querySelector('input[name="lang-select"]:checked').value;
     }
 
-    // मोबाईलमधील उपलब्ध आवाजांची यादी लोड करणे
     function loadAvailableVoices() {
         if (!('speechSynthesis' in window)) return;
         
         sysVoices = window.speechSynthesis.getVoices();
         let dropdown = document.getElementById("voice-select-dropdown");
+        
+        // आधीची यादी साफ करून सुरुवातीला डीफॉल्ट पर्याय ठेवूया
         dropdown.innerHTML = "";
+        let defaultOpt = document.createElement("option");
+        defaultOpt.value = "default";
+        defaultOpt.textContent = currentLanguage() === 'mr' ? "सिस्टीम आवाज (Default)" : "System Default";
+        dropdown.appendChild(defaultOpt);
         
         let currentLangCode = currentLanguage() === 'mr' ? 'mr' : 'en';
         let filteredVoices = sysVoices.filter(v => v.lang.startsWith(currentLangCode));
         
-        // जर विशिष्ट भाषेचा आवाज नसेल तर सर्व आवाज दाखवा
-        if(filteredVoices.length === 0) {
+        if(filteredVoices.length === 0 && sysVoices.length > 0) {
             filteredVoices = sysVoices;
         }
 
-        filteredVoices.forEach((voice, index) => {
+        filteredVoices.forEach((voice) => {
             let option = document.createElement("option");
             option.value = voice.name;
             
-            // सोपे नाव दाखवण्यासाठी
             let gender = voice.name.toLowerCase().includes('female') ? 'स्त्री' : 'पुरुष/सामान्य';
             if(currentLanguage() === 'en') gender = voice.name.toLowerCase().includes('female') ? 'Female' : 'Male/Default';
             
@@ -380,9 +384,11 @@
         });
     }
 
-    // आवाज लोड होण्याची सिस्टीम वाट पाहते (काही मोबाईलमध्ये उशिरा लोड होतात)
+    // वेगवेळ्या ब्राउझरच्या सपोर्टसाठी तीनही प्रकारे लोड करूया
     if ('speechSynthesis' in window) {
         window.speechSynthesis.onvoiceschanged = loadAvailableVoices;
+        // लगेच एकदा कॉल करूया
+        loadAvailableVoices();
     }
 
     function updateLanguageUI() {
@@ -484,12 +490,11 @@
             window.speechSynthesis.cancel();
             let utterance = new SpeechSynthesisUtterance(text);
             
-            // ड्रॉपडाऊनमधून निवडलेला आवाज सेट करणे
             let selectedVoiceName = document.getElementById("voice-select-dropdown").value;
-            let matchedVoice = sysVoices.find(v => v.name === selectedVoiceName);
             
-            if (matchedVoice) {
-                utterance.voice = matchedVoice;
+            if(selectedVoiceName !== "default") {
+                let matchedVoice = sysVoices.find(v => v.name === selectedVoiceName);
+                if (matchedVoice) utterance.voice = matchedVoice;
             } else {
                 utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
             }
@@ -526,8 +531,4 @@
             disableAllOptions();
             setButtonState("next");
         } else {
-            res.innerText = (lang === 'mr') ? "✗ चुकीचे उत्तर! पुन्हा प्रयत्न करा." : "✗ Wrong Answer! Try again.";
-            res.className = "result wrong";
-            dropBox.className = "target-drop-box error-state";
-            
-            documen
+     
