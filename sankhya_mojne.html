@@ -33,14 +33,10 @@
         
         .display-board-count { background: rgba(0,0,0,0.15); border: 2px dashed rgba(255,255,255,0.1); border-radius: 20px; padding: 30px; font-size: 45px; letter-spacing: 12px; min-height: 120px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; margin-bottom: 25px; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.3)); }
         
-        /* मुख्य टार्गेट बॉक्स - जादुई रंग बदल */
         .target-drop-box { width: 90px; height: 90px; border: 4px dashed var(--primary); border-radius: 20px; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 800; color: #fff; margin: 20px auto; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); transition: all 0.3s; }
         .target-drop-box.filled { border-style: solid; background: rgba(255, 159, 67, 0.1); border-color: #10b981; color: #10b981; }
         
-        /* उत्तर चुकल्यावर संपूर्ण बॉक्स लाल होणार */
         .target-drop-box.error-state { border-style: solid; border-color: #ef4444 !important; color: #ef4444 !important; background: rgba(239, 68, 68, 0.15) !important; animation: shake 0.4s ease-in-out; }
-        
-        /* उत्तर बरोबर आल्यावर संपूर्ण बॉक्स हिरवा होणार */
         .target-drop-box.success-state { border-style: solid; border-color: #10b981 !important; color: #10b981 !important; background: rgba(16, 185, 129, 0.2) !important; transform: scale(1.1); }
         
         .options-flex { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
@@ -55,7 +51,6 @@
         .correct { color: #34d399; text-shadow: 0 0 10px rgba(52, 211, 153, 0.3); }
         .wrong { color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.3); }
 
-        /* डळमळीत ॲनिमेशन (उत्तर चुकल्यावर बॉक्स हलतो) */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-8px); }
@@ -63,9 +58,7 @@
         }
     </style>
 </head>
-<body>
-
-<header>
+<body onclick="initAudioContext()"> <header>
     <a href="ganit.html" class="back-btn">⬅ मागे जा</a>
     <h2>✨ संख्या मोजणे खेळ (Pro)</h2>
     <div style="width:85px;"></div>
@@ -95,10 +88,21 @@
     let scoreCount = 0, correctCountAns = 0, selectedCountAns = null;
     let lastNumber = 0; 
     let isReviewState = false; 
+    let audioCtx = null; // ऑडिओ कॉन्टेक्स्ट सुरक्षित ठेवण्यासाठी
     
     const originalDesigns = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦", "🍭", "🍩", "🚗", "🐱", "🦁", "🦖"];
     let availableDesigns = [...originalDesigns];
     const marathiDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
+
+    // युझरच्या पहिल्या टचवर ऑडिओ ॲक्टिव्हेट करणे
+    function initAudioContext() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
 
     function convertToMarathi(number) {
         return number.toString().split('').map(digit => marathiDigits[digit] || digit).join('');
@@ -189,6 +193,9 @@
     }
 
     function selectCountNumber(val) {
+        // जर आधी चुकीचे उत्तर देऊन बटण डिसेबल केले असेल, तर क्लिक करू देऊ नका
+        if(document.getElementById(`opt-${val}`).disabled) return;
+
         selectedCountAns = val;
         let lang = currentLanguage();
         let dropBox = document.getElementById("drop-target-box");
@@ -196,30 +203,27 @@
         dropBox.innerText = (lang === 'mr') ? convertToMarathi(val) : val;
         dropBox.className = "target-drop-box filled";
         
-        // साध्या निवडीचा नैसर्गिक आवाज
         speakText(val);
     }
 
-    // बरोबर उत्तरासाठी सुंदर संगीतमय ट्यून (Offline Success Bell)
     function playSuccessSound() {
-        if (!window.AudioContext && !window.webkitAudioContext) return;
-        let ctx = new (window.AudioContext || window.webkitAudioContext)();
+        initAudioContext();
+        if (!audioCtx) return;
         
         let playNote = (freq, start, duration) => {
-            let osc = ctx.createOscillator();
-            let gain = ctx.createGain();
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(freq, start);
             gain.gain.setValueAtTime(0.15, start);
             gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
             osc.connect(gain);
-            gain.connect(ctx.destination);
+            gain.connect(audioCtx.destination);
             osc.start(start);
             osc.stop(start + duration);
         };
-        // गोड घंटानाद ट्यून (Double Bell)
-        playNote(523.25, ctx.currentTime, 0.15); // C5
-        playNote(659.25, ctx.currentTime + 0.12, 0.3); // E5
+        playNote(523.25, audioCtx.currentTime, 0.15); 
+        playNote(659.25, audioCtx.currentTime + 0.12, 0.3); 
     }
 
     function speakText(text) {
@@ -227,7 +231,7 @@
             window.speechSynthesis.cancel();
             let utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
-            utterance.rate = 0.85;
+            utterance.rate = 0.9;
             window.speechSynthesis.speak(utterance);
         }
     }
@@ -248,7 +252,6 @@
             res.className = "result correct";
             dropBox.className = "target-drop-box success-state";
             
-            // १. संगीत ट्यून वाजवा
             playSuccessSound();
 
             if(!isReviewState) {
@@ -267,11 +270,10 @@
             isReviewState = true; 
             setButtonState("retry");
 
-            // २. चुकीचे आल्यावर मोबाईल मराठी किंवा इंग्रजीत बोलेल "पुन्हा प्रयत्न करा"
             setTimeout(() => {
                 let msg = (lang === 'mr') ? "पुन्हा प्रयत्न करा" : "Try again";
                 speakText(msg);
-            }, 300);
+            }, 250);
         }
     }
 
@@ -279,12 +281,26 @@
         selectedCountAns = null;
         resetDropBox();
         document.getElementById("result-message-count").innerText = "";
+        
+        // चुकीचे उत्तर दिलेले बटण सोडून बाकीचे पर्याय पुन्हा व्यवस्थित ॲक्टिव्ह ठेवणे
+        generatedOptions.forEach(val => {
+            let btn = document.getElementById(`opt-${val}`);
+            if(btn && btn.getAttribute("disabled") === null) {
+                btn.disabled = false;
+            }
+        });
+
         setButtonState("check");
     }
 
     function disableAllOptions() {
         let btns = document.querySelectorAll(".opt-btn");
         btns.forEach(b => b.disabled = true);
+    }
+
+    function enableAllOptions() {
+        let btns = document.querySelectorAll(".opt-btn");
+        btns.forEach(b => b.disabled = false);
     }
 
     function setButtonState(state) {
