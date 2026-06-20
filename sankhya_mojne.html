@@ -58,7 +58,9 @@
         }
     </style>
 </head>
-<body onclick="initAudioContext()"> <header>
+<body>
+
+<header>
     <a href="ganit.html" class="back-btn">⬅ मागे जा</a>
     <h2>✨ संख्या मोजणे खेळ (Pro)</h2>
     <div style="width:85px;"></div>
@@ -88,21 +90,10 @@
     let scoreCount = 0, correctCountAns = 0, selectedCountAns = null;
     let lastNumber = 0; 
     let isReviewState = false; 
-    let audioCtx = null; // ऑडिओ कॉन्टेक्स्ट सुरक्षित ठेवण्यासाठी
     
     const originalDesigns = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦", "🍭", "🍩", "🚗", "🐱", "🦁", "🦖"];
     let availableDesigns = [...originalDesigns];
     const marathiDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
-
-    // युझरच्या पहिल्या टचवर ऑडिओ ॲक्टिव्हेट करणे
-    function initAudioContext() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-    }
 
     function convertToMarathi(number) {
         return number.toString().split('').map(digit => marathiDigits[digit] || digit).join('');
@@ -193,7 +184,6 @@
     }
 
     function selectCountNumber(val) {
-        // जर आधी चुकीचे उत्तर देऊन बटण डिसेबल केले असेल, तर क्लिक करू देऊ नका
         if(document.getElementById(`opt-${val}`).disabled) return;
 
         selectedCountAns = val;
@@ -204,26 +194,6 @@
         dropBox.className = "target-drop-box filled";
         
         speakText(val);
-    }
-
-    function playSuccessSound() {
-        initAudioContext();
-        if (!audioCtx) return;
-        
-        let playNote = (freq, start, duration) => {
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, start);
-            gain.gain.setValueAtTime(0.15, start);
-            gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(start);
-            osc.stop(start + duration);
-        };
-        playNote(523.25, audioCtx.currentTime, 0.15); 
-        playNote(659.25, audioCtx.currentTime + 0.12, 0.3); 
     }
 
     function speakText(text) {
@@ -252,7 +222,9 @@
             res.className = "result correct";
             dropBox.className = "target-drop-box success-state";
             
-            playSuccessSound();
+            // १००% चालणारा सिस्टीम आवाज: बरोबर आल्यावर मोबाईल मराठीत किंवा इंग्रजीत शाब्बासकी देईल
+            let successMsg = (lang === 'mr') ? "शाब्बास! बरोबर उत्तर आहे" : "Excellent! Correct Answer";
+            speakText(successMsg);
 
             if(!isReviewState) {
                 scoreCount++;
@@ -273,7 +245,7 @@
             setTimeout(() => {
                 let msg = (lang === 'mr') ? "पुन्हा प्रयत्न करा" : "Try again";
                 speakText(msg);
-            }, 250);
+            }, 100);
         }
     }
 
@@ -282,7 +254,6 @@
         resetDropBox();
         document.getElementById("result-message-count").innerText = "";
         
-        // चुकीचे उत्तर दिलेले बटण सोडून बाकीचे पर्याय पुन्हा व्यवस्थित ॲक्टिव्ह ठेवणे
         generatedOptions.forEach(val => {
             let btn = document.getElementById(`opt-${val}`);
             if(btn && btn.getAttribute("disabled") === null) {
@@ -296,11 +267,6 @@
     function disableAllOptions() {
         let btns = document.querySelectorAll(".opt-btn");
         btns.forEach(b => b.disabled = true);
-    }
-
-    function enableAllOptions() {
-        let btns = document.querySelectorAll(".opt-btn");
-        btns.forEach(b => b.disabled = false);
     }
 
     function setButtonState(state) {
