@@ -33,14 +33,20 @@
         
         .display-board-count { background: rgba(0,0,0,0.15); border: 2px dashed rgba(255,255,255,0.1); border-radius: 20px; padding: 30px; font-size: 45px; letter-spacing: 12px; min-height: 120px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; margin-bottom: 25px; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.3)); }
         
+        /* मुख्य टार्गेट बॉक्स - जादुई रंग बदल */
         .target-drop-box { width: 90px; height: 90px; border: 4px dashed var(--primary); border-radius: 20px; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 800; color: #fff; margin: 20px auto; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); transition: all 0.3s; }
         .target-drop-box.filled { border-style: solid; background: rgba(255, 159, 67, 0.1); border-color: #10b981; color: #10b981; }
-        .target-drop-box.error-state { border-color: #f87171; color: #f87171; background: rgba(248, 113, 113, 0.1); }
+        
+        /* उत्तर चुकल्यावर संपूर्ण बॉक्स लाल होणार */
+        .target-drop-box.error-state { border-style: solid; border-color: #ef4444 !important; color: #ef4444 !important; background: rgba(239, 68, 68, 0.15) !important; animation: shake 0.4s ease-in-out; }
+        
+        /* उत्तर बरोबर आल्यावर संपूर्ण बॉक्स हिरवा होणार */
+        .target-drop-box.success-state { border-style: solid; border-color: #10b981 !important; color: #10b981 !important; background: rgba(16, 185, 129, 0.2) !important; transform: scale(1.1); }
         
         .options-flex { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
         .opt-btn { background: #1e293b; border: 2px solid var(--card-border); border-radius: 16px; width: 75px; height: 75px; font-size: 32px; font-weight: 800; color: #fff; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .opt-btn:hover { border-color: var(--primary); transform: translateY(-3px); background: rgba(255,255,255,0.05); }
-        .opt-btn:disabled { opacity: 0.5; cursor: not-allowed; border-color: var(--card-border) !important; transform: none !important; }
+        .opt-btn:disabled { opacity: 0.4; cursor: not-allowed; border-color: var(--card-border) !important; transform: none !important; }
         
         .submit-btn { font-size: 18px; background: linear-gradient(135deg, #ff9f43, #ff5252); color: white; border: none; padding: 16px 35px; border-radius: 16px; cursor: pointer; font-weight: 700; margin-top: 20px; width: 100%; box-shadow: 0 6px 20px var(--primary-glow); transition: all 0.3s; }
         .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 159, 67, 0.5); }
@@ -48,6 +54,13 @@
         .result { font-size: 22px; font-weight: 700; margin-top: 20px; min-height: 40px; }
         .correct { color: #34d399; text-shadow: 0 0 10px rgba(52, 211, 153, 0.3); }
         .wrong { color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.3); }
+
+        /* डळमळीत ॲनिमेशन (उत्तर चुकल्यावर बॉक्स हलतो) */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
     </style>
 </head>
 <body>
@@ -81,7 +94,7 @@
 <script>
     let scoreCount = 0, correctCountAns = 0, selectedCountAns = null;
     let lastNumber = 0; 
-    let isReviewState = false; // मूल चुकलेल्या उदाहरणाचा सराव करत आहे का?
+    let isReviewState = false; 
     
     const originalDesigns = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦", "🍭", "🍩", "🚗", "🐱", "🦁", "🦖"];
     let availableDesigns = [...originalDesigns];
@@ -183,10 +196,38 @@
         dropBox.innerText = (lang === 'mr') ? convertToMarathi(val) : val;
         dropBox.className = "target-drop-box filled";
         
+        // साध्या निवडीचा नैसर्गिक आवाज
+        speakText(val);
+    }
+
+    // बरोबर उत्तरासाठी सुंदर संगीतमय ट्यून (Offline Success Bell)
+    function playSuccessSound() {
+        if (!window.AudioContext && !window.webkitAudioContext) return;
+        let ctx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        let playNote = (freq, start, duration) => {
+            let osc = ctx.createOscillator();
+            let gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.15, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + duration);
+        };
+        // गोड घंटानाद ट्यून (Double Bell)
+        playNote(523.25, ctx.currentTime, 0.15); // C5
+        playNote(659.25, ctx.currentTime + 0.12, 0.3); // E5
+    }
+
+    function speakText(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
-            let utterance = new SpeechSynthesisUtterance(val);
-            utterance.lang = (lang === 'mr') ? 'mr-IN' : 'en-US';
+            let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
+            utterance.rate = 0.85;
             window.speechSynthesis.speak(utterance);
         }
     }
@@ -205,26 +246,32 @@
         if(selectedCountAns === correctCountAns) {
             res.innerText = (lang === 'mr') ? "✓ अप्रतिम! बरोबर उत्तर आहे. 🎉" : "✓ Excellent! Correct Answer. 🎉";
             res.className = "result correct";
+            dropBox.className = "target-drop-box success-state";
             
-            // जर पहिल्याच फटक्यात बरोबर आले तरच स्कोर वाढणार
+            // १. संगीत ट्यून वाजवा
+            playSuccessSound();
+
             if(!isReviewState) {
                 scoreCount++;
                 document.getElementById("score-board-count").innerText = "SCORE: " + ((lang === 'mr') ? convertToMarathi(scoreCount) : scoreCount);
             }
             
-            // सर्व पर्याय बटन्स लॉक करणे
             disableAllOptions();
             setButtonState("next");
         } else {
             res.innerText = (lang === 'mr') ? "✗ चुकीचे उत्तर! पुन्हा प्रयत्न करा." : "✗ Wrong Answer! Try again.";
             res.className = "result wrong";
-            dropBox.classList.add("error-state");
+            dropBox.className = "target-drop-box error-state";
             
-            // चुकीचा पर्याय बटण तात्पुरता बंद करणे
             document.getElementById(`opt-${selectedCountAns}`).disabled = true;
-            
-            isReviewState = true; // मूल आता चुकिची दुरूस्ती करत आहे
+            isReviewState = true; 
             setButtonState("retry");
+
+            // २. चुकीचे आल्यावर मोबाईल मराठी किंवा इंग्रजीत बोलेल "पुन्हा प्रयत्न करा"
+            setTimeout(() => {
+                let msg = (lang === 'mr') ? "पुन्हा प्रयत्न करा" : "Try again";
+                speakText(msg);
+            }, 300);
         }
     }
 
