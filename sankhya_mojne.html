@@ -27,7 +27,7 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            overflow-y: auto; /* स्क्रोलिंग पूर्णपणे चालू ठेवले */
+            overflow-y: auto;
             padding-bottom: 30px;
         }
 
@@ -78,14 +78,14 @@
             max-width: 410px; 
             width: 100%; 
             background: var(--glass); 
-            padding: 12px; 
+            padding: 14px; 
             border-radius: 20px; 
             border: 1px solid var(--glass-border); 
             backdrop-filter: blur(20px); 
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
         
         .top-row {
@@ -124,25 +124,46 @@
             color: #00f2fe; 
         }
 
+        /* टेस्ट व्हॉईस बॉक्सची नवीन डिझाईन */
         .voice-selector-container {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 6px 10px;
+            background: rgba(0, 242, 254, 0.05);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            border-radius: 14px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .voice-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 8px;
         }
-        .voice-label { font-size: 11px; font-weight: 600; color: #94a3b8; }
+        .voice-label { font-size: 12px; font-weight: 700; color: #00f2fe; }
         .voice-select {
             background: #101f32;
             color: #00f2fe;
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-size: 12px;
             outline: none;
-            width: 60%;
+            width: 65%;
+            font-weight: 600;
+        }
+        .test-voice-btn {
+            background: linear-gradient(135deg, #00e676, #00c853);
+            color: #050b14;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(0, 230, 118, 0.2);
         }
 
         .instruction-box { 
@@ -193,12 +214,11 @@
         .target-drop-box.error-state { border-color: var(--error) !important; color: var(--error) !important; animation: shake 0.4s ease-in-out; }
         .target-drop-box.success-state { border-color: var(--success) !important; color: var(--success) !important; }
         
-        /* ४ ऑप्शन्स व्यवस्थित दिसण्यासाठी ग्रीड रचना */
         .options-flex { 
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* चारही बटन्स एकाच ओळीत समान भागात विभागले जातील */
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px; 
-            margin: 8px 0;
+            margin: 5px 0;
             width: 100%;
         }
         .opt-btn { 
@@ -206,7 +226,7 @@
             border: 1px solid rgba(255,255,255,0.15); 
             border-radius: 12px; 
             width: 100%;
-            height: 52px; 
+            height: 50px; 
             font-size: 22px; 
             font-weight: 800; 
             color: #f8fafc; 
@@ -214,7 +234,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         .opt-btn:hover { border-color: #00f2fe; color: #00f2fe; }
         .opt-btn:disabled { opacity: 0.2; cursor: not-allowed; }
@@ -262,10 +281,13 @@
         </div>
 
         <div class="voice-selector-container">
-            <span class="voice-label">🗣️ <span id="voice-label-text">आवाज निवडा:</span></span>
-            <select id="voice-select-dropdown" class="voice-select">
-                <option value="default">सिस्टीम आवाज (Default)</option>
-            </select>
+            <div class="voice-row">
+                <span class="voice-label">🗣️ <span id="voice-label-text">आवाज निवडा:</span></span>
+                <select id="voice-select-dropdown" class="voice-select">
+                    <option value="default">सिस्टीम आवाज (Default)</option>
+                </select>
+            </div>
+            <button class="test-voice-btn" onclick="testCurrentVoice()">🎵 आवाज ऐका (Play)</button>
         </div>
 
         <div class="instruction-box">
@@ -335,6 +357,13 @@
     if ('speechSynthesis' in window) {
         window.speechSynthesis.onvoiceschanged = loadAvailableVoices;
         loadAvailableVoices();
+    }
+
+    // निवडलेला आवाज टेस्ट करण्यासाठी फंक्शन
+    function testCurrentVoice() {
+        let lang = currentLanguage();
+        let sampleText = (lang === 'mr') ? "शाब्बास! डिजिटल शाळा प्रो मध्ये आपले स्वागत आहे." : "Excellent! Welcome to Digital Shala Pro.";
+        speakText(sampleText);
     }
 
     function updateLanguageUI() {
@@ -504,25 +533,4 @@
             btn.setAttribute("onclick", "checkCountAnswer()");
         } else if(state === "retry") {
             btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
-            btn.setAttribute("onclick", "retryCurrentQuestion()");
-        } else if(state === "next") {
-            btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
-            btn.setAttribute("onclick", "generateCountQuestion()");
-        }
-    }
-
-    window.onload = function() {
-        loadAvailableVoices();
-        setTimeout(loadAvailableVoices, 500);
-        setTimeout(loadAvailableVoices, 1500);
-        generateCountQuestion();
-        
-        // **कॅश क्लिअरिंग ट्रिक:** गिटहबवरून नवीन बदल दरवेळी सक्तीने लोड व्हावेत म्हणून
-        if (!window.location.hash) {
-            window.location.hash = 'v1.1';
-            window.location.reload();
-        }
-    };
-</script>
-</body>
-</html>
+            btn.setAttribute("
