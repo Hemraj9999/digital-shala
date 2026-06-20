@@ -124,7 +124,6 @@
             color: #00f2fe; 
         }
 
-        /* १०-१० च्या गटाचा ड्रॉपडाऊन बॉक्स */
         .range-dropdown-box {
             background: rgba(0,0,0,0.4);
             border: 1px solid var(--glass-border);
@@ -164,7 +163,7 @@
             border: 1px solid rgba(255,255,255,0.05); 
             border-radius: 16px; 
             padding: 12px; 
-            font-size: 22px; 
+            font-size: 20px; 
             min-height: 100px; 
             max-height: 160px;
             overflow-y: auto;
@@ -174,7 +173,7 @@
             flex-wrap: wrap; 
             gap: 4px;
             letter-spacing: 1px;
-            line-height: 28px;
+            line-height: 26px;
         }
         
         .target-drop-box { 
@@ -284,7 +283,7 @@
         </div>
 
         <div class="instruction-box">
-            <div class="inst-mr" id="instruction-text">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
+            <div class="inst-mr" id="instruction-text">चितře मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
         </div>
         
         <div class="display-board-count" id="count-image-board">🎈🎈🎈</div>
@@ -304,13 +303,14 @@
     let isReviewState = false; 
     let generatedOptions = []; 
     
-    // डीफॉल्ट रेंज १ ते १०
     let minRange = 1;
     let maxRange = 10;
     
     const originalDesigns = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦", "🍭", "🍩", "🚗", "🐱", "🦁", "🦖"];
     let availableDesigns = [...originalDesigns];
     const marathiDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
+    
+    const marathiWords = ["शून्य", "एक", "दोन", "तीन", "चार", "पाच", "सहा", "सात", "आठ", "नऊ", "दहा"];
 
     function convertToMarathi(number) {
         return number.toString().split('').map(digit => marathiDigits[digit] || digit).join('');
@@ -320,7 +320,24 @@
         return document.querySelector('input[name="lang-select"]:checked').value;
     }
 
-    // ड्रॉपडाऊन बदलल्यावर होणारा बदल
+    // दशक-एकक सुट्टे करून बोलण्याची प्रगत पद्धत
+    function getTensUnitsSpeechText(num, lang) {
+        if (num <= 10) return (lang === 'mr') ? convertToMarathi(num) : num.toString();
+        
+        let tens = Math.floor(num / 10);
+        let units = num % 10;
+        
+        if (lang === 'mr') {
+            let tensStr = marathiWords[tens] + " दशक";
+            let unitsStr = (units > 0) ? " " + marathiWords[units] : "";
+            return `${tensStr}${unitsStr}... ${convertToMarathi(num)}`;
+        } else {
+            let tensStr = tens + " Tens";
+            let unitsStr = (units > 0) ? " and " + units : "";
+            return `${tensStr}${unitsStr}... ${num}`;
+        }
+    }
+
     function onRangeDropdownChange() {
         let dropdown = document.getElementById("range-select-dropdown");
         let val = dropdown.value;
@@ -328,8 +345,8 @@
         minRange = parseInt(parts[0]);
         maxRange = parseInt(parts[1]);
         
-        scoreCount = 0; // रेंज बदलल्यावर स्कोर रीसेट
-        lastNumber = 0; // रिपीट लॉजिक क्लिअर करण्यासाठी
+        scoreCount = 0; 
+        lastNumber = 0; 
         updateLanguageUI();
         generateCountQuestion();
     }
@@ -361,7 +378,6 @@
             document.getElementById("select-range-label").innerText = "🎯 अभ्यासासाठी संख्या गट निवडा:";
             document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(scoreCount);
             
-            // ड्रॉपडाऊनचे मराठी नाव अपडेट करणे
             dropdown.options[0].text = "🔢 गट: १ ते १०";
             dropdown.options[1].text = "🔢 गट: ११ ते २०";
             dropdown.options[2].text = "🔢 गट: २१ ते ३०";
@@ -381,7 +397,6 @@
             document.getElementById("select-range-label").innerText = "🎯 Select Number Group for Practice:";
             document.getElementById("score-board-count").innerText = "SCORE: " + scoreCount;
             
-            // ड्रॉपडाऊनचे इंग्रजी नाव अपडेट करणे
             dropdown.options[0].text = "🔢 Group: 1 to 10";
             dropdown.options[1].text = "🔢 Group: 11 to 20";
             dropdown.options[2].text = "🔢 Group: 21 to 30";
@@ -410,7 +425,6 @@
         let newNumber;
         let rangeDiff = maxRange - minRange + 1;
         
-        // 🎯 प्रश्न रिपीट न होण्याचे सॉलिड लॉजिक (Q NO REPEAT LOGIC)
         do {
             newNumber = Math.floor(Math.random() * rangeDiff) + minRange;
         } while (newNumber === lastNumber && rangeDiff > 1);
@@ -428,14 +442,25 @@
         resetDropBox();
         document.getElementById("result-message-count").innerText = "";
         
-        // पर्यायांचे लॉजिक
+        // 🎯 पर्याय गायब होण्याचा बग इथे १००% फिक्स केला आहे
         let optionsSet = new Set();
         optionsSet.add(correctCountAns);
         
-        while(optionsSet.size < Math.min(4, rangeDiff)) {
+        let attempts = 0;
+        while(optionsSet.size < 4 && attempts < 100) {
             let randOpt = Math.floor(Math.random() * rangeDiff) + minRange;
             optionsSet.add(randOpt);
+            attempts++;
         }
+        
+        // जर अत्यंत अपवादात्मक स्थितीत सेटमध्ये ४ पर्याय पूर्ण झाले नाहीत तर मॅन्युअली भरले जातील
+        if (optionsSet.size < 4) {
+            for(let i = minRange; i <= maxRange; i++) {
+                optionsSet.add(i);
+                if(optionsSet.size === 4) break;
+            }
+        }
+        
         generatedOptions = Array.from(optionsSet).sort(() => Math.random() - 0.5);
 
         renderOptions();
@@ -468,6 +493,7 @@
         dropBox.innerText = (lang === 'mr') ? convertToMarathi(val) : val;
         dropBox.className = "target-drop-box filled";
         
+        // सिलेक्ट केल्यावर साधा उच्चार
         if(lang === 'mr') {
             speakText(convertToMarathi(val), 'mr');
         } else {
@@ -491,11 +517,10 @@
             res.className = "result correct";
             dropBox.className = "target-drop-box success-state";
             
-            if(lang === 'mr') {
-                speakText("शाब्बास! बरोबर उत्तर आहे", 'mr');
-            } else {
-                speakText("Excellent! Correct Answer", 'en');
-            }
+            // 🎯 उत्तर बरोबर आल्यावर दशक-एकक सुट्ट्या करून बोलण्याची सिस्टीम
+            let praise = (lang === 'mr') ? "शाब्बास! " : "Well Done! ";
+            let numberSpeech = getTensUnitsSpeechText(correctCountAns, lang);
+            speakText(praise + numberSpeech);
 
             if(!isReviewState) {
                 scoreCount++;
@@ -504,31 +529,4 @@
             disableAllOptions();
             setButtonState("next");
         } else {
-            res.innerText = (lang === 'mr') ? "✗ चुकीचे उत्तर! पुन्हा प्रयत्न करा." : "✗ Wrong Answer! Try again.";
-            res.className = "result wrong";
-            dropBox.className = "target-drop-box error-state";
-            
-            let wrongBtn = document.getElementById(`opt-${selectedCountAns}`);
-            if(wrongBtn) wrongBtn.disabled = true;
-            isReviewState = true; 
-            setButtonState("retry");
-            
-            setTimeout(() => { 
-                if(lang === 'mr') {
-                    speakText("पुन्हा प्रयत्न करा", 'mr');
-                } else {
-                    speakText("Try again", 'en');
-                }
-            }, 50);
-        }
-    }
-
-    function retryCurrentQuestion() {
-        selectedCountAns = null;
-        resetDropBox();
-        document.getElementById("result-message-count").innerText = "";
-        generatedOptions.forEach(val => {
-            let btn = document.getElementById(`opt-${val}`);
-            if(btn) btn.disabled = false;
-        });
-        setButtonState("check
+            res.innerText = (lang === 'mr') ? "✗ चुकीचे उत्तर! पुन्हा प्रयत्न 
