@@ -2,59 +2,278 @@
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>संख्या मोजणे - Digital Shala Pro</title>
     <style>
         :root { 
-            --primary: #ff9f43; 
-            --primary-glow: rgba(255, 159, 67, 0.4); 
-            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); 
-            --card-bg: rgba(255, 255, 255, 0.06); 
-            --card-border: rgba(255, 255, 255, 0.1); 
+            --primary: #00f2fe; 
+            --secondary: #4facfe;
+            --success: #00e676;
+            --error: #ff1744;
+            --neon-glow: rgba(0, 242, 254, 0.4); 
+            --bg-gradient: linear-gradient(135deg, #050b14, #101f32, #0a1128); 
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: var(--bg-gradient); color: #f8fafc; min-height: 100vh; text-align: center; }
         
-        header { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border-bottom: 1px solid var(--card-border); padding: 15px 25px; display: flex; align-items: center; justify-content: space-between; }
-        .back-btn { color: #94a3b8; text-decoration: none; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 30px; font-size: 14px; border: 1px solid var(--card-border); transition: 0.3s; }
-        .back-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
-        header h2 { font-size: 20px; font-weight: 700; background: linear-gradient(90deg, #ff9f43, #ff5252); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        .game-container { max-width: 550px; width: 92%; margin: 30px auto; background: var(--card-bg); padding: 30px 25px; border-radius: 24px; border: 1px solid var(--card-border); backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-        .score-board { font-size: 16px; font-weight: 700; background: #10b981; color: white; padding: 8px 18px; display: inline-block; border-radius: 30px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
-        
-        .lang-selector-box { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 16px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: center; border: 1px solid rgba(255,255,255,0.03); }
-        .lang-label { font-size: 15px; font-weight: 600; color: #cbd5e1; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 10px; }
-        .lang-label:has(input:checked) { background: rgba(255,255,255,0.08); color: var(--primary); }
-        .lang-label input { transform: scale(1.2); accent-color: var(--primary); }
+        body { 
+            background: var(--bg-gradient); 
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #f8fafc; 
+            min-height: 100vh; 
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* कोणतीही गोष्ट स्क्रीनच्या बाहेर जाणार नाही */
+        }
 
-        .instruction-box { background: rgba(255, 159, 67, 0.08); padding: 14px; border-radius: 16px; border-left: 4px solid var(--primary); margin-bottom: 25px; text-align: left; }
-        .inst-mr { font-size: 15px; font-weight: 600; color: #ffad5a; }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
         
-        .display-board-count { background: rgba(0,0,0,0.15); border: 2px dashed rgba(255,255,255,0.1); border-radius: 20px; padding: 30px; font-size: 45px; letter-spacing: 12px; min-height: 120px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; margin-bottom: 25px; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.3)); }
+        header { 
+            background: rgba(10, 20, 38, 0.6); 
+            backdrop-filter: blur(15px); 
+            border-bottom: 1px solid var(--glass-border); 
+            padding: 12px 20px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            height: 60px;
+        }
         
-        .target-drop-box { width: 90px; height: 90px; border: 4px dashed var(--primary); border-radius: 20px; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 800; color: #fff; margin: 20px auto; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); transition: all 0.3s; }
-        .target-drop-box.filled { border-style: solid; background: rgba(255, 159, 67, 0.1); border-color: #10b981; color: #10b981; }
+        .back-btn { 
+            color: #00f2fe; 
+            text-decoration: none; 
+            background: rgba(0, 242, 254, 0.05); 
+            padding: 8px 16px; 
+            border-radius: 30px; 
+            font-size: 13px; 
+            font-weight: 600;
+            border: 1px solid rgba(0, 242, 254, 0.2); 
+            transition: 0.3s; 
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.1);
+        }
+        .back-btn:hover { background: rgba(0, 242, 254, 0.2); box-shadow: 0 0 15px var(--neon-glow); }
         
-        .target-drop-box.error-state { border-style: solid; border-color: #ef4444 !important; color: #ef4444 !important; background: rgba(239, 68, 68, 0.15) !important; animation: shake 0.4s ease-in-out; }
-        .target-drop-box.success-state { border-style: solid; border-color: #10b981 !important; color: #10b981 !important; background: rgba(16, 185, 129, 0.2) !important; transform: scale(1.1); }
+        header h2 { 
+            font-size: 18px; 
+            font-weight: 800; 
+            background: linear-gradient(90deg, #00f2fe, #4facfe); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+        }
         
-        .options-flex { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
-        .opt-btn { background: #1e293b; border: 2px solid var(--card-border); border-radius: 16px; width: 75px; height: 75px; font-size: 32px; font-weight: 800; color: #fff; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .opt-btn:hover { border-color: var(--primary); transform: translateY(-3px); background: rgba(255,255,255,0.05); }
-        .opt-btn:disabled { opacity: 0.4; cursor: not-allowed; border-color: var(--card-border) !important; transform: none !important; }
+        /* मुख्य कंटेनर - जो मोबाईल स्क्रीननुसार आपोआप लहान-मोठा होईल */
+        .game-outer-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .game-container { 
+            max-width: 480px; 
+            width: 100%; 
+            background: var(--glass); 
+            padding: 20px; 
+            border-radius: 28px; 
+            border: 1px solid var(--glass-border); 
+            backdrop-filter: blur(20px); 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
         
-        .submit-btn { font-size: 18px; background: linear-gradient(135deg, #ff9f43, #ff5252); color: white; border: none; padding: 16px 35px; border-radius: 16px; cursor: pointer; font-weight: 700; margin-top: 20px; width: 100%; box-shadow: 0 6px 20px var(--primary-glow); transition: all 0.3s; }
-        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 159, 67, 0.5); }
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score-board { 
+            font-size: 14px; 
+            font-weight: 800; 
+            background: linear-gradient(135deg, #00e676, #00b0ff); 
+            color: white; 
+            padding: 6px 14px; 
+            border-radius: 30px; 
+            box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3); 
+        }
         
-        .result { font-size: 22px; font-weight: 700; margin-top: 20px; min-height: 40px; }
-        .correct { color: #34d399; text-shadow: 0 0 10px rgba(52, 211, 153, 0.3); }
-        .wrong { color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.3); }
+        .lang-selector-box { 
+            background: rgba(0,0,0,0.3); 
+            padding: 4px 8px; 
+            border-radius: 30px; 
+            display: flex; 
+            gap: 4px;
+            border: 1px solid var(--glass-border); 
+        }
+        .lang-label { 
+            font-size: 12px; 
+            font-weight: 600; 
+            color: #94a3b8; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            transition: 0.2s;
+        }
+        .lang-label input { display: none; }
+        .lang-label:has(input:checked) { 
+            background: rgba(0, 242, 254, 0.15); 
+            color: #00f2fe; 
+            box-shadow: inset 0 0 8px rgba(0, 242, 254, 0.2);
+        }
+
+        .instruction-box { 
+            background: rgba(0, 242, 254, 0.03); 
+            padding: 10px 14px; 
+            border-radius: 16px; 
+            border-left: 4px solid #00f2fe; 
+            text-align: left; 
+        }
+        .inst-mr { font-size: 13px; font-weight: 600; color: #00f2fe; letter-spacing: 0.5px; }
+        
+        /* इमेज डिस्प्ले बोर्ड - चित्रांच्या संख्येनुसार आकार सेट होईल */
+        .display-board-count { 
+            background: rgba(0,0,0,0.4); 
+            border: 1px solid rgba(255,255,255,0.05); 
+            border-radius: 24px; 
+            padding: 15px; 
+            font-size: calc(24px + 2vw); /* स्क्रीननुसार इमोजीचा आकार बदलेल */
+            line-height: 1.2;
+            min-height: 100px; 
+            max-height: 160px;
+            overflow-y: auto;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            gap: 8px;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.6);
+        }
+        
+        /* 3D निऑन टार्गेट बॉक्स */
+        .target-drop-box { 
+            width: 75px; 
+            height: 75px; 
+            border: 2px dashed #00f2fe; 
+            border-radius: 20px; 
+            background: rgba(0, 242, 254, 0.02); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 36px; 
+            font-weight: 900; 
+            color: #fff; 
+            margin: 5px auto; 
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.1), inset 0 0 15px rgba(0, 242, 254, 0.05); 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        .target-drop-box.filled { 
+            border-style: solid; 
+            background: rgba(0, 242, 254, 0.1); 
+            border-color: #00f2fe; 
+            color: #00f2fe; 
+            box-shadow: 0 0 25px var(--neon-glow);
+        }
+        
+        .target-drop-box.error-state { 
+            border-style: solid; 
+            border-color: var(--error) !important; 
+            color: var(--error) !important; 
+            background: rgba(255, 23, 68, 0.15) !important; 
+            box-shadow: 0 0 25px rgba(255, 23, 68, 0.4) !important;
+            animation: shake 0.4s ease-in-out; 
+        }
+        
+        .target-drop-box.success-state { 
+            border-style: solid; 
+            border-color: var(--success) !important; 
+            color: var(--success) !important; 
+            background: rgba(0, 230, 118, 0.15) !important; 
+            box-shadow: 0 0 30px rgba(0, 230, 118, 0.5) !important;
+            transform: scale(1.1); 
+        }
+        
+        /* गोल कोपऱ्यांचे निऑन ऑप्शन्स बटन्स */
+        .options-flex { 
+            display: flex; 
+            justify-content: center; 
+            gap: 12px; 
+            margin-top: 5px; 
+        }
+        .opt-btn { 
+            background: rgba(16, 31, 50, 0.6); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 18px; 
+            width: 65px; 
+            height: 65px; 
+            font-size: 26px; 
+            font-weight: 800; 
+            color: #f8fafc; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+        }
+        .opt-btn:hover { 
+            border-color: #00f2fe; 
+            color: #00f2fe;
+            transform: translateY(-3px); 
+            background: rgba(0, 242, 254, 0.05);
+            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.2);
+        }
+        .opt-btn:disabled { opacity: 0.2; cursor: not-allowed; border-color: transparent !important; transform: none !important; box-shadow: none; }
+        
+        /* मुख्य निऑन सबमिट बटण */
+        .submit-btn { 
+            font-size: 16px; 
+            background: linear-gradient(135deg, #00f2fe, #4facfe); 
+            color: #050b14; 
+            border: none; 
+            padding: 14px; 
+            border-radius: 18px; 
+            cursor: pointer; 
+            font-weight: 800; 
+            width: 100%; 
+            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.3); 
+            transition: all 0.3s; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .submit-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(0, 242, 254, 0.5); 
+        }
+        
+        .result { font-size: 18px; font-weight: 700; min-height: 30px; margin-top: 5px; }
+        .correct { color: #00e676; text-shadow: 0 0 15px rgba(0, 230, 118, 0.4); }
+        .wrong { color: #ff1744; text-shadow: 0 0 15px rgba(255, 23, 68, 0.4); }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        /* लहान मोबाईल स्क्रीनसाठी (Responsive Fix) */
+        @media (max-height: 650px) {
+            .game-container { padding: 15px; gap: 8px; }
+            .display-board-count { min-height: 80px; max-height: 110px; padding: 10px; }
+            .target-drop-box { width: 65px; height: 65px; font-size: 30px; }
+            .opt-btn { width: 55px; height: 55px; font-size: 22px; border-radius: 14px; }
+            .submit-btn { padding: 12px; font-size: 15px; }
         }
     </style>
 </head>
@@ -66,24 +285,28 @@
     <div style="width:85px;"></div>
 </header>
 
-<div class="game-container">
-    <div class="lang-selector-box">
-        <span style="font-size: 14px; font-weight: 600; color: #64748b;">🗣️ LANGUAGE:</span>
-        <label class="lang-label"><input type="radio" name="lang-select" value="mr" checked onchange="updateLanguageUI()"> 🚩 मराठी</label>
-        <label class="lang-label"><input type="radio" name="lang-select" value="en" onchange="updateLanguageUI()"> 🔤 English</label>
-    </div>
+<div class="game-outer-wrapper">
+    <div class="game-container">
+        <div class="top-row">
+            <div class="score-board" id="score-board-count">SCORE: ०</div>
+            <div class="lang-selector-box">
+                <label class="lang-label"><input type="radio" name="lang-select" value="mr" checked onchange="updateLanguageUI()">🚩 मराठी</label>
+                <label class="lang-label"><input type="radio" name="lang-select" value="en" onchange="updateLanguageUI()">🔤 EN</label>
+            </div>
+        </div>
 
-    <div style="text-align: center;"><div class="score-board" id="score-board-count">SCORE: ०</div></div>
-    <div class="instruction-box"><div class="inst-mr" id="instruction-text">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div></div>
-    
-    <div class="display-board-count" id="count-image-board">🎈🎈🎈</div>
-    <span style="font-size:14px; font-weight:600; color:#94a3b8;" id="selected-label">निवडलेला अंक:</span>
-    
-    <div class="target-drop-box" id="drop-target-box">?</div>
-    <div class="options-flex" id="count-options-container"></div>
-    
-    <button id="action-btn-count" class="submit-btn" onclick="checkCountAnswer()">उत्तर तपासा</button>
-    <div class="result" id="result-message-count"></div>
+        <div class="instruction-box">
+            <div class="inst-mr" id="instruction-text">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
+        </div>
+        
+        <div class="display-board-count" id="count-image-board">🎈🎈🎈</div>
+        
+        <div class="target-drop-box" id="drop-target-box">?</div>
+        <div class="options-flex" id="count-options-container"></div>
+        
+        <button id="action-btn-count" class="submit-btn" onclick="checkCountAnswer()">उत्तर तपासा</button>
+        <div class="result" id="result-message-count"></div>
+    </div>
 </div>
 
 <script>
@@ -109,7 +332,6 @@
         
         if(lang === 'mr') {
             document.getElementById("instruction-text").innerText = "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!";
-            document.getElementById("selected-label").innerText = "निवडलेला अंक:";
             document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(scoreCount);
             
             if(btn.getAttribute("data-state") === "next") btn.innerText = "पुढचे उदाहरण";
@@ -117,7 +339,6 @@
             else btn.innerText = "उत्तर तपासा";
         } else {
             document.getElementById("instruction-text").innerText = "Count the pictures and select the correct number!";
-            document.getElementById("selected-label").innerText = "Selected Number:";
             document.getElementById("score-board-count").innerText = "SCORE: " + scoreCount;
             
             if(btn.getAttribute("data-state") === "next") btn.innerText = "Next Question";
@@ -222,7 +443,6 @@
             res.className = "result correct";
             dropBox.className = "target-drop-box success-state";
             
-            // आधी आवाज देऊन मग सिस्टीम बटन्स लॉक करेल (याने आवाज शंभर टक्के येईल)
             let successMsg = (lang === 'mr') ? "शाब्बास! बरोबर उत्तर आहे" : "Excellent! Correct Answer";
             speakText(successMsg);
 
