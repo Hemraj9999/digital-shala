@@ -124,7 +124,6 @@
             color: #00f2fe; 
         }
 
-        /* ऑडिओ स्टेटस बार */
         .audio-status-box {
             background: rgba(0, 242, 254, 0.05);
             border: 1px solid rgba(0, 242, 254, 0.2);
@@ -251,7 +250,7 @@
         </div>
 
         <div class="audio-status-box" id="audio-status">
-            📢 स्मार्ट डिजिटल आवाज लॉक केला आहे ✨
+            📢 स्मार्ट द्विभाषिक आवाज सक्रिय केला आहे 🌐
         </div>
 
         <div class="instruction-box">
@@ -287,17 +286,16 @@
         return document.querySelector('input[name="lang-select"]:checked').value;
     }
 
-    // हाय-क्वालिटी ऑनलाईन आवाज प्ले करणारे फंक्शन
-    function speakText(text) {
-        let lang = currentLanguage();
-        let langCode = (lang === 'mr') ? 'mr' : 'en';
+    // सुधारित द्विभाषिक ऑनलाईन आवाज सिस्टीम
+    function speakText(text, forceLang = null) {
+        let lang = forceLang || currentLanguage();
+        // जर मराठी असेल तर mr-IN आणि इंग्रजी असेल तर en-IN (Indian English) चा वापर केला आहे
+        let langCode = (lang === 'mr') ? 'mr-IN' : 'en-IN';
         
-        // गुगलचा अधिकृत ऑनलाईन TTS API चा वापर
         let audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${langCode}&client=tw-ob&q=${encodeURIComponent(text)}`;
         
         let audio = new Audio(audioUrl);
         audio.play().catch(e => {
-            // बॅकअप म्हणून जर इंटरनेट नसेल तर मोबाईलच्या सिस्टीम आवाजात बोलेल
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 let utterance = new SpeechSynthesisUtterance(text);
@@ -313,14 +311,14 @@
         
         if(lang === 'mr') {
             document.getElementById("instruction-text").innerText = "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!";
-            document.getElementById("audio-status").innerText = "📢 स्मार्ट डिजिटल आवाज लॉक केला आहे ✨";
+            document.getElementById("audio-status").innerText = "📢 स्मार्ट द्विभाषिक आवाज सक्रिय केला आहे 🌐";
             document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(scoreCount);
             if(btn.getAttribute("data-state") === "next") btn.innerText = "पुढचे उदाहरण";
             else if(btn.getAttribute("data-state") === "retry") btn.innerText = "पुन्हा प्रयत्न करा 🔄";
             else btn.innerText = "उत्तर तपासा";
         } else {
             document.getElementById("instruction-text").innerText = "Count the pictures and select the correct number!";
-            document.getElementById("audio-status").innerText = "📢 Smart Digital Voice Locked ✨";
+            document.getElementById("audio-status").innerText = "📢 Smart Bilingual Voice Activated 🌐";
             document.getElementById("score-board-count").innerText = "SCORE: " + scoreCount;
             if(btn.getAttribute("data-state") === "next") btn.innerText = "Next Question";
             else if(btn.getAttribute("data-state") === "retry") btn.innerText = "Try Again 🔄";
@@ -390,8 +388,12 @@
         dropBox.innerText = (lang === 'mr') ? convertToMarathi(val) : val;
         dropBox.className = "target-drop-box filled";
         
-        // अंक निवडल्यावर त्याचा मराठी उच्चार
-        speakText((lang === 'mr') ? convertToMarathi(val) : val);
+        // अंक निवडल्यावर त्यानुसार उच्चार
+        if(lang === 'mr') {
+            speakText(convertToMarathi(val), 'mr');
+        } else {
+            speakText(val.toString(), 'en');
+        }
     }
 
     function checkCountAnswer() {
@@ -409,7 +411,12 @@
             res.innerText = (lang === 'mr') ? "✓ अप्रतिम! बरोबर उत्तर आहे. 🎉" : "✓ Excellent! Correct Answer. 🎉";
             res.className = "result correct";
             dropBox.className = "target-drop-box success-state";
-            speakText((lang === 'mr') ? "शाब्बास! बरोबर उत्तर आहे" : "Excellent! Correct Answer");
+            
+            if(lang === 'mr') {
+                speakText("शाब्बास! बरोबर उत्तर आहे", 'mr');
+            } else {
+                speakText("Excellent! Correct Answer", 'en');
+            }
 
             if(!isReviewState) {
                 scoreCount++;
@@ -426,7 +433,14 @@
             if(wrongBtn) wrongBtn.disabled = true;
             isReviewState = true; 
             setButtonState("retry");
-            setTimeout(() => { speakText((lang === 'mr') ? "पुन्हा प्रयत्न करा" : "Try again"); }, 50);
+            
+            setTimeout(() => { 
+                if(lang === 'mr') {
+                    speakText("पुन्हा प्रयत्न करा", 'mr');
+                } else {
+                    speakText("Try again", 'en');
+                }
+            }, 50);
         }
     }
 
@@ -467,7 +481,7 @@
         generateCountQuestion();
         
         if (!window.location.hash) {
-            window.location.hash = 'v1.3';
+            window.location.hash = 'v1.4';
             window.location.reload();
         }
     };
