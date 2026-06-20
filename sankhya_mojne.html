@@ -26,7 +26,7 @@
             min-height: 100vh; 
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* कोणतीही गोष्ट स्क्रीनच्या बाहेर जाणार नाही */
+            overflow: hidden;
         }
 
         @keyframes gradientBG {
@@ -69,7 +69,6 @@
             text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
         }
         
-        /* मुख्य कंटेनर - जो मोबाईल स्क्रीननुसार आपोआप लहान-मोठा होईल */
         .game-outer-wrapper {
             flex: 1;
             display: flex;
@@ -115,7 +114,7 @@
             border-radius: 30px; 
             display: flex; 
             gap: 4px;
-            border: 1px solid var(--glass-border); 
+            border: 1px solid var(--glass-border); Thames;
         }
         .lang-label { 
             font-size: 12px; 
@@ -136,6 +135,31 @@
             box-shadow: inset 0 0 8px rgba(0, 242, 254, 0.2);
         }
 
+        /* आवाज बदलण्यासाठी नवीन ड्रॉपडाऊन स्टाईल */
+        .voice-selector-container {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .voice-label { font-size: 12px; font-weight: 600; color: #94a3b8; display: flex; align-items: center; gap: 5px; }
+        .voice-select {
+            background: #101f32;
+            color: #00f2fe;
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            outline: none;
+            max-width: 60%;
+            cursor: pointer;
+        }
+
         .instruction-box { 
             background: rgba(0, 242, 254, 0.03); 
             padding: 10px 14px; 
@@ -145,13 +169,12 @@
         }
         .inst-mr { font-size: 13px; font-weight: 600; color: #00f2fe; letter-spacing: 0.5px; }
         
-        /* इमेज डिस्प्ले बोर्ड - चित्रांच्या संख्येनुसार आकार सेट होईल */
         .display-board-count { 
             background: rgba(0,0,0,0.4); 
             border: 1px solid rgba(255,255,255,0.05); 
             border-radius: 24px; 
             padding: 15px; 
-            font-size: calc(24px + 2vw); /* स्क्रीननुसार इमोजीचा आकार बदलेल */
+            font-size: calc(24px + 2vw); 
             line-height: 1.2;
             min-height: 100px; 
             max-height: 160px;
@@ -164,7 +187,6 @@
             box-shadow: inset 0 5px 15px rgba(0,0,0,0.6);
         }
         
-        /* 3D निऑन टार्गेट बॉक्स */
         .target-drop-box { 
             width: 75px; 
             height: 75px; 
@@ -207,7 +229,6 @@
             transform: scale(1.1); 
         }
         
-        /* गोल कोपऱ्यांचे निऑन ऑप्शन्स बटन्स */
         .options-flex { 
             display: flex; 
             justify-content: center; 
@@ -236,7 +257,6 @@
         }
         .opt-btn:disabled { opacity: 0.2; cursor: not-allowed; border-color: transparent !important; transform: none !important; box-shadow: none; }
         
-        /* मुख्य निऑन सबमिट बटण */
         .submit-btn { 
             font-size: 16px; 
             background: linear-gradient(135deg, #00f2fe, #4facfe); 
@@ -267,7 +287,6 @@
             75% { transform: translateX(6px); }
         }
 
-        /* लहान मोबाईल स्क्रीनसाठी (Responsive Fix) */
         @media (max-height: 650px) {
             .game-container { padding: 15px; gap: 8px; }
             .display-board-count { min-height: 80px; max-height: 110px; padding: 10px; }
@@ -295,6 +314,11 @@
             </div>
         </div>
 
+        <div class="voice-selector-container">
+            <span class="voice-label">🗣️ <span id="voice-label-text">आवाज निवडा:</span></span>
+            <select id="voice-select-dropdown" class="voice-select"></select>
+        </div>
+
         <div class="instruction-box">
             <div class="inst-mr" id="instruction-text">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
         </div>
@@ -313,6 +337,7 @@
     let scoreCount = 0, correctCountAns = 0, selectedCountAns = null;
     let lastNumber = 0; 
     let isReviewState = false; 
+    let sysVoices = [];
     
     const originalDesigns = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦", "🍭", "🍩", "🚗", "🐱", "🦁", "🦖"];
     let availableDesigns = [...originalDesigns];
@@ -326,12 +351,47 @@
         return document.querySelector('input[name="lang-select"]:checked').value;
     }
 
+    // मोबाईलमधील उपलब्ध आवाजांची यादी लोड करणे
+    function loadAvailableVoices() {
+        if (!('speechSynthesis' in window)) return;
+        
+        sysVoices = window.speechSynthesis.getVoices();
+        let dropdown = document.getElementById("voice-select-dropdown");
+        dropdown.innerHTML = "";
+        
+        let currentLangCode = currentLanguage() === 'mr' ? 'mr' : 'en';
+        let filteredVoices = sysVoices.filter(v => v.lang.startsWith(currentLangCode));
+        
+        // जर विशिष्ट भाषेचा आवाज नसेल तर सर्व आवाज दाखवा
+        if(filteredVoices.length === 0) {
+            filteredVoices = sysVoices;
+        }
+
+        filteredVoices.forEach((voice, index) => {
+            let option = document.createElement("option");
+            option.value = voice.name;
+            
+            // सोपे नाव दाखवण्यासाठी
+            let gender = voice.name.toLowerCase().includes('female') ? 'स्त्री' : 'पुरुष/सामान्य';
+            if(currentLanguage() === 'en') gender = voice.name.toLowerCase().includes('female') ? 'Female' : 'Male/Default';
+            
+            option.textContent = `${gender} (${voice.name.split(' ')[0]})`;
+            dropdown.appendChild(option);
+        });
+    }
+
+    // आवाज लोड होण्याची सिस्टीम वाट पाहते (काही मोबाईलमध्ये उशिरा लोड होतात)
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = loadAvailableVoices;
+    }
+
     function updateLanguageUI() {
         let lang = currentLanguage();
         let btn = document.getElementById("action-btn-count");
         
         if(lang === 'mr') {
             document.getElementById("instruction-text").innerText = "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!";
+            document.getElementById("voice-label-text").innerText = "आवाज निवडा:";
             document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(scoreCount);
             
             if(btn.getAttribute("data-state") === "next") btn.innerText = "पुढचे उदाहरण";
@@ -339,6 +399,7 @@
             else btn.innerText = "उत्तर तपासा";
         } else {
             document.getElementById("instruction-text").innerText = "Count the pictures and select the correct number!";
+            document.getElementById("voice-label-text").innerText = "Select Voice:";
             document.getElementById("score-board-count").innerText = "SCORE: " + scoreCount;
             
             if(btn.getAttribute("data-state") === "next") btn.innerText = "Next Question";
@@ -348,6 +409,7 @@
         if(selectedCountAns !== null) {
             document.getElementById("drop-target-box").innerText = (lang === 'mr') ? convertToMarathi(selectedCountAns) : selectedCountAns;
         }
+        loadAvailableVoices();
         renderOptions();
     }
 
@@ -421,7 +483,17 @@
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
+            
+            // ड्रॉपडाऊनमधून निवडलेला आवाज सेट करणे
+            let selectedVoiceName = document.getElementById("voice-select-dropdown").value;
+            let matchedVoice = sysVoices.find(v => v.name === selectedVoiceName);
+            
+            if (matchedVoice) {
+                utterance.voice = matchedVoice;
+            } else {
+                utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
+            }
+            
             utterance.rate = 0.9;
             window.speechSynthesis.speak(utterance);
         }
@@ -458,57 +530,4 @@
             res.className = "result wrong";
             dropBox.className = "target-drop-box error-state";
             
-            document.getElementById(`opt-${selectedCountAns}`).disabled = true;
-            isReviewState = true; 
-            setButtonState("retry");
-
-            setTimeout(() => {
-                let msg = (lang === 'mr') ? "पुन्हा प्रयत्न करा" : "Try again";
-                speakText(msg);
-            }, 50);
-        }
-    }
-
-    function retryCurrentQuestion() {
-        selectedCountAns = null;
-        resetDropBox();
-        document.getElementById("result-message-count").innerText = "";
-        
-        generatedOptions.forEach(val => {
-            let btn = document.getElementById(`opt-${val}`);
-            if(btn && btn.getAttribute("disabled") === null) {
-                btn.disabled = false;
-            }
-        });
-
-        setButtonState("check");
-    }
-
-    function disableAllOptions() {
-        let btns = document.querySelectorAll(".opt-btn");
-        btns.forEach(b => b.disabled = true);
-    }
-
-    function setButtonState(state) {
-        let lang = currentLanguage();
-        let btn = document.getElementById("action-btn-count");
-        btn.setAttribute("data-state", state);
-        
-        if(state === "check") {
-            btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
-            btn.setAttribute("onclick", "checkCountAnswer()");
-        } else if(state === "retry") {
-            btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
-            btn.setAttribute("onclick", "retryCurrentQuestion()");
-        } else if(state === "next") {
-            btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
-            btn.setAttribute("onclick", "generateCountQuestion()");
-        }
-    }
-
-    window.onload = function() {
-        generateCountQuestion();
-    };
-</script>
-</body>
-</html>
+            documen
