@@ -134,7 +134,6 @@
             color: #00f2fe; 
         }
 
-        /* ड्रॉपडाऊन स्टाईल सुधारली */
         .voice-selector-container {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--glass-border);
@@ -228,7 +227,6 @@
             transform: scale(1.1); 
         }
         
-        /* अंकांचे ऑप्शन्स व्यवस्थित दिसण्यासाठी */
         .options-flex { 
             display: flex; 
             justify-content: center; 
@@ -533,4 +531,5 @@
             setButtonState("next");
         } else {
             res.innerText = (lang === 'mr') ? "✗ चुकीचे उत्तर! पुन्हा प्रयत्न करा." : "✗ Wrong Answer! Try again.";
-        
+            res.className = "result wrong";
+            dropBox.className = "target-drop-box error-
