@@ -222,7 +222,7 @@
             res.className = "result correct";
             dropBox.className = "target-drop-box success-state";
             
-            // १००% चालणारा सिस्टीम आवाज: बरोबर आल्यावर मोबाईल मराठीत किंवा इंग्रजीत शाब्बासकी देईल
+            // आधी आवाज देऊन मग सिस्टीम बटन्स लॉक करेल (याने आवाज शंभर टक्के येईल)
             let successMsg = (lang === 'mr') ? "शाब्बास! बरोबर उत्तर आहे" : "Excellent! Correct Answer";
             speakText(successMsg);
 
@@ -245,7 +245,7 @@
             setTimeout(() => {
                 let msg = (lang === 'mr') ? "पुन्हा प्रयत्न करा" : "Try again";
                 speakText(msg);
-            }, 100);
+            }, 50);
         }
     }
 
