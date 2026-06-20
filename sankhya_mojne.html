@@ -124,46 +124,16 @@
             color: #00f2fe; 
         }
 
-        /* टेस्ट व्हॉईस बॉक्सची नवीन डिझाईन */
-        .voice-selector-container {
+        /* ऑडिओ स्टेटस बार */
+        .audio-status-box {
             background: rgba(0, 242, 254, 0.05);
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            border-radius: 14px;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .voice-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
-        .voice-label { font-size: 12px; font-weight: 700; color: #00f2fe; }
-        .voice-select {
-            background: #101f32;
-            color: #00f2fe;
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            padding: 6px 8px;
-            border-radius: 8px;
-            font-size: 12px;
-            outline: none;
-            width: 65%;
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            border-radius: 12px;
+            padding: 8px 12px;
+            text-align: center;
+            font-size: 11px;
+            color: #a7f3d0;
             font-weight: 600;
-        }
-        .test-voice-btn {
-            background: linear-gradient(135deg, #00e676, #00c853);
-            color: #050b14;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            width: 100%;
-            text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(0, 230, 118, 0.2);
         }
 
         .instruction-box { 
@@ -179,15 +149,15 @@
             border: 1px solid rgba(255,255,255,0.05); 
             border-radius: 16px; 
             padding: 8px; 
-            font-size: 26px; 
-            min-height: 65px; 
-            max-height: 95px;
+            font-size: 32px; 
+            min-height: 70px; 
+            max-height: 100px;
             overflow-y: auto;
             display: flex; 
             align-items: center; 
             justify-content: center; 
             flex-wrap: wrap; 
-            gap: 5px;
+            gap: 6px;
         }
         
         .target-drop-box { 
@@ -280,14 +250,8 @@
             </div>
         </div>
 
-        <div class="voice-selector-container">
-            <div class="voice-row">
-                <span class="voice-label">🗣️ <span id="voice-label-text">आवाज निवडा:</span></span>
-                <select id="voice-select-dropdown" class="voice-select">
-                    <option value="default">सिस्टीम आवाज (Default)</option>
-                </select>
-            </div>
-            <button class="test-voice-btn" onclick="testCurrentVoice()">🎵 आवाज ऐका (Play)</button>
+        <div class="audio-status-box" id="audio-status">
+            📢 स्मार्ट डिजिटल आवाज लॉक केला आहे ✨
         </div>
 
         <div class="instruction-box">
@@ -309,7 +273,6 @@
     let scoreCount = 0, correctCountAns = 0, selectedCountAns = null;
     let lastNumber = 0; 
     let isReviewState = false; 
-    let sysVoices = [];
     let generatedOptions = []; 
     
     const originalDesigns = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦", "🍭", "🍩", "🚗", "🐱", "🦁", "🦖"];
@@ -324,46 +287,24 @@
         return document.querySelector('input[name="lang-select"]:checked').value;
     }
 
-    function loadAvailableVoices() {
-        if (!('speechSynthesis' in window)) return;
-        
-        sysVoices = window.speechSynthesis.getVoices();
-        let dropdown = document.getElementById("voice-select-dropdown");
-        if(!dropdown) return;
-        
-        dropdown.innerHTML = "";
-        let defaultOpt = document.createElement("option");
-        defaultOpt.value = "default";
-        defaultOpt.textContent = currentLanguage() === 'mr' ? "सिस्टीम आवाज (Default)" : "System Default";
-        dropdown.appendChild(defaultOpt);
-        
-        let currentLangCode = currentLanguage() === 'mr' ? 'mr' : 'en';
-        let filteredVoices = sysVoices.filter(v => v.lang.startsWith(currentLangCode));
-        
-        if(filteredVoices.length === 0 && sysVoices.length > 0) {
-            filteredVoices = sysVoices;
-        }
-
-        filteredVoices.forEach((voice) => {
-            let option = document.createElement("option");
-            option.value = voice.name;
-            let gender = voice.name.toLowerCase().includes('female') ? 'स्त्री' : 'पुरुष/सामान्य';
-            if(currentLanguage() === 'en') gender = voice.name.toLowerCase().includes('female') ? 'Female' : 'Male/Default';
-            option.textContent = `${gender} (${voice.name.split(' ')[0]})`;
-            dropdown.appendChild(option);
-        });
-    }
-
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.onvoiceschanged = loadAvailableVoices;
-        loadAvailableVoices();
-    }
-
-    // निवडलेला आवाज टेस्ट करण्यासाठी फंक्शन
-    function testCurrentVoice() {
+    // हाय-क्वालिटी ऑनलाईन आवाज प्ले करणारे फंक्शन
+    function speakText(text) {
         let lang = currentLanguage();
-        let sampleText = (lang === 'mr') ? "शाब्बास! डिजिटल शाळा प्रो मध्ये आपले स्वागत आहे." : "Excellent! Welcome to Digital Shala Pro.";
-        speakText(sampleText);
+        let langCode = (lang === 'mr') ? 'mr' : 'en';
+        
+        // गुगलचा अधिकृत ऑनलाईन TTS API चा वापर
+        let audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${langCode}&client=tw-ob&q=${encodeURIComponent(text)}`;
+        
+        let audio = new Audio(audioUrl);
+        audio.play().catch(e => {
+            // बॅकअप म्हणून जर इंटरनेट नसेल तर मोबाईलच्या सिस्टीम आवाजात बोलेल
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = (lang === 'mr') ? 'mr-IN' : 'en-US';
+                window.speechSynthesis.speak(utterance);
+            }
+        });
     }
 
     function updateLanguageUI() {
@@ -372,14 +313,14 @@
         
         if(lang === 'mr') {
             document.getElementById("instruction-text").innerText = "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!";
-            document.getElementById("voice-label-text").innerText = "आवाज निवडा:";
+            document.getElementById("audio-status").innerText = "📢 स्मार्ट डिजिटल आवाज लॉक केला आहे ✨";
             document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(scoreCount);
             if(btn.getAttribute("data-state") === "next") btn.innerText = "पुढचे उदाहरण";
             else if(btn.getAttribute("data-state") === "retry") btn.innerText = "पुन्हा प्रयत्न करा 🔄";
             else btn.innerText = "उत्तर तपासा";
         } else {
             document.getElementById("instruction-text").innerText = "Count the pictures and select the correct number!";
-            document.getElementById("voice-label-text").innerText = "Select Voice:";
+            document.getElementById("audio-status").innerText = "📢 Smart Digital Voice Locked ✨";
             document.getElementById("score-board-count").innerText = "SCORE: " + scoreCount;
             if(btn.getAttribute("data-state") === "next") btn.innerText = "Next Question";
             else if(btn.getAttribute("data-state") === "retry") btn.innerText = "Try Again 🔄";
@@ -388,12 +329,10 @@
         if(selectedCountAns !== null) {
             document.getElementById("drop-target-box").innerText = (lang === 'mr') ? convertToMarathi(selectedCountAns) : selectedCountAns;
         }
-        loadAvailableVoices();
         renderOptions();
     }
 
     function generateCountQuestion() {
-        let lang = currentLanguage();
         selectedCountAns = null;
         isReviewState = false;
         
@@ -450,25 +389,9 @@
         let dropBox = document.getElementById("drop-target-box");
         dropBox.innerText = (lang === 'mr') ? convertToMarathi(val) : val;
         dropBox.className = "target-drop-box filled";
-        speakText(val);
-    }
-
-    function speakText(text) {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            let utterance = new SpeechSynthesisUtterance(text);
-            let dropdown = document.getElementById("voice-select-dropdown");
-            let selectedVoiceName = dropdown ? dropdown.value : "default";
-            
-            if(selectedVoiceName !== "default") {
-                let matchedVoice = sysVoices.find(v => v.name === selectedVoiceName);
-                if (matchedVoice) utterance.voice = matchedVoice;
-            } else {
-                utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
-            }
-            utterance.rate = 0.9;
-            window.speechSynthesis.speak(utterance);
-        }
+        
+        // अंक निवडल्यावर त्याचा मराठी उच्चार
+        speakText((lang === 'mr') ? convertToMarathi(val) : val);
     }
 
     function checkCountAnswer() {
@@ -533,4 +456,21 @@
             btn.setAttribute("onclick", "checkCountAnswer()");
         } else if(state === "retry") {
             btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
-            btn.setAttribute("
+            btn.setAttribute("onclick", "retryCurrentQuestion()");
+        } else if(state === "next") {
+            btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
+            btn.setAttribute("onclick", "generateCountQuestion()");
+        }
+    }
+
+    window.onload = function() {
+        generateCountQuestion();
+        
+        if (!window.location.hash) {
+            window.location.hash = 'v1.3';
+            window.location.reload();
+        }
+    };
+</script>
+</body>
+</html>
