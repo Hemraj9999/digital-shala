@@ -2,78 +2,170 @@
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>गणित विषय सूची - Digital Shala Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>गणित डिजिटल शाळा - मुख्य पान</title>
     <style>
-        :root {
-            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
-            --card-bg: rgba(255, 255, 255, 0.06); 
-            --card-border: rgba(255, 255, 255, 0.1);
+        :root { 
+            --bg-gradient: linear-gradient(135deg, #050b14, #101f32, #0a1128); 
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --primary-glow: rgba(0, 242, 254, 0.15);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: var(--bg-gradient); color: #f8fafc; min-height: 100vh; text-align: center; padding: 20px; }
         
-        header { max-width: 600px; margin: 20px auto; display: flex; align-items: center; justify-content: space-between; }
-        .back-btn { color: #94a3b8; text-decoration: none; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 30px; font-size: 14px; border: 1px solid var(--card-border); transition: 0.3s; }
-        .back-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
-        header h2 { font-size: 24px; font-weight: 700; background: linear-gradient(90deg, #ff9f43, #ff5252); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        .menu-container { max-width: 500px; margin: 40px auto; display: flex; flex-direction: column; gap: 20px; width: 92%; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* विषय निवडीचे कार्ड्स */
-        .menu-card { 
-            background: var(--card-bg); 
-            border: 1px solid var(--card-border); 
-            border-radius: 20px; 
-            padding: 25px; 
-            text-decoration: none; 
-            color: #fff; 
+        body { 
+            background: var(--bg-gradient); 
+            color: #f8fafc; 
+            min-height: 100vh; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 15px;
+        }
+        
+        header { 
+            width: 100%;
+            max-width: 410px;
             display: flex; 
             align-items: center; 
-            gap: 20px; 
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            margin-bottom: 25px;
+            position: relative;
         }
-        .menu-card:hover { transform: translateY(-5px); border-color: #ff9f43; box-shadow: 0 10px 20px rgba(255, 159, 67, 0.2); }
-        .card-icon { font-size: 40px; background: rgba(255,255,255,0.05); width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; border-radius: 15px; }
-        .card-info { text-align: left; }
-        .card-info h3 { font-size: 18px; margin-bottom: 5px; color: #ffad5a; }
-        .card-info p { font-size: 13px; color: #94a3b8; }
+        
+        .back-btn { 
+            color: #94a3b8; 
+            text-decoration: none; 
+            background: rgba(255, 255, 255, 0.05); 
+            padding: 6px 14px; 
+            border-radius: 30px; 
+            font-size: 12px; 
+            font-weight: 600;
+            border: 1px solid var(--glass-border); 
+            position: absolute;
+            left: 0;
+        }
+        
+        .main-title { 
+            width: 100%;
+            text-align: center;
+            font-size: 24px; 
+            font-weight: 850; 
+            line-height: 32px;
+        }
+        .orange-text { color: #ff761b; }
+        .white-text { color: #ffffff; }
+        
+        .menu-container { 
+            max-width: 410px; 
+            width: 100%; 
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .menu-card { 
+            background: var(--glass); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 20px; 
+            padding: 18px; 
+            display: flex; 
+            align-items: center; 
+            gap: 16px;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        
+        .menu-card:active {
+            transform: scale(0.98);
+            border-color: #00f2fe;
+            background: var(--primary-glow);
+        }
+        
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+        
+        /* प्रत्येक गेमचे आयकॉन ग्लो इफेक्ट्स */
+        .card-1 .icon-box { background: rgba(0, 176, 255, 0.1); border: 1px solid rgba(0, 176, 255, 0.2); }
+        .card-2 .icon-box { background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.2); }
+        .card-3 .icon-box { background: rgba(255, 23, 68, 0.1); border: 1px solid rgba(255, 23, 68, 0.2); }
+        .card-4 .icon-box { background: rgba(0, 230, 118, 0.1); border: 1px solid rgba(0, 230, 118, 0.2); }
+        
+        .text-box {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .game-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ff9100;
+        }
+        .card-1 .game-title { color: #00b0ff; }
+        .card-2 .game-title { color: #ffd700; }
+        .card-3 .game-title { color: #ff1744; }
+        .card-4 .game-title { color: #00e676; }
+        
+        .game-desc {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 18px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <a href="index.html" class="back-btn">⬅ मुख्य पान</a>
-    <h2>🔢 गणित डिजिटल शाळा</h2>
-    <div style="width:85px;"></div>
+    <a href="index.html" class="back-btn">← मुख्य पान</a>
+    <h1 class="main-title"><span class="orange-text">■ गणित</span><br><span class="white-text">डिजिटल शाळा</span></h1>
 </header>
 
 <div class="menu-container">
-    <a href="ank_olakha.html" class="menu-card">
-        <div class="card-icon">💎</div>
-        <div class="card-info">
-            <h3>१. अंक ओळख (1 to 1000)</h3>
-            <p>मराठी आणि इंग्रजी दोन्ही भाषांमध्ये १ ते १००० अंक ऐका व शिका.</p>
+    
+    <a href="ank_olakha.html" class="menu-card card-1">
+        <div class="icon-box">💎</div>
+        <div class="text-box">
+            <div class="game-title">१. अंक ओळख (1 to 1000)</div>
+            <div class="game-desc">मराठी आणि इंग्रजी दोन्ही भाषांमध्ये १ ते १००० अंक ऐका व शिका.</div>
+        </div>
+    </a>
+    
+    <a href="sankhya_mojne.html" class="menu-card card-2">
+        <div class="icon-box">✨</div>
+        <div class="text-box">
+            <div class="game-title">२. संख्या मोजणे (Count)</div>
+            <div class="game-desc">वेगवेगळी चित्रे मोजा आणि योग्य संख्या निवडून बॉक्स भरा.</div>
+        </div>
+    </a>
+    
+    <a href="chitre_berij.html" class="menu-card card-3">
+        <div class="icon-box">⚡</div>
+        <div class="text-box">
+            <div class="game-title">३. चित्रे व बेरीज (Addition)</div>
+            <div class="game-desc">चित्रे मोजून त्यांची बेरीज करण्याचा सराव करा.</div>
         </div>
     </a>
 
-    <a href="sankhya_mojne.html" class="menu-card">
-        <div class="card-icon">✨</div>
-        <div class="card-info">
-            <h3>२. संख्या मोजणे (Count)</h3>
-            <p>वेगवेगळी चित्रे मोजा आणि योग्य संख्या निवडून बॉक्स भरा.</p>
+    <a href="pudhchi_mavgchi.html" class="menu-card card-4">
+        <div class="icon-box">🧩</div>
+        <div class="text-box">
+            <div class="game-title">४. संख्या क्रम (Before, After, Between)</div>
+            <div class="game-desc">दिलेल्या संख्येच्या आधीची, नंतरची आणि मधली अचूक संख्या ओळखा.</div>
         </div>
     </a>
-
-    <a href="chitre_berij.html" class="menu-card">
-        <div class="card-icon">⚡</div>
-        <div class="card-info">
-            <h3>३. चित्रे व बेरीज (Addition)</h3>
-            <p>चित्रे मोजून त्यांची बेरीज करण्याचा सराव करा.</p>
-        </div>
-    </a>
+    
 </div>
 
 </body>
