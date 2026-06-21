@@ -271,11 +271,7 @@
         </div>
         
         <div class="options-flex" id="options-container">
-            <button class="opt-btn">-</button>
-            <button class="opt-btn">-</button>
-            <button class="opt-btn">-</button>
-            <button class="opt-btn">-</button>
-        </div>
+            </div>
         
         <button id="action-btn" class="submit-btn" onclick="checkAnswer()">उत्तर तपासा</button>
         <div class="result" id="result-message"></div>
@@ -320,7 +316,6 @@
     function speakText(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
-            // 🎯 स्पेलिंग मिस्टेक येथे दुरुस्त केली आहे: SpeechSynthesisUtterance
             let utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
             window.speechSynthesis.speak(utterance);
@@ -416,7 +411,9 @@
 
         setInstructionText();
         renderCurrentNumbersInBoxes();
-        document.getElementById("result-message").innerText = "";
+        if(document.getElementById("result-message")) {
+            document.getElementById("result-message").innerText = "";
+        }
         
         let optionsSet = new Set();
         optionsSet.add(correctAns);
@@ -443,6 +440,8 @@
         let b1 = document.getElementById("box-1");
         let b2 = document.getElementById("box-2");
         let b3 = document.getElementById("box-3");
+        
+        if(!b1 || !b2 || !b3) return;
 
         b1.className = "num-box";
         b2.className = "num-box";
@@ -488,7 +487,6 @@
     function selectNumber(val) {
         selectedAns = val;
         renderCurrentNumbersInBoxes();
-        let lang = currentLanguage();
         
         let btns = document.querySelectorAll(".opt-btn");
         btns.forEach(b => b.style.borderColor = "rgba(0, 242, 254, 0.5)");
@@ -533,4 +531,11 @@
     }
 
     function disableAllOptions() {
-        let btns = document.q
+        let btns = document.querySelectorAll(".opt-btn");
+        btns.forEach(b => b.disabled = true);
+    }
+
+    function retryCurrentQuestion() {
+        selectedAns = null;
+        renderCurrentNumbersInBoxes();
+ 
