@@ -320,6 +320,7 @@
     function speakText(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
+            // 🎯 स्पेलिंग मिस्टेक येथे दुरुस्त केली आहे: SpeechSynthesisUtterance
             let utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
             window.speechSynthesis.speak(utterance);
@@ -532,8 +533,4 @@
     }
 
     function disableAllOptions() {
-        let btns = document.querySelectorAll(".opt-btn");
-        btns.forEach(b => b.disabled = true);
-    }
-
- 
+        let btns = document.q
