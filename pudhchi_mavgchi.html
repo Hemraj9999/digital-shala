@@ -265,9 +265,9 @@
         </div>
         
         <div class="number-line-display">
-            <div class="num-box" id="box-1">१</div>
-            <div class="num-box" id="box-2">२</div>
-            <div class="num-box" id="box-3">३</div>
+            <div class="num-box" id="box-1">?</div>
+            <div class="num-box" id="box-2">?</div>
+            <div class="num-box" id="box-3">?</div>
         </div>
         
         <div class="options-flex" id="options-container">
@@ -311,15 +311,6 @@
         lastCorrectAns = 0;
         updateLanguageUI();
         generateQuestion();
-    }
-
-    function speakText(text) {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
-            window.speechSynthesis.speak(utterance);
-        }
     }
 
     function updateLanguageUI() {
@@ -538,4 +529,12 @@
     function retryCurrentQuestion() {
         selectedAns = null;
         renderCurrentNumbersInBoxes();
- 
+        document.getElementById("result-message").innerText = "";
+        generatedOptions.forEach(val => {
+            let btn = document.getElementById(`opt-${val}`);
+            if(btn) {
+                btn.disabled = false;
+                btn.style.borderColor = "rgba(0, 242, 254, 0.5)";
+            }
+        });
+        setB
