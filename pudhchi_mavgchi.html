@@ -73,7 +73,7 @@
             backdrop-filter: blur(20px); 
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
         
         .top-row {
@@ -180,43 +180,49 @@
         .num-box.missing.success-state { border-color: var(--success) !important; color: var(--success) !important; background: rgba(0, 230, 118, 0.1) !important; }
         .num-box.missing.error-state { border-color: var(--error) !important; color: var(--error) !important; background: rgba(255, 23, 68, 0.1) !important; }
         
+        /* 🎯 पर्यायांची जागा - अत्यंत सुरक्षित डिझाईन */
         .options-flex { 
             display: flex !important;
             justify-content: space-between !important;
-            gap: 8px !important; 
-            margin: 12px 0 !important;
+            gap: 10px !important; 
+            margin: 15px 0 !important;
             width: 100% !important;
-            min-height: 55px !important;
+            min-height: 60px !important;
         }
         .opt-btn { 
             flex: 1 !important;
             background: #101f32 !important; 
-            border: 1px solid rgba(0, 242, 254, 0.4) !important; 
+            border: 2px solid rgba(0, 242, 254, 0.5) !important; 
             border-radius: 12px !important; 
-            height: 52px !important; 
-            font-size: 20px !important; 
+            height: 55px !important; 
+            font-size: 22px !important; 
             font-weight: 800 !important; 
             color: #00f2fe !important; 
             cursor: pointer !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .opt-btn:active {
+            background: rgba(0, 242, 254, 0.2) !important;
         }
         .opt-btn:disabled { opacity: 0.2 !important; cursor: not-allowed !important; }
         
         .submit-btn { 
-            font-size: 14px; 
+            font-size: 16px; 
             background: linear-gradient(135deg, #00f2fe, #4facfe); 
             color: #050b14; 
             border: none; 
-            padding: 12px; 
+            padding: 14px; 
             border-radius: 12px; 
             cursor: pointer; 
             font-weight: 800; 
             width: 100%; 
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
         }
         
-        .result { font-size: 14px; font-weight: 700; min-height: 20px; text-align: center; }
+        .result { font-size: 15px; font-weight: 700; min-height: 25px; text-align: center; margin-top: 5px; }
         .correct { color: #00e676; }
         .wrong { color: #ff1744; }
     </style>
@@ -265,7 +271,12 @@
             <div class="num-box" id="box-3">३</div>
         </div>
         
-        <div class="options-flex" id="options-container"></div>
+        <div class="options-flex" id="options-container">
+            <button class="opt-btn" id="opt-placeholder-1">-</button>
+            <button class="opt-btn" id="opt-placeholder-2">-</button>
+            <button class="opt-btn" id="opt-placeholder-3">-</button>
+            <button class="opt-btn" id="opt-placeholder-4">-</button>
+        </div>
         
         <button id="action-btn" class="submit-btn" onclick="checkAnswer()">उत्तर तपासा</button>
         <div class="result" id="result-message"></div>
@@ -290,7 +301,8 @@
     }
 
     function currentLanguage() {
-        return document.querySelector('input[name="lang-select"]:checked').value;
+        let selected = document.querySelector('input[name="lang-select"]:checked');
+        return selected ? selected.value : "mr";
     }
 
     function onRangeDropdownChange() {
@@ -309,7 +321,7 @@
     function speakText(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
-            let utterance = new SpeechSynthesisUtterance(text);
+            let utterance = new SynthesisUtterance(text);
             utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
             window.speechSynthesis.speak(utterance);
         }
@@ -459,11 +471,17 @@
         let lang = currentLanguage();
         let optContainer = document.getElementById("options-container");
         if(!optContainer) return;
+        
         optContainer.innerHTML = "";
         
         generatedOptions.forEach(val => {
             let displayVal = (lang === 'mr') ? convertToMarathi(val) : val;
-            optContainer.innerHTML += `<button class="opt-btn" id="opt-${val}" onclick="selectNumber(${val})">${displayVal}</button>`;
+            let btn = document.createElement("button");
+            btn.className = "opt-btn";
+            btn.id = "opt-" + val;
+            btn.innerText = displayVal;
+            btn.onclick = function() { selectNumber(val); };
+            optContainer.appendChild(btn);
         });
     }
 
@@ -471,7 +489,15 @@
         selectedAns = val;
         renderCurrentNumbersInBoxes();
         let lang = currentLanguage();
-        speakText((lang === 'mr') ? convertToMarathi(val) : val.toString());
+        
+        // सिलेक्ट केलेल्या बटणला हायलाईट करणे
+        let btns = document.querySelectorAll(".opt-btn");
+        btns.forEach(b => b.style.borderColor = "rgba(0, 242, 254, 0.5)");
+        
+        let selectedBtn = document.getElementById("opt-" + val);
+        if(selectedBtn) {
+            selectedBtn.style.borderColor = "#00e676";
+        }
     }
 
     function checkAnswer() {
@@ -489,8 +515,6 @@
             res.className = "result correct";
             if(activeMissingBox) activeMissingBox.className = "num-box missing filled success-state";
             
-            speakText((lang === 'mr') ? "शाब्बास बरोबर उत्तर" : "Correct answer");
-
             if(!isReviewState) {
                 score++;
                 document.getElementById("score-board-count").innerText = "SCORE: " + ((lang === 'mr') ? convertToMarathi(score) : score);
@@ -502,35 +526,7 @@
             res.className = "result wrong";
             if(activeMissingBox) activeMissingBox.className = "num-box missing filled error-state";
             
-            document.getElementById(`opt-${selectedAns}`).disabled = true;
+            let badBtn = document.getElementById(`opt-${selectedAns}`);
+            if(badBtn) badBtn.disabled = true;
             isReviewState = true; 
-            setButtonState("retry");
-            speakText((lang === 'mr') ? "पुन्हा प्रयत्न करा" : "Try again");
-        }
-    }
-
-    function disableAllOptions() {
-        let btns = document.querySelectorAll(".opt-btn");
-        btns.forEach(b => b.disabled = true);
-    }
-
-    function retryCurrentQuestion() {
-        selectedAns = null;
-        renderCurrentNumbersInBoxes();
-        document.getElementById("result-message").innerText = "";
-        generatedOptions.forEach(val => {
-            let btn = document.getElementById(`opt-${val}`);
-            if(btn) btn.disabled = false;
-        });
-        setButtonState("check");
-    }
-
-    function setButtonState(state) {
-        let lang = currentLanguage();
-        let btn = document.getElementById("action-btn");
-        btn.setAttribute("data-state", state);
-        
-        if(state === "check") {
-            btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
-            btn.setAttribute("onclick", "checkAnswer()");
-        } 
+          
