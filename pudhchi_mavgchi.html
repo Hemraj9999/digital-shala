@@ -180,7 +180,6 @@
         .num-box.missing.success-state { border-color: var(--success) !important; color: var(--success) !important; background: rgba(0, 230, 118, 0.1) !important; }
         .num-box.missing.error-state { border-color: var(--error) !important; color: var(--error) !important; background: rgba(255, 23, 68, 0.1) !important; }
         
-        /* 🎯 पर्यायांची जागा - अत्यंत महत्त्वाचे फिक्स */
         .options-flex { 
             display: flex !important;
             justify-content: space-between !important;
@@ -319,13 +318,36 @@
     function updateLanguageUI() {
         let lang = currentLanguage();
         let btn = document.getElementById("action-btn");
+        let dropdown = document.getElementById("range-select-dropdown");
         
         if(lang === 'mr') {
             document.getElementById("select-range-label").innerText = "🎯 अभ्यासासाठी संख्या गट निवडा:";
             document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(score);
+            
+            dropdown.options[0].text = "🔢 गट: १ ते १०";
+            dropdown.options[1].text = "🔢 गट: ११ ते २०";
+            dropdown.options[2].text = "🔢 गट: २१ ते ३०";
+            dropdown.options[3].text = "🔢 गट: ३१ ते ४०";
+            dropdown.options[4].text = "🔢 गट: ४१ ते ५०";
+            dropdown.options[5].text = "🔢 गट: ५१ ते ६०";
+            dropdown.options[6].text = "🔢 गट: ६१ ते ७०";
+            dropdown.options[7].text = "🔢 गट: ७१ ते ८०";
+            dropdown.options[8].text = "🔢 गट: ८१ ते ९०";
+            dropdown.options[9].text = "🔢 गट: ९१ ते १००";
         } else {
             document.getElementById("select-range-label").innerText = "🎯 Select Number Group:";
             document.getElementById("score-board-count").innerText = "SCORE: " + score;
+            
+            dropdown.options[0].text = "🔢 Group: 1 to 10";
+            dropdown.options[1].text = "🔢 Group: 11 to 20";
+            dropdown.options[2].text = "🔢 Group: 21 to 30";
+            dropdown.options[3].text = "🔢 Group: 31 to 40";
+            dropdown.options[4].text = "🔢 Group: 41 to 50";
+            dropdown.options[5].text = "🔢 Group: 51 to 60";
+            dropdown.options[6].text = "🔢 Group: 61 to 70";
+            dropdown.options[7].text = "🔢 Group: 71 to 80";
+            dropdown.options[8].text = "🔢 Group: 81 to 90";
+            dropdown.options[9].text = "🔢 Group: 91 to 100";
         }
 
         setInstructionText();
@@ -511,18 +533,4 @@
         if(state === "check") {
             btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
             btn.setAttribute("onclick", "checkAnswer()");
-        } else if(state === "retry") {
-            btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
-            btn.setAttribute("onclick", "retryCurrentQuestion()");
-        } else if(state === "next") {
-            btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
-            btn.setAttribute("onclick", "generateQuestion()");
-        }
-    }
-
-    window.onload = function() {
-        generateQuestion();
-    };
-</script>
-</body>
-</html>
+        } 
