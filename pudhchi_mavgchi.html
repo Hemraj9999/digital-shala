@@ -23,7 +23,7 @@
             min-height: 100vh; 
             display: flex;
             flex-direction: column;
-            padding-bottom: 30px;
+            padding-bottom: 40px;
         }
         
         header { 
@@ -141,9 +141,8 @@
             border-left: 3px solid #00f2fe; 
             text-align: center;
         }
-        .inst-mr { font-size: 13px; font-weight: 700; color: #00f2fe; text-transform: uppercase; }
+        .inst-mr { font-size: 13px; font-weight: 700; color: #00f2fe; }
         
-        /* तीन संख्यांचा डिस्प्ले बोर्ड */
         .number-line-display { 
             background: rgba(0,0,0,0.3); 
             border: 1px solid rgba(255,255,255,0.05); 
@@ -170,39 +169,41 @@
         }
 
         .num-box.missing {
-            border: 2px dashed #00f2fe;
-            background: rgba(0, 242, 254, 0.03);
-            color: #00f2fe;
+            border: 2px dashed #00f2fe !important;
+            background: rgba(0, 242, 254, 0.03) !important;
+            color: #00f2fe !important;
         }
         .num-box.missing.filled {
-            border-style: solid;
-            background: rgba(0, 242, 254, 0.15);
+            border-style: solid !important;
+            background: rgba(0, 242, 254, 0.15) !important;
         }
-        .num-box.missing.success-state { border-color: var(--success); color: var(--success); background: rgba(0, 230, 118, 0.1); }
-        .num-box.missing.error-state { border-color: var(--error); color: var(--error); background: rgba(255, 23, 68, 0.1); }
+        .num-box.missing.success-state { border-color: var(--success) !important; color: var(--success) !important; background: rgba(0, 230, 118, 0.1) !important; }
+        .num-box.missing.error-state { border-color: var(--error) !important; color: var(--error) !important; background: rgba(255, 23, 68, 0.1) !important; }
         
+        /* 🎯 पर्यायांची जागा - अत्यंत महत्त्वाचे फिक्स */
         .options-flex { 
-            display: flex;
-            justify-content: space-between;
-            gap: 8px; 
-            margin: 10px 0;
-            width: 100%;
+            display: flex !important;
+            justify-content: space-between !important;
+            gap: 8px !important; 
+            margin: 12px 0 !important;
+            width: 100% !important;
+            min-height: 55px !important;
         }
         .opt-btn { 
-            flex: 1;
-            background: #101f32; 
-            border: 1px solid rgba(0, 242, 254, 0.4); 
-            border-radius: 12px; 
-            height: 52px; 
-            font-size: 20px; 
-            font-weight: 800; 
-            color: #00f2fe; 
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            flex: 1 !important;
+            background: #101f32 !important; 
+            border: 1px solid rgba(0, 242, 254, 0.4) !important; 
+            border-radius: 12px !important; 
+            height: 52px !important; 
+            font-size: 20px !important; 
+            font-weight: 800 !important; 
+            color: #00f2fe !important; 
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
-        .opt-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+        .opt-btn:disabled { opacity: 0.2 !important; cursor: not-allowed !important; }
         
         .submit-btn { 
             font-size: 14px; 
@@ -214,7 +215,6 @@
             cursor: pointer; 
             font-weight: 800; 
             width: 100%; 
-            text-transform: uppercase;
         }
         
         .result { font-size: 14px; font-weight: 700; min-height: 20px; text-align: center; }
@@ -281,7 +281,7 @@
     
     let minRange = 1;
     let maxRange = 10;
-    let gameType = "before"; // before, after, middle
+    let gameType = "before"; 
     
     const marathiDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
 
@@ -319,39 +319,15 @@
     function updateLanguageUI() {
         let lang = currentLanguage();
         let btn = document.getElementById("action-btn");
-        let dropdown = document.getElementById("range-select-dropdown");
         
         if(lang === 'mr') {
             document.getElementById("select-range-label").innerText = "🎯 अभ्यासासाठी संख्या गट निवडा:";
             document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(score);
-            
-            dropdown.options[0].text = "🔢 गट: १ ते १०";
-            dropdown.options[1].text = "🔢 गट: ११ ते २०";
-            dropdown.options[2].text = "🔢 गट: २१ ते ३०";
-            dropdown.options[3].text = "🔢 गट: ३१ ते ४०";
-            dropdown.options[4].text = "🔢 गट: ४१ ते ५०";
-            dropdown.options[5].text = "🔢 गट: ५१ ते ६०";
-            dropdown.options[6].text = "🔢 गट: ६१ ते ७०";
-            dropdown.options[7].text = "🔢 गट: ७१ ते ८०";
-            dropdown.options[8].text = "🔢 गट: ८१ ते ९०";
-            dropdown.options[9].text = "🔢 गट: ९१ ते १००";
         } else {
             document.getElementById("select-range-label").innerText = "🎯 Select Number Group:";
             document.getElementById("score-board-count").innerText = "SCORE: " + score;
-            
-            dropdown.options[0].text = "🔢 Group: 1 to 10";
-            dropdown.options[1].text = "🔢 Group: 11 to 20";
-            dropdown.options[2].text = "🔢 Group: 21 to 30";
-            dropdown.options[3].text = "🔢 Group: 31 to 40";
-            dropdown.options[4].text = "🔢 Group: 41 to 50";
-            dropdown.options[5].text = "🔢 Group: 51 to 60";
-            dropdown.options[6].text = "🔢 Group: 61 to 70";
-            dropdown.options[7].text = "🔢 Group: 71 to 80";
-            dropdown.options[8].text = "🔢 Group: 81 to 90";
-            dropdown.options[9].text = "🔢 Group: 91 to 100";
         }
 
-        // गेम प्रकारानुसार सूचना अपडेट करणे
         setInstructionText();
         
         if(btn.getAttribute("data-state") === "next") {
@@ -362,7 +338,6 @@
             btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
         }
 
-        // सध्याच्या बॉक्समधील मजकूर भाषांतरित करणे
         renderCurrentNumbersInBoxes();
         renderOptions();
     }
@@ -371,30 +346,28 @@
         let lang = currentLanguage();
         let inst = document.getElementById("instruction-text");
         if(gameType === "before") {
-            inst.innerText = (lang === 'mr') ? "🤔 आधीची संख्या ओळखा! (Before Number)" : "🤔 Find the Before Number!";
+            inst.innerText = (lang === 'mr') ? "🤔 आधीची संख्या ओळखा! (Before)" : "🤔 Find the Before Number!";
         } else if(gameType === "after") {
-            inst.innerText = (lang === 'mr') ? "🤔 नंतरची संख्या ओळखा! (After Number)" : "🤔 Find the After Number!";
+            inst.innerText = (lang === 'mr') ? "🤔 नंतरची संख्या ओळखा! (After)" : "🤔 Find the After Number!";
         } else {
-            inst.innerText = (lang === 'mr') ? "🤔 मधली संख्या ओळखा! (Between Number)" : "🤔 Find the Middle Number!";
+            inst.innerText = (lang === 'mr') ? "🤔 मधली संख्या ओळखा! (Between)" : "🤔 Find the Middle Number!";
         }
     }
 
-    let n1, n2, n3; // जागतिक संख्या साठवण्यासाठी
+    let n1=1, n2=2, n3=3; 
 
     function generateQuestion() {
         selectedAns = null;
         isReviewState = false;
         
-        // गेम प्रकार रँडमली निवडणे (before, after, middle)
         const types = ["before", "after", "middle"];
         gameType = types[Math.floor(Math.random() * types.length)];
         
         let rangeDiff = maxRange - minRange + 1;
         let baseNum;
         
-        // प्रश्न रिपीट न होण्याचे आणि रेंज सुरक्षित ठेवण्याचे लॉजिक
         do {
-            baseNum = Math.floor(Math.random() * (rangeDiff - 2)) + minRange; // ३ संख्या लागतात म्हणून -२
+            baseNum = Math.floor(Math.random() * (rangeDiff - 2)) + minRange; 
         } while (baseNum === lastCorrectAns && rangeDiff > 3);
         
         lastCorrectAns = baseNum;
@@ -411,13 +384,19 @@
         renderCurrentNumbersInBoxes();
         document.getElementById("result-message").innerText = "";
         
-        // ४ पर्याय तयार करणे
         let optionsSet = new Set();
         optionsSet.add(correctAns);
         
-        while(optionsSet.size < 4) {
+        while(optionsSet.size < Math.min(4, rangeDiff)) {
             let randOpt = Math.floor(Math.random() * rangeDiff) + minRange;
             optionsSet.add(randOpt);
+        }
+        
+        if(optionsSet.size < 4) {
+            for(let i=minRange; i<=maxRange; i++) {
+                optionsSet.add(i);
+                if(optionsSet.size === 4) break;
+            }
         }
         
         generatedOptions = Array.from(optionsSet).sort(() => Math.random() - 0.5);
@@ -431,7 +410,6 @@
         let b2 = document.getElementById("box-2");
         let b3 = document.getElementById("box-3");
 
-        // रिसेट क्लासेस
         b1.className = "num-box";
         b2.className = "num-box";
         b3.className = "num-box";
@@ -440,7 +418,6 @@
         b2.innerText = (lang === 'mr') ? convertToMarathi(n2) : n2;
         b3.innerText = (lang === 'mr') ? convertToMarathi(n3) : n3;
 
-        // जो प्रश्न असेल तिथे '?' लावणे
         if(gameType === "before") {
             b1.className = "num-box missing";
             b1.innerText = (selectedAns !== null) ? ((lang === 'mr') ? convertToMarathi(selectedAns) : selectedAns) : "?";
@@ -535,4 +512,17 @@
             btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
             btn.setAttribute("onclick", "checkAnswer()");
         } else if(state === "retry") {
-            btn.innerText = (lang === '
+            btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
+            btn.setAttribute("onclick", "retryCurrentQuestion()");
+        } else if(state === "next") {
+            btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
+            btn.setAttribute("onclick", "generateQuestion()");
+        }
+    }
+
+    window.onload = function() {
+        generateQuestion();
+    };
+</script>
+</body>
+</html>
