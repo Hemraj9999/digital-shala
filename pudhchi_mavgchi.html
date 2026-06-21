@@ -287,6 +287,7 @@
     let minRange = 1;
     let maxRange = 10;
     let gameType = "before"; 
+    let n1=1, n2=2, n3=3;
     
     const marathiDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
 
@@ -309,7 +310,6 @@
         
         score = 0;
         lastCorrectAns = 0;
-        updateLanguageUI();
         generateQuestion();
     }
 
@@ -350,9 +350,10 @@
 
         setInstructionText();
         
-        if(btn.getAttribute("data-state") === "next") {
+        let state = btn.getAttribute("data-state") || "check";
+        if(state === "next") {
             btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
-        } else if(btn.getAttribute("data-state") === "retry") {
+        } else if(state === "retry") {
             btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
         } else {
             btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
@@ -365,6 +366,7 @@
     function setInstructionText() {
         let lang = currentLanguage();
         let inst = document.getElementById("instruction-text");
+        if(!inst) return;
         if(gameType === "before") {
             inst.innerText = (lang === 'mr') ? "🤔 आधीची संख्या ओळखा! (Before)" : "🤔 Find the Before Number!";
         } else if(gameType === "after") {
@@ -373,8 +375,6 @@
             inst.innerText = (lang === 'mr') ? "🤔 मधली संख्या ओळखा! (Between)" : "🤔 Find the Middle Number!";
         }
     }
-
-    let n1=1, n2=2, n3=3; 
 
     function generateQuestion() {
         selectedAns = null;
@@ -400,11 +400,8 @@
         else if (gameType === "middle") correctAns = n2;
         else correctAns = n3;
 
-        setInstructionText();
-        renderCurrentNumbersInBoxes();
-        if(document.getElementById("result-message")) {
-            document.getElementById("result-message").innerText = "";
-        }
+        let res = document.getElementById("result-message");
+        if(res) res.innerText = "";
         
         let optionsSet = new Set();
         optionsSet.add(correctAns);
@@ -422,7 +419,9 @@
         }
         
         generatedOptions = Array.from(optionsSet).sort(() => Math.random() - 0.5);
-        renderOptions();
+        
+        // आधी भाषा आणि UI सेटअप करा, नंतरच डेटा रेंडर होईल
+        updateLanguageUI();
         setButtonState("check");
     }
 
@@ -537,4 +536,6 @@
                 btn.style.borderColor = "rgba(0, 242, 254, 0.5)";
             }
         });
-        setB
+        setButtonState("check");
+    }
+    
