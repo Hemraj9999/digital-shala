@@ -180,7 +180,6 @@
         .num-box.missing.success-state { border-color: var(--success) !important; color: var(--success) !important; background: rgba(0, 230, 118, 0.1) !important; }
         .num-box.missing.error-state { border-color: var(--error) !important; color: var(--error) !important; background: rgba(255, 23, 68, 0.1) !important; }
         
-        /* 🎯 पर्यायांची जागा - अत्यंत सुरक्षित डिझाईन */
         .options-flex { 
             display: flex !important;
             justify-content: space-between !important;
@@ -272,10 +271,10 @@
         </div>
         
         <div class="options-flex" id="options-container">
-            <button class="opt-btn" id="opt-placeholder-1">-</button>
-            <button class="opt-btn" id="opt-placeholder-2">-</button>
-            <button class="opt-btn" id="opt-placeholder-3">-</button>
-            <button class="opt-btn" id="opt-placeholder-4">-</button>
+            <button class="opt-btn">-</button>
+            <button class="opt-btn">-</button>
+            <button class="opt-btn">-</button>
+            <button class="opt-btn">-</button>
         </div>
         
         <button id="action-btn" class="submit-btn" onclick="checkAnswer()">उत्तर तपासा</button>
@@ -321,7 +320,7 @@
     function speakText(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
-            let utterance = new SynthesisUtterance(text);
+            let utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
             window.speechSynthesis.speak(utterance);
         }
@@ -490,7 +489,6 @@
         renderCurrentNumbersInBoxes();
         let lang = currentLanguage();
         
-        // सिलेक्ट केलेल्या बटणला हायलाईट करणे
         let btns = document.querySelectorAll(".opt-btn");
         btns.forEach(b => b.style.borderColor = "rgba(0, 242, 254, 0.5)");
         
@@ -529,4 +527,13 @@
             let badBtn = document.getElementById(`opt-${selectedAns}`);
             if(badBtn) badBtn.disabled = true;
             isReviewState = true; 
-          
+            setButtonState("retry");
+        }
+    }
+
+    function disableAllOptions() {
+        let btns = document.querySelectorAll(".opt-btn");
+        btns.forEach(b => b.disabled = true);
+    }
+
+ 
