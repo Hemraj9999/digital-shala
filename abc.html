@@ -79,18 +79,17 @@
             color: #050b14;
         }
 
-        /* 🎯 नवीन डिजिटल फोर-लाईन बोर्ड */
+        /* 🎯 डिजिटल फोर-लाईन बोर्ड */
         .four-line-board {
             background-color: #ffffff;
-            /* SVG पॅटर्न जो अचूक दोन लाल आणि दोन निळ्या ओळी तयार करतो */
+            /* अचूक दोन लाल आणि दोन निळ्या ओळींचा SVG पॅटर्न */
             background-image: 
-                linear-gradient(rgba(255, 77, 77, 1) 2px, transparent 2px),
+                linear-gradient(rgba(255, 77, 77, 1) 2.5px, transparent 2.5px),
                 linear-gradient(rgba(51, 153, 255, 1) 2px, transparent 2px),
                 linear-gradient(rgba(51, 153, 255, 1) 2px, transparent 2px),
-                linear-gradient(rgba(255, 77, 77, 1) 2px, transparent 2px);
+                linear-gradient(rgba(255, 77, 77, 1) 2.5px, transparent 2.5px);
             background-size: 100% 180px;
             background-repeat: no-repeat;
-            /* ओळींचे परफेक्ट अंतर */
             background-position: 0px 35px, 0px 70px, 0px 105px, 0px 140px;
             
             border-radius: 20px;
@@ -106,10 +105,10 @@
             overflow: hidden;
         }
 
-        /* 🎯 ओळींनुसार अक्षरांचे परफेक्ट सेटिंग */
+        /* 🎯 ओळींनुसार अक्षरांचे परफेक्ट सेटिंग - 'Courier New' फॉन्टसह */
         .letter-text {
-            font-family: 'Georgia', serif;
-            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
             color: #1e293b;
             position: absolute;
             width: 100%;
@@ -117,17 +116,17 @@
             left: 0;
         }
 
-        /* कॅपिटल अक्षरे (वरच्या ३ ओळीत: पहिल्या लाल रेषेपासून दुसऱ्या निळ्या रेषेपर्यंत) */
+        /* मोठी लिपी (वरच्या ३ ओळीत लॉक) */
         .align-ABC {
-            font-size: 96px;
-            top: 22px;
+            font-size: 105px;
+            top: 24px;
             height: 105px;
             line-height: 105px;
         }
 
         /* लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) */
         .align-small-tall {
-            font-size: 96px;
+            font-size: 105px;
             top: 22px;
             height: 105px;
             line-height: 105px;
@@ -135,16 +134,16 @@
 
         /* लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) */
         .align-small-mid {
-            font-size: 64px;
-            top: 64px;
-            height: 70px;
-            line-height: 70px;
+            font-size: 72px;
+            top: 67px;
+            height: 38px;
+            line-height: 38px;
         }
 
         /* लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) */
         .align-small-desc {
-            font-size: 96px;
-            top: 64px;
+            font-size: 105px;
+            top: 58px;
             height: 105px;
             line-height: 105px;
         }
@@ -233,7 +232,7 @@
     let currentIndex = 0;
     const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     
-    // शुद्ध इंग्रजी फॉनिक्स साउंड मॅपिंग (फक्त इंग्रजी उच्चार)
+    // शुद्ध इंग्रजी फॉनिक्स आवाज मॅपिंग
     const phonicSounds = {
         'A': 'ah', 'B': 'buh', 'C': 'kuh', 'D': 'duh', 'E': 'eh', 'F': 'fuh', 'G': 'guh', 
         'H': 'huh', 'I': 'ih', 'J': 'juh', 'K': 'kuh', 'L': 'uhl', 'M': 'muh', 'N': 'nuh', 
@@ -256,7 +255,7 @@
         txtNode.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
         txtNode.className = "letter-text"; 
 
-        // 🎯 अक्षरांच्या प्रकारानुसार अचूक ओळींवर लॉक करणे
+        // नविन फॉन्टनुसार लहान आणि मोठ्या अक्षरांची पोझिशनिंग अचूक लॉक केली आहे
         if(currentCase === "ABC") {
             txtNode.classList.add("align-ABC");
         } else {
@@ -297,7 +296,7 @@
         speakLetter();
     }
 
-    // 🔊 शुद्ध इंग्रजी आवाज सिस्टीम
+    // 🔊 केवळ इंग्रजी आवाजात स्पष्ट उच्चार
     function speakLetter() {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
