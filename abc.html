@@ -1,43 +1,341 @@
-/* अक्षराचा मुख्य कंटेनर - ओळींच्या संरचनेशी अचूक मॅच */
-.letter-holder {
-    position: absolute;
-    width: 100%;
-    height: 108px; /* ३ खाप्यांची एकूण उंची */
-    top: 36px;     /* पहिल्या लाल रेषेपासून अचूक सुरुवात */
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* वरच्या बाजूने अलाईनमेंट सुरू */
-    pointer-events: none;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Phonics Four Line Shala</title>
+    <style>
+        :root { 
+            --primary: #00f2fe; 
+            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); 
+            --fourline-red: #ff4d4d;
+            --fourline-blue: #3399ff;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background: var(--bg-gradient); 
+            color: #f8fafc; 
+            min-height: 100vh; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 30px;
+        }
+        
+        header { 
+            background: #0f172a; 
+            width: 100%;
+            max-width: 410px;
+            padding: 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+        }
+        
+        .back-btn { 
+            color: #00f2fe; 
+            text-decoration: none; 
+            background: rgba(0, 242, 254, 0.1); 
+            padding: 6px 14px; 
+            border-radius: 30px; 
+            font-size: 13px; 
+            font-weight: 700;
+            border: 1px solid rgba(0, 242, 254, 0.3); 
+        }
+        
+        header h2 { font-size: 16px; font-weight: 800; color: #00f2fe; }
 
-.letter-text {
-    font-family: 'Georgia', serif;
-    font-weight: bold;
-    color: #1e293b;
-    text-align: center;
-    line-height: 1.0 !important;
-}
+        .main-wrapper {
+            width: 100%;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            max-width: 410px;
+        }
 
-/* मोठी लिपी (पहिल्या लाल रेषेपासून दुसऱ्या निळ्या रेषेपर्यंत - एकूण ७२px उंची) */
-.align-ABC {
-    font-size: 78px;
-    transform: translateY(-4px); /* रेषेवर परफेक्ट टेकवण्यासाठी */
-}
+        .case-selector {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px;
+            border-radius: 30px;
+            display: flex;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+        }
+        .case-label {
+            flex: 1;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 25px;
+        }
+        .case-label input { display: none; }
+        .case-label:has(input:checked) {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            color: #050b14;
+        }
 
-/* लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) */
-.align-small-tall {
-    font-size: 78px;
-    transform: translateY(-6px);
-}
+        /* ४ ओळींचा मुख्य बॉक्स */
+        .four-line-card {
+            background: #ffffff; 
+            border-radius: 20px;
+            width: 100%;
+            height: 180px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            cursor: pointer;
+            border: 4px solid #1e293b;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-/* लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) */
-.align-small-mid {
-    font-size: 40px;
-    transform: translateY(32px); /* फक्त मधल्या २ निळ्या रेषांच्या आत लॉक */
-}
+        /* ४ ओळींची बॅकग्राउंड रचना */
+        .lines-container {
+            position: absolute;
+            width: 100%;
+            height: 108px; 
+            display: flex;
+            flex-direction: column;
+            left: 0;
+            pointer-events: none;
+        }
+        .fl-space {
+            height: 36px;
+            width: 100%;
+        }
+        .line-r { border-top: 2.5px solid var(--fourline-red); }
+        .line-b { border-top: 2px solid var(--fourline-blue); }
+        .line-bottom-b { border-bottom: 2px solid var(--fourline-blue); }
+        .line-bottom-r { border-bottom: 2.5px solid var(--fourline-red); }
 
-/* लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) */
-.align-small-desc {
-    font-size: 76px;
-    transform: translateY(32px); /* खालच्या लाल रेषेपर्यंत परफेक्ट सेट */
-}
+        /* अक्षराचा होल्डर */
+        .letter-holder {
+            position: absolute;
+            width: 100%;
+            height: 108px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .letter-text {
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            color: #1e293b;
+            display: inline-block;
+            line-height: 1 !important;
+            text-align: center;
+        }
+
+        /* 🎯 मोठी लिपी (कॅपिटल अक्षरे - चौकटीत परफेक्ट बसण्यासाठी बदललेली साईझ) */
+        .align-ABC {
+            font-size: 78px;
+            transform: translateY(-4px); 
+        }
+
+        /* लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) */
+        .align-small-tall {
+            font-size: 78px;
+            transform: translateY(-6px);
+        }
+
+        /* लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) */
+        .align-small-mid {
+            font-size: 50px;
+            transform: translateY(14px); 
+        }
+
+        /* लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) */
+        .align-small-desc {
+            font-size: 76px;
+            transform: translateY(22px); 
+        }
+
+        .sound-tag {
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            background: #00f2fe;
+            color: #0f172a;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 800;
+            z-index: 5;
+        }
+
+        /* ग्रिड लेआउट बटने */
+        .alphabet-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+
+        .grid-btn {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            height: 60px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #f1f5f9;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .grid-btn.active {
+            background: rgba(0, 242, 254, 0.15);
+            border-color: #00f2fe;
+            color: #00f2fe;
+        }
+
+        .nav-flex { display: flex; justify-content: space-between; gap: 15px; width: 100%; }
+        .nav-btn {
+            flex: 1; padding: 12px; font-size: 15px; font-weight: 700; border: none; border-radius: 12px; cursor: pointer;
+        }
+        .nav-btn.prev { background: #1e293b; color: #f8fafc; border: 1px solid rgba(255,255,255,0.1); }
+        .nav-btn.next { background: linear-gradient(135deg, #00f2fe, #4facfe); color: #050b14; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn">⬅ Home</a>
+    <h2>✨ English Phonics Shala</h2>
+    <div style="width:60px;"></div>
+</header>
+
+<div class="main-wrapper">
+    <div class="case-selector">
+        <label class="case-label">
+            <input type="radio" name="letter-case" value="ABC" checked onchange="onCaseChange()">🅰️ Capital
+        </label>
+        <label class="case-label">
+            <input type="radio" name="letter-case" value="abc" onchange="onCaseChange()">️️️a️ Small
+        </label>
+    </div>
+
+    <div class="four-line-card" onclick="speakLetter()">
+        <div class="lines-container">
+            <div class="fl-space line-r"></div>
+            <div class="fl-space line-b"></div>
+            <div class="fl-space line-bottom-b line-bottom-r"></div>
+        </div>
+        
+        <div class="letter-holder">
+            <div class="letter-text" id="display-letter">A</div>
+        </div>
+        
+        <div class="sound-tag">🔊 Sound</div>
+    </div>
+
+    <div class="nav-flex">
+        <button class="nav-btn prev" onclick="navigate(-1)">⬅ Back</button>
+        <button class="nav-btn next" onclick="navigate(1)">Next ➡️</button>
+    </div>
+
+    <div class="alphabet-grid" id="buttons-grid"></div>
+</div>
+
+<script>
+    let currentIndex = 0;
+    const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+    
+    const phonicSounds = {
+        'A': 'ah', 'B': 'buh', 'C': 'kuh', 'D': 'duh', 'E': 'eh', 'F': 'fuh', 'G': 'guh', 
+        'H': 'huh', 'I': 'ih', 'J': 'juh', 'K': 'kuh', 'L': 'uhl', 'M': 'muh', 'N': 'nuh', 
+        'O': 'ox', 'P': 'puh', 'Q': 'kwuh', 'R': 'ruh', 'S': 'suh', 'T': 'tuh', 'U': 'uh', 
+        'V': 'vuh', 'W': 'wuh', 'X': 'ks', 'Y': 'yuh', 'Z': 'zuh'
+    };
+
+    function getCase() { return document.querySelector('input[name="letter-case"]:checked').value; }
+
+    function onCaseChange() {
+        updateDisplay();
+        renderGrid();
+    }
+
+    function updateDisplay() {
+        let letter = alphabet[currentIndex];
+        let txtNode = document.getElementById("display-letter");
+        let currentCase = getCase();
+        
+        txtNode.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
+        txtNode.className = "letter-text";
+
+        // अक्षरांचे फॉन्ट अलाईनमेंट क्लासेस
+        if(currentCase === "ABC") {
+            txtNode.classList.add("align-ABC");
+        } else {
+            let ch = letter.toLowerCase();
+            if(['b', 'd', 'f', 'h', 'k', 'l', 't'].includes(ch)) {
+                txtNode.classList.add("align-small-tall");
+            } else if(['g', 'j', 'p', 'q', 'y'].includes(ch)) {
+                txtNode.classList.add("align-small-desc");
+            } else {
+                txtNode.classList.add("align-small-mid");
+            }
+        }
+
+        document.querySelectorAll(".grid-btn").forEach((b, i) => {
+            if(i === currentIndex) b.classList.add("active");
+            else b.classList.remove("active");
+        });
+    }
+
+    function renderGrid() {
+        let grid = document.getElementById("buttons-grid");
+        grid.innerHTML = "";
+        let currentCase = getCase();
+        
+        alphabet.forEach((letter, i) => {
+            let b = document.createElement("button");
+            b.className = "grid-btn";
+            if(i === currentIndex) b.classList.add("active");
+            b.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
+            b.onclick = () => { currentIndex = i; updateDisplay(); speakLetter(); };
+            grid.appendChild(b);
+        });
+    }
+
+    function navigate(step) {
+        currentIndex = (currentIndex + step + 26) % 26;
+        updateDisplay();
+        speakLetter();
+    }
+
+    function speakLetter() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            let letter = alphabet[currentIndex];
+            let currentCase = getCase();
+            let speakText = (currentCase === "ABC") ? letter : letter.toLowerCase();
+
+            let u1 = new SpeechSynthesisUtterance(speakText);
+            u1.lang = 'en-US';
+            u1.rate = 0.8;
+
+            let u2 = new SpeechSynthesisUtterance(phonicSounds[letter]);
+            u2.lang = 'en-US';
+            u2.rate = 0.7;
+
+            window.speechSynthesis.speak(u1);
+            setTimeout(() => { window.speechSynthesis.speak(u2); }, 400);
+        }
+    }
+
+    window.onload = () => { onCaseChange(); };
+</script>
+</body>
+</html>
