@@ -8,8 +8,6 @@
         :root { 
             --primary: #00f2fe; 
             --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); 
-            --fourline-red: #ff4d4d;
-            --fourline-blue: #3399ff;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -81,7 +79,7 @@
             color: #050b14;
         }
 
-        /* 🎯 नवीन फिक्स फोर-लाईन कंटेनर कार्ड */
+        /* 🎯 परफेक्ट वहीचे पान - फोर लाईन बॅकग्राउंड */
         .four-line-card {
             background: #ffffff; 
             border-radius: 20px;
@@ -92,43 +90,32 @@
             cursor: pointer;
             border: 4px solid #1e293b;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            
+            /* खऱ्या फोरलाईन वहीसारख्या रेषा तयार केल्या आहेत (कधीच कट होणार नाहीत) */
+            background-image: 
+                linear-gradient(#ff4d4d 2px, transparent 2px), /* पहिली लाल रेषा */
+                linear-gradient(#3399ff 2px, transparent 2px), /* पहिली निळी रेषा */
+                linear-gradient(#3399ff 2px, transparent 2px), /* दुसरी निळी रेषा */
+                linear-gradient(#ff4d4d 2px, transparent 2px); /* खालची लाल रेषा */
+            background-size: 100% 180px;
+            background-position: 
+                0px 35px, 
+                0px 70px, 
+                0px 105px, 
+                0px 140px;
+            background-repeat: no-repeat;
         }
 
-        /* ४ ओळींची अचूक बॅकग्राउंड - नेहमी सेंटर लॉक */
-        .lines-container {
-            position: absolute;
-            width: 100%;
-            height: 120px; 
-            display: flex;
-            flex-direction: column;
-            left: 0;
-            top: 30px;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .fl-space {
-            height: 40px;
-            width: 100%;
-        }
-        .line-r { border-top: 3px solid var(--fourline-red); }
-        .line-b { border-top: 2.5px solid var(--fourline-blue); }
-        .line-bottom-b { border-bottom: 2.5px solid var(--fourline-blue); }
-        .line-bottom-r { border-bottom: 3px solid var(--fourline-red); }
-
-        /* 🎯 अक्षराचा मुख्य कंटेनर - ओळींवर लॉक */
+        /* अक्षरासाठी कंटेनर */
         .letter-holder {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 120px;
-            top: 30px;
+            height: 180px;
             display: flex;
             justify-content: center;
-            align-items: center;
             pointer-events: none;
-            z-index: 2;
         }
 
         .letter-text {
@@ -136,36 +123,34 @@
             font-weight: bold;
             color: #1e293b;
             text-align: center;
-            display: block;
-            width: 100%;
         }
 
-        /* मोठी लिपी (पहिल्या लाल रेषेपासून दुसऱ्या निळ्या रेषेपर्यंत परफेक्ट मॅच) */
+        /* 🅰️ मोठी लिपी (पहिल्या लाल रेषेपासून दुसऱ्या निळ्या रेषेपर्यंत परफेक्ट ३ खाप्या व्यापते) */
         .align-ABC {
             font-size: 82px;
-            line-height: 80px;
-            margin-top: -38px;
+            line-height: 105px; /* ३५px ते १४०px = १०५px */
+            margin-top: 32px;
         }
 
-        /* लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) */
+        /* 🔤 लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) */
         .align-small-tall {
             font-size: 82px;
-            line-height: 80px;
-            margin-top: -38px;
+            line-height: 105px;
+            margin-top: 30px;
         }
 
-        /* लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) */
+        /* 🔤 लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) */
         .align-small-mid {
-            font-size: 54px;
-            line-height: 40px;
-            margin-top: 2px;
+            font-size: 55px;
+            line-height: 35px; /* फक्त मधली एक खापी ३५px */
+            margin-top: 70px;
         }
 
-        /* लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) */
+        /* 🔤 लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) */
         .align-small-desc {
             font-size: 82px;
-            line-height: 80px;
-            margin-top: 2px;
+            line-height: 105px;
+            margin-top: 66px; /* खालच्या ३ ओळीत */
         }
 
         .sound-tag {
@@ -181,7 +166,7 @@
             z-index: 5;
         }
 
-        /* ग्रिड लेआउट बटने */
+        /* ग्रिड बटने */
         .alphabet-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -235,16 +220,9 @@
     </div>
 
     <div class="four-line-card" onclick="speakLetter()">
-        <div class="lines-container">
-            <div class="fl-space line-r"></div>
-            <div class="fl-space line-b"></div>
-            <div class="fl-space line-bottom-b line-bottom-r"></div>
-        </div>
-        
         <div class="letter-holder">
             <div class="letter-text" id="display-letter">A</div>
         </div>
-        
         <div class="sound-tag">🔊 Sound</div>
     </div>
 
@@ -280,7 +258,6 @@
         let currentCase = getCase();
         
         txtNode.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
-        txtNode.style.marginTop = ""; // जुनी मार्जिन रीसेट
 
         if(currentCase === "ABC") {
             txtNode.className = "letter-text align-ABC";
