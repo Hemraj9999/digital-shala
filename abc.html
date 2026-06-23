@@ -81,7 +81,7 @@
             color: #050b14;
         }
 
-        /* 🎯 नवीन १००% परफेक्ट फोर-लाईन बॉक्स रचना */
+        /* 🎯 नवीन फिक्स सेंटर फोर-लाईन बॉक्स */
         .four-line-card {
             background: #ffffff; 
             border-radius: 20px;
@@ -93,21 +93,22 @@
             border: 4px solid #1e293b;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
+            align-items: center;
             justify-content: center;
         }
 
-        /* ४ ओळींची बॅकग्राउंड ग्रिड */
+        /* ४ ओळींची बॅकग्राउंड - पूर्णपणे सेंटर लॉक */
         .lines-container {
             position: absolute;
             width: 100%;
-            height: 105px; /* ३ खाप्यांची एकूण उंची (३५ x ३ = १०५) */
-            left: 0;
+            height: 108px; /* ३ खाप्यांची अचूक उंची (३६ x ३ = १०८) */
             display: flex;
             flex-direction: column;
+            left: 0;
+            pointer-events: none;
         }
         .fl-space {
-            height: 35px; /* प्रत्येक खाप्यातील परफेक्ट अंतर */
+            height: 36px;
             width: 100%;
         }
         .line-r { border-top: 2.5px solid var(--fourline-red); }
@@ -115,11 +116,11 @@
         .line-bottom-b { border-bottom: 2px solid var(--fourline-blue); }
         .line-bottom-r { border-bottom: 2.5px solid var(--fourline-red); }
 
-        /* 🎯 अचूक फ्लेक्स बॉक्स होल्डर */
+        /* 🎯 अक्षराचा मुख्य कंटेनर - नेहमी मध्यभागी (Center) राहणार */
         .letter-holder {
             position: absolute;
             width: 100%;
-            left: 0;
+            height: 108px; /* ओळींच्या उंचीइतकीच जागा */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -130,52 +131,34 @@
             font-family: 'Georgia', serif;
             font-weight: bold;
             color: #1e293b;
-            text-align: center;
-            width: 100%;
+            display: inline-block;
             line-height: 1 !important;
+            text-align: center;
         }
 
-        /* मोठी लिपी (पहिल्या लाल ते दुसऱ्या निळ्या रेषेत परफेक्ट लॉक) */
+        /* मोठी लिपी (पहिल्या लाल ते दुसऱ्या निळ्या रेषेपर्यंत परफेक्ट मॅच) */
         .align-ABC {
-            font-size: 92px;
-            height: 70px; /* २ खापे उंची */
-            display: flex;
-            align-items: flex-end; /* तळाच्या निळ्या रेषेला टेकून */
-            padding-bottom: 4px;
+            font-size: 96px;
+            transform: translateY(-8px); /* किंचित वर ओढण्यासाठी */
         }
 
         /* लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) */
         .align-small-tall {
-            font-size: 92px;
-            height: 70px;
-            display: flex;
-            align-items: flex-end;
-            padding-bottom: 4px;
+            font-size: 94px;
+            transform: translateY(-8px);
         }
 
         /* लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) */
-        /* फक्त दोन निळ्या ओळींच्या परफेक्ट आत बसवण्यासाठी विशेष उंची */
         .align-small-mid {
-            font-size: 60px;
-            height: 35px; /* फक्त मधला १ खापा उंची */
-            display: flex;
-            align-items: flex-end;
-            padding-bottom: 2px;
+            font-size: 68px;
+            transform: translateY(10px); /* फक्त मधल्या २ निळ्या रेषेत बसवण्यासाठी */
         }
 
         /* लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) */
         .align-small-desc {
-            font-size: 92px;
-            height: 70px;
-            display: flex;
-            align-items: flex-start; /* खालच्या ३ ओळीत बसवण्यासाठी */
-            padding-top: 2px;
+            font-size: 94px;
+            transform: translateY(24px); /* खालच्या ३ ओळीत परफेक्ट सेट */
         }
-
-        /* पोझिशन पॅरामीटर्स */
-        .pos-top-3 { top: 37px; }     /* वरच्या ३ ओळींसाठी */
-        .pos-mid-2 { top: 72px; }     /* फक्त मधल्या २ निळ्या ओळींसाठी */
-        .pos-bottom-3 { top: 72px; }  /* खालच्या ३ ओळींसाठी */
 
         .sound-tag {
             position: absolute;
@@ -190,7 +173,7 @@
             z-index: 5;
         }
 
-        /* ए ते झेड ग्रिड */
+        /* ग्रिड लेआउट */
         .alphabet-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -244,13 +227,13 @@
     </div>
 
     <div class="four-line-card" onclick="speakLetter()">
-        <div class="lines-container pos-top-3">
+        <div class="lines-container">
             <div class="fl-space line-r"></div>
             <div class="fl-space line-b"></div>
             <div class="fl-space line-bottom-b line-bottom-r"></div>
         </div>
         
-        <div class="letter-holder" id="letter-container">
+        <div class="letter-holder">
             <div class="letter-text" id="display-letter">A</div>
         </div>
         
@@ -286,29 +269,21 @@
     function updateDisplay() {
         let letter = alphabet[currentIndex];
         let txtNode = document.getElementById("display-letter");
-        let holder = document.getElementById("letter-container");
         let currentCase = getCase();
         
         txtNode.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
-        
-        // क्लास रीसेट करणे
         txtNode.className = "letter-text";
-        holder.className = "letter-holder";
 
-        // 🎯 अक्षरांच्या प्रकारानुसार अचूक ग्रिड अलाईनमेंट आणि पोझिशन लॉक करणे
+        // 🎯 फॉन्ट अलाईनमेंट क्लास मॅनेजमेंट
         if(currentCase === "ABC") {
-            holder.classList.add("pos-top-3");
             txtNode.classList.add("align-ABC");
         } else {
             let ch = letter.toLowerCase();
             if(['b', 'd', 'f', 'h', 'k', 'l', 't'].includes(ch)) {
-                holder.classList.add("pos-top-3");
                 txtNode.classList.add("align-small-tall");
             } else if(['g', 'j', 'p', 'q', 'y'].includes(ch)) {
-                holder.classList.add("pos-bottom-3");
                 txtNode.classList.add("align-small-desc");
             } else {
-                holder.classList.add("pos-mid-2");
                 txtNode.classList.add("align-small-mid");
             }
         }
