@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html lang="mr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>A to Z Four Line Phonics - Digital Shala Pro</title>
+    <title>English Phonics Four Line Shala</title>
     <style>
         :root { 
             --primary: #00f2fe; 
-            --secondary: #4facfe;
-            --bg-gradient: linear-gradient(135deg, #050b14, #0f172a, #070d19); 
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); 
             --fourline-red: #ff4d4d;
             --fourline-blue: #3399ff;
         }
@@ -23,41 +20,32 @@
             min-height: 100vh; 
             display: flex;
             flex-direction: column;
+            align-items: center;
             padding-bottom: 30px;
         }
         
         header { 
-            background: rgba(15, 23, 42, 0.8); 
-            backdrop-filter: blur(15px); 
-            border-bottom: 1px solid var(--glass-border); 
-            padding: 10px 15px; 
+            background: #0f172a; 
+            width: 100%;
+            max-width: 410px;
+            padding: 15px; 
             display: flex; 
             align-items: center; 
             justify-content: space-between;
-            height: 55px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
         }
         
         .back-btn { 
             color: #00f2fe; 
             text-decoration: none; 
-            background: rgba(0, 242, 254, 0.05); 
+            background: rgba(0, 242, 254, 0.1); 
             padding: 6px 14px; 
             border-radius: 30px; 
             font-size: 13px; 
-            font-weight: 600;
-            border: 1px solid rgba(0, 242, 254, 0.2); 
+            font-weight: 700;
+            border: 1px solid rgba(0, 242, 254, 0.3); 
         }
         
-        header h2 { 
-            font-size: 14px; 
-            font-weight: 800; 
-            background: linear-gradient(90deg, #00f2fe, #4facfe); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-        }
+        header h2 { font-size: 16px; font-weight: 800; color: #00f2fe; }
 
         .main-wrapper {
             width: 100%;
@@ -66,16 +54,15 @@
             flex-direction: column;
             align-items: center;
             gap: 15px;
+            max-width: 410px;
         }
 
-        /* कॅपिटल/स्मॉल टॉगल बॉक्स */
         .case-selector {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.3);
             padding: 4px;
             border-radius: 30px;
             display: flex;
-            border: 1px solid var(--glass-border);
-            max-width: 380px;
+            border: 1px solid rgba(255,255,255,0.1);
             width: 100%;
         }
         .case-label {
@@ -85,362 +72,249 @@
             font-weight: 700;
             color: #94a3b8;
             cursor: pointer;
-            padding: 8px 10px;
+            padding: 10px;
             border-radius: 25px;
-            transition: all 0.2s ease;
         }
         .case-label input { display: none; }
         .case-label:has(input:checked) {
             background: linear-gradient(135deg, #00f2fe, #4facfe);
             color: #050b14;
-            box-shadow: 0 4px 10px rgba(0, 242, 254, 0.2);
         }
 
-        /* सूचना पट्टी */
-        .info-bar {
-            background: rgba(0, 242, 254, 0.03);
-            border-left: 4px solid #00f2fe;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            max-width: 410px;
-            width: 100%;
-            font-size: 13px;
-            font-weight: 600;
-            color: #e2e8f0;
-        }
-
-        /* 🎯 नवीन फोर-लाईन डिस्प्ले कार्ड (भक्कम मांडणी) */
-        .four-line-display-card {
-            background: #ffffff; /* फोर लाईन स्पष्ट दिसण्यासाठी पांढरा बॅकग्राउंड */
+        /* 🎯 नवीन १००% परफेक्ट फोर-लाईन स्ट्रक्चर */
+        .four-line-card {
+            background: #ffffff; 
             border-radius: 20px;
             width: 100%;
-            max-width: 410px;
             height: 180px;
             position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             cursor: pointer;
-            overflow: hidden;
             border: 4px solid #1e293b;
-            display: grid;
-            grid-template-rows: 1fr auto 1fr; /* ४ लाईन बनवण्याचे ग्रिड */
-            align-content: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
         }
 
-        /* फोर लाईनचे लॉजिक */
-        .fl-container {
+        /* ३ समान भागांमध्ये विभागणी (Flexbox द्वारे अचूक रेषेचे नियोजन) */
+        .fl-row {
+            height: 38px;
             width: 100%;
-            height: 120px;
             position: relative;
-            padding: 0 10px;
-        }
-        .fl-lines {
-            display: grid;
-            grid-template-rows: repeat(3, 1fr); /* ३ रिकाम्या जागा = ४ ओळी */
-            height: 100%;
-            position: absolute;
-            width: calc(100% - 20px);
-            top: 0;
-            border-top: 2px solid var(--fourline-red); /* पहिली लाल ओळ */
-            border-bottom: 2px solid var(--fourline-red); /* चौथी लाल ओळ */
-        }
-        .fl-lines::before, .fl-lines::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--fourline-blue); /* मधल्या दोन निळ्या ओळी */
-        }
-        .fl-lines::before { top: calc(33.33% - 1px); }
-        .fl-lines::after { top: calc(66.66% - 1px); }
-
-        /* अक्षराची मांडणी (Georgia फॉन्ट आणि अचूक पोझिशनिंग) */
-        .letter-overlay {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Georgia', 'Times New Roman', serif; /* करसिव्ह-सारखे इंग्रजी वळण */
-            font-size: 110px;
+        }
+        
+        /* ४ ओळींची अचूक निर्मिती */
+        .row-top { border-top: 2.5px solid var(--fourline-red); border-bottom: 2px solid var(--fourline-blue); }
+        .row-middle { border-bottom: 2px solid var(--fourline-blue); }
+        .row-bottom { border-bottom: 2.5px solid var(--fourline-red); }
+
+        /* 🎯 मुख्य अक्षर - जे रेषेला धरून बसेल */
+        .letter-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        .letter-text {
+            font-family: 'Georgia', serif;
             font-weight: bold;
             color: #1e293b;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-            line-height: 1;
-        }
-
-        /* मोठ्या आणि लहान लिपीनुसार अक्षरांचे पोझिशनिंग बदलणे */
-        .case-ABC .letter-overlay {
-            transform: translateY(-10px); /* कॅपिटल अक्षरे वरच्या ३ ओळीत बसतात */
-        }
-        .case-abc .letter-overlay {
-            transform: translateY(0px); /* स्मॉल अक्षरे मधल्या २ ओळीत किंवा खाली */
-        }
-
-        /* साउंड बटन */
-        .sound-indicator {
+            line-height: 0;
             position: absolute;
-            bottom: 10px;
-            right: 15px;
-            background: linear-gradient(135deg, #00f2fe, #4facfe);
-            color: #050b14;
-            padding: 4px 12px;
-            border-radius: 12px;
+        }
+
+        /* 🎯 वेगवेगळ्या अक्षरांचे अचूक क्लास बेस अलाईनमेंट */
+        .align-capital { font-size: 110px; bottom: 38px; } /* वरच्या ३ ओळीत */
+        .align-small-tall { font-size: 110px; bottom: 38px; } /* b, d, f, h, k, l, t */
+        .align-small-mid { font-size: 78px; bottom: 38px; } /* a, c, e, m, n, o, r, s, u, v, w, x, z */
+        .align-small-desc { font-size: 110px; bottom: 0px; } /* g, j, p, q, y */
+
+        .sound-tag {
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            background: #00f2fe;
+            color: #0f172a;
+            padding: 4px 10px;
+            border-radius: 10px;
             font-size: 11px;
             font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            box-shadow: 0 4px 10px rgba(0, 242, 254, 0.3);
+            z-index: 10;
         }
 
-        /* ए ते झेड ग्रिड */
+        /* ए ते झेड ग्रिड - फक्त इंग्रजी अक्षरे */
         .alphabet-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             width: 100%;
-            max-width: 410px;
         }
 
         .grid-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--glass-border);
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 14px;
-            height: 65px;
-            font-size: 24px;
+            height: 60px;
+            font-size: 26px;
             font-weight: 700;
             color: #f1f5f9;
             cursor: pointer;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: all 0.15s ease;
         }
-        .grid-btn .sub-text {
-            font-size: 11px;
-            color: #00f2fe;
-            font-weight: 600;
-            margin-top: 2px;
-        }
-        .grid-btn:active, .grid-btn.active {
+        .grid-btn.active {
             background: rgba(0, 242, 254, 0.15);
             border-color: #00f2fe;
             color: #00f2fe;
-            transform: scale(0.95);
         }
 
-        /* नेव्हिगेशन */
-        .nav-flex {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            width: 100%;
-            max-width: 410px;
-            margin-top: 5px;
-        }
+        .nav-flex { display: flex; justify-content: space-between; gap: 15px; width: 100%; }
         .nav-btn {
-            flex: 1;
-            padding: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
+            flex: 1; padding: 12px; font-size: 15px; font-weight: 700; border: none; border-radius: 12px; cursor: pointer;
         }
-        .nav-btn.prev { background: #1e293b; color: #f8fafc; border: 1px solid var(--glass-border); }
+        .nav-btn.prev { background: #1e293b; color: #f8fafc; border: 1px solid rgba(255,255,255,0.1); }
         .nav-btn.next { background: linear-gradient(135deg, #00f2fe, #4facfe); color: #050b14; }
     </style>
 </head>
 <body>
 
 <header>
-    <a href="ganit.html" class="back-btn">⬅ मागे जा</a>
-    <h2>✨ English Phonics Smart Shala</h2>
-    <div style="width:65px;"></div>
+    <a href="index.html" class="back-btn">⬅ Home</a>
+    <h2>✨ English Phonics Shala</h2>
+    <div style="width:60px;"></div>
 </header>
 
 <div class="main-wrapper">
     <div class="case-selector">
         <label class="case-label">
-            <input type="radio" name="letter-case" value="ABC" checked onchange="onCaseChange()">🅰️ Capital (मोठी लिपी)
+            <input type="radio" name="letter-case" value="ABC" checked onchange="onCaseChange()">🅰️ Capital
         </label>
         <label class="case-label">
-            <input type="radio" name="letter-case" value="abc" onchange="onCaseChange()">️️️a️ Small (लहान लिपी)
+            <input type="radio" name="letter-case" value="abc" onchange="onCaseChange()">️️️a️ Small
         </label>
     </div>
 
-    <div class="info-bar">
-        👉 अक्षरावर किंवा खालील बटणावर क्लिक करून आवाज ऐका!
-    </div>
-
-    <div class="four-line-display-card case-ABC" id="main-display-card" onclick="speakCurrentLetter()">
-        <div class="fl-container">
-            <div class="fl-lines"></div> <div class="letter-overlay" id="big-letter-text">A</div>
+    <div class="four-line-card" onclick="speakLetter()">
+        <div class="fl-row row-top"></div>
+        <div class="fl-row row-middle"></div>
+        <div class="fl-row row-bottom"></div>
+        
+        <div class="letter-container">
+            <div class="letter-text align-capital" id="display-letter">A</div>
         </div>
-        <div class="sound-indicator">🔊 उचार ऐका</div>
+        
+        <div class="sound-tag">🔊 Sound</div>
     </div>
 
     <div class="nav-flex">
-        <button class="nav-btn prev" onclick="navigateLetter(-1)">⬅️ मागे</button>
-        <button class="nav-btn next" onclick="navigateLetter(1)">पुढे ➡️</button>
+        <button class="nav-btn prev" onclick="navigate(-1)">⬅ Back</button>
+        <button class="nav-btn next" onclick="navigate(1)">Next ➡️</button>
     </div>
 
-    <div class="alphabet-grid" id="letters-buttons-grid">
-        </div>
+    <div class="alphabet-grid" id="buttons-grid"></div>
 </div>
 
 <script>
     let currentIndex = 0;
-    const alphabet = [
-        { cap: 'A', sm: 'a', sound: 'ॲ' }, { cap: 'B', sm: 'b', sound: 'ब' },
-        { cap: 'C', sm: 'c', sound: 'क' }, { cap: 'D', sm: 'd', sound: 'ड' },
-        { cap: 'E', sm: 'e', sound: 'ए' }, { cap: 'F', sm: 'f', sound: 'फ' },
-        { cap: 'G', sm: 'g', sound: 'ग' }, { cap: 'H', sm: 'h', sound: 'ह' },
-        { cap: 'I', sm: 'i', sound: 'इ' }, { cap: 'J', sm: 'j', sound: 'ज' },
-        { cap: 'K', sm: 'k', sound: 'क' }, { cap: 'L', sm: 'l', sound: 'ल' },
-        { cap: 'M', sm: 'm', sound: 'म' }, { cap: 'N', sm: 'n', sound: 'न' },
-        { cap: 'O', sm: 'o', sound: 'ऑ' }, { cap: 'P', sm: 'p', sound: 'प' },
-        { cap: 'Q', sm: 'q', sound: 'क्वे' }, { cap: 'R', sm: 'r', sound: 'र' },
-        { cap: 'S', sm: 's', sound: 'स' }, { cap: 'T', sm: 't', sound: 'ट' },
-        { cap: 'U', sm: 'u', sound: 'अ' }, { cap: 'V', sm: 'v', sound: 'व्ह' },
-        { cap: 'W', sm: 'w', sound: 'व' }, { cap: 'X', sm: 'x', sound: 'क्स' },
-        { cap: 'Y', sm: 'y', sound: 'य' }, { cap: 'Z', sm: 'z', sound: 'झ' }
-    ];
+    const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+    
+    // शुद्ध इंग्रजी फॉनिक्स आवाज
+    const phonicSounds = {
+        'A': 'ah', 'B': 'buh', 'C': 'kuh', 'D': 'duh', 'E': 'eh', 'F': 'fuh', 'G': 'guh', 
+        'H': 'huh', 'I': 'ih', 'J': 'juh', 'K': 'kuh', 'L': 'uhl', 'M': 'muh', 'N': 'nuh', 
+        'O': 'ox', 'P': 'puh', 'Q': 'kwuh', 'R': 'ruh', 'S': 'suh', 'T': 'tuh', 'U': 'uh', 
+        'V': 'vuh', 'W': 'wuh', 'X': 'ks', 'Y': 'yuh', 'Z': 'zuh'
+    };
 
-    function getSelectedCase() {
-        let checkedRadio = document.querySelector('input[name="letter-case"]:checked');
-        return checkedRadio ? checkedRadio.value : "ABC";
-    }
+    function getCase() { return document.querySelector('input[name="letter-case"]:checked').value; }
 
     function onCaseChange() {
-        let card = document.getElementById("main-display-card");
-        let currentCase = getSelectedCase();
-        
-        if(currentCase === "ABC") {
-            card.className = "four-line-display-card case-ABC";
-        } else {
-            card.className = "four-line-display-card case-abc";
-        }
-        
         updateDisplay();
-        renderGridButtons();
+        renderGrid();
     }
 
     function updateDisplay() {
-        let item = alphabet[currentIndex];
-        let displayCase = getSelectedCase();
-        let letterText = document.getElementById("big-letter-text");
+        let letter = alphabet[currentIndex];
+        let txtNode = document.getElementById("display-letter");
+        let currentCase = getCase();
         
-        letterText.innerText = (displayCase === "ABC") ? item.cap : item.sm;
+        txtNode.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
 
-        // लहान लिपीतील अक्षरांचे फोर लाईनमध्ये अचूक पोझिशनिंग
-        if(displayCase === "abc") {
-            if(['g', 'j', 'p', 'q', 'y'].includes(item.sm)) {
-                letterText.style.transform = "translateY(18px)"; /* खालच्या २ निळ्या आणि १ लाल ओळीत */
-            } else if(['b', 'd', 'h', 'k', 'l'].includes(item.sm)) {
-                letterText.style.transform = "translateY(-10px)"; /* वरच्या १ लाल आणि २ निळ्या ओळीत */
-            } else if(['f', 't'].includes(item.sm)) {
-                letterText.style.transform = "translateY(-8px)"; /* वरच्या १ लाल आणि २ निळ्या ओळीत */
-            } else {
-                letterText.style.transform = "translateY(3px)"; /* फक्त मधल्या दोन निळ्या ओळीत */
-                letterText.style.fontSize = "95px"; /* थोडे लहान अक्षर */
-            }
+        // 🎯 अचूक फोर-लाईन पोझिशनिंग क्लास निवडणे (कोणत्याही मोबाईलवर न हलणारा पॅटर्न)
+        txtNode.className = "letter-text"; 
+        
+        if(currentCase === "ABC") {
+            txtNode.classList.add("align-capital");
         } else {
-            letterText.style.transform = "translateY(-10px)"; /* कॅपिटल अक्षरे वरच्या ३ ओळीत */
-            letterText.style.fontSize = "110px";
+            let ch = letter.toLowerCase();
+            if(['b', 'd', 'f', 'h', 'k', 'l', 't'].includes(ch)) {
+                txtNode.classList.add("align-small-tall");
+            } else if(['g', 'j', 'p', 'q', 'y'].includes(ch)) {
+                txtNode.classList.add("align-small-desc");
+            } else {
+                txtNode.classList.add("align-small-mid");
+            }
         }
 
-        // चालू बटन हायलाईट करणे
-        let allButtons = document.querySelectorAll(".grid-btn");
-        allButtons.forEach((btn, idx) => {
-            if(idx === currentIndex) btn.classList.add("active");
-            else btn.classList.remove("active");
+        document.querySelectorAll(".grid-btn").forEach((b, i) => {
+            if(i === currentIndex) b.classList.add("active");
+            else b.classList.remove("active");
         });
     }
 
-    function renderGridButtons() {
-        let gridContainer = document.getElementById("letters-buttons-grid");
-        if(!gridContainer) return;
-        gridContainer.innerHTML = "";
-        let displayCase = getSelectedCase();
-
-        alphabet.forEach((item, index) => {
-            let btn = document.createElement("button");
-            btn.className = "grid-btn";
-            if(index === currentIndex) btn.classList.add("active");
-
-            let charStr = (displayCase === "ABC") ? item.cap : item.sm;
-            btn.innerHTML = `${charStr} <span class="sub-text">${item.sound}</span>`;
-            
-            btn.onclick = function() {
-                currentIndex = index;
-                updateDisplay();
-                speakCurrentLetter();
-            };
-            gridContainer.appendChild(btn);
-        });
-    }
-
-    function navigateLetter(step) {
-        currentIndex += step;
-        if(currentIndex >= alphabet.length) currentIndex = 0;
-        if(currentIndex < 0) currentIndex = alphabet.length - 1;
-        updateDisplay();
-        speakCurrentLetter();
-    }
-
-    // 🔊 मोबाईलच्या सिस्टीममधील शुद्ध इंग्रजी उच्चार आवाज प्ले करणे
-    function speakCurrentLetter() {
-        let item = alphabet[currentIndex];
-        let displayCase = getSelectedCase();
-        let targetLetter = (displayCase === "ABC") ? item.cap : item.sm;
+    function renderGrid() {
+        let grid = document.getElementById("buttons-grid");
+        grid.innerHTML = "";
+        let currentCase = getCase();
         
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel(); 
-            
-            let letterUtterance = new SpeechSynthesisUtterance(targetLetter);
-            letterUtterance.lang = 'en-US';
-            letterUtterance.rate = 0.85; 
-            
-            let phonicTarget = getEnglishPhonicPhoneme(item.cap);
-            let soundUtterance = new SpeechSynthesisUtterance(phonicTarget);
-            soundUtterance.lang = 'en-US';
-            soundUtterance.rate = 0.75; 
+        alphabet.forEach((letter, i) => {
+            let b = document.createElement("button");
+            b.className = "grid-btn";
+            if(i === currentIndex) b.classList.add("active");
+            b.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
+            b.onclick = () => { currentIndex = i; updateDisplay(); speakLetter(); };
+            grid.appendChild(b);
+        });
+    }
 
-            window.speechSynthesis.speak(letterUtterance);
-            
-            setTimeout(() => {
-                window.speechSynthesis.speak(soundUtterance);
-            }, 300);
+    function navigate(step) {
+        currentIndex = (currentIndex + step + 26) % 26;
+        updateDisplay();
+        speakLetter();
+    }
+
+    // 🔊 केवळ आणि केवळ इंग्रजी भाषेत स्पष्ट उच्चार करण्याचे फंक्शन
+    function speakLetter() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            let letter = alphabet[currentIndex];
+            let currentCase = getCase();
+            let speakText = (currentCase === "ABC") ? letter : letter.toLowerCase();
+
+            let u1 = new SpeechSynthesisUtterance(speakText);
+            u1.lang = 'en-US';
+            u1.rate = 0.8;
+
+            let u2 = new SpeechSynthesisUtterance(phonicSounds[letter]);
+            u2.lang = 'en-US';
+            u2.rate = 0.7;
+
+            window.speechSynthesis.speak(u1);
+            setTimeout(() => { window.speechSynthesis.speak(u2); }, 400);
         }
     }
 
-    function getEnglishPhonicPhoneme(letter) {
-        const phonicMap = {
-            'A': 'ah', 'B': 'buh', 'C': 'kuh', 'D': 'duh', 'E': 'eh', 
-            'F': 'fuh', 'G': 'guh', 'H': 'huh', 'I': 'ih', 'J': 'juh', 
-            'K': 'kuh', 'L': 'uhl', 'M': 'muh', 'N': 'nuh', 'O': 'ahf', 
-            'P': 'puh', 'Q': 'kwuh', 'R': 'ruh', 'S': 'suh', 'T': 'tuh', 
-            'U': 'uh', 'V': 'vuh', 'W': 'wuh', 'X': 'ks', 'Y': 'yuh', 'Z': 'zuh'
-        };
-        return phonicMap[letter] || letter;
-    }
-
-    // पेज लोड झाल्यावर फोर-लाईन आणि अक्षर रेंडर करणे
-    window.onload = function() {
-        onCaseChange();
-    };
+    window.onload = () => { onCaseChange(); };
 </script>
 </body>
 </html>
