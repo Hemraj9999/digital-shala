@@ -3,53 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Shala - Home</title>
+    <title>डिजिटल शाळा - मुख्य पान</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; text-align: center; }
-        header { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px; }
-        h1 { font-size: 36px; margin-bottom: 10px; }
-        .container { max-width: 600px; margin: 50px auto; padding: 20px; }
-        p { font-size: 20px; color: #475569; margin-bottom: 30px; font-weight: bold; }
-        .menu-btn {
-            display: block;
-            width: 100%;
-            padding: 20px;
-            margin: 15px 0;
-            font-size: 22px;
-            font-weight: bold;
-            color: white;
-            border: none;
-            border-radius: 15px;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        body { background: #0f172a; color: #f8fafc; padding: 20px 15px; min-height: 100vh; }
+        .main-title { text-align: center; font-size: 24px; font-weight: 800; color: #ff6b6b; margin-bottom: 25px; margin-top: 10px; }
+        
+        .section-title { font-size: 18px; font-weight: 700; color: #00f2fe; margin: 20px 0 10px 5px; display: flex; align-items: center; gap: 8px; }
+        
+        .grid-container { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 410px; margin: 0 auto; }
+        
+        .card { 
+            background: #1e293b; 
+            border: 1px solid rgba(255,255,255,0.08); 
+            border-radius: 20px; 
+            padding: 16px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
             text-decoration: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            color: inherit;
         }
-        .menu-btn:hover { transform: scale(1.03); }
-        .btn-math { background-color: #ff9f43; }
-        .btn-marathi { background-color: #ee5253; }
-        .btn-english { background-color: #10ac84; }
-        footer { margin-top: 50px; color: #94a3b8; font-size: 14px; }
+        .card:active { background: #25334d; }
+        
+        .icon-box { width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        
+        .card-info h3 { font-size: 16px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; }
+        .card-info p { font-size: 12px; color: #94a3b8; line-height: 1.4; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Digital Shala</h1>
-    <p style="color: #e2e8f0; margin-bottom: 0;">माझी ऑनलाईन डिजिटल शाळा</p>
-</header>
+    <h2 class="main-title">🏫 माझी डिजिटल शाळा</h2>
 
-<div class="container">
-    <p>सराव करण्यासाठी खालीलपैकी विषय निवडा:</p>
-    
-    <a href="ganit.html" class="menu-btn btn-math">🔢 गणित (Maths)</a>
-    <a href="marathi.html" class="menu-btn btn-marathi">🍎 मराठी (Marathi)</a>
-    <a href="english.html" class="menu-btn btn-english">🅰 इंग्रजी (English)</a>
-</div>
+    <div class="grid-container">
+        
+        <div class="section-title">🔸 गणित डिजिटल शाळा</div>
+        
+        <a href="ganit.html" class="card">
+            <div class="icon-box">💎</div>
+            <div class="card-info">
+                <h3>१. गणित विषय खेळ</h3>
+                <p>अंक ओळख, बेरीज आणि संख्या मोजणे यांचे मजेदार खेळ खेळा.</p>
+            </div>
+        </a>
 
-<footer>
-    <p>© २०२६ Digital Shala. सर्व हक्क सुरक्षित.</p>
-</footer>
+        <div class="section-title">🔸 इंग्रजी डिजिटल शाळा</div>
+        
+        <a href="abc.html" class="card" style="border-color: rgba(0, 242, 254, 0.2);">
+            <div class="icon-box">🔤</div>
+            <div class="card-info">
+                <h3>१. A to Z Phonics Smart Shala</h3>
+                <p>लाल आणि निळ्या फोर-लाईन (Four Line) मध्ये आवाजसहित लहान व मोठी लिपी शिका.</p>
+            </div>
+        </a>
+
+    </div>
 
 </body>
 </html>
