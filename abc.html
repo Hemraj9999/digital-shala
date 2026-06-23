@@ -81,7 +81,7 @@
             color: #050b14;
         }
 
-        /* ४ ओळींचा मुख्य बॉक्स */
+        /* 🎯 नवीन फिक्स फोर-लाईन कंटेनर कार्ड */
         .four-line-card {
             background: #ffffff; 
             border-radius: 20px;
@@ -97,67 +97,75 @@
             justify-content: center;
         }
 
-        /* ४ ओळींची बॅकग्राउंड रचना */
+        /* ४ ओळींची अचूक बॅकग्राउंड - नेहमी सेंटर लॉक */
         .lines-container {
             position: absolute;
             width: 100%;
-            height: 108px; 
+            height: 120px; 
             display: flex;
             flex-direction: column;
             left: 0;
+            top: 30px;
             pointer-events: none;
+            z-index: 1;
         }
         .fl-space {
-            height: 36px;
+            height: 40px;
             width: 100%;
         }
-        .line-r { border-top: 2.5px solid var(--fourline-red); }
-        .line-b { border-top: 2px solid var(--fourline-blue); }
-        .line-bottom-b { border-bottom: 2px solid var(--fourline-blue); }
-        .line-bottom-r { border-bottom: 2.5px solid var(--fourline-red); }
+        .line-r { border-top: 3px solid var(--fourline-red); }
+        .line-b { border-top: 2.5px solid var(--fourline-blue); }
+        .line-bottom-b { border-bottom: 2.5px solid var(--fourline-blue); }
+        .line-bottom-r { border-bottom: 3px solid var(--fourline-red); }
 
-        /* अक्षराचा होल्डर */
+        /* 🎯 अक्षराचा मुख्य कंटेनर - ओळींवर लॉक */
         .letter-holder {
             position: absolute;
             width: 100%;
-            height: 108px; 
+            height: 120px;
+            top: 30px;
             display: flex;
             justify-content: center;
             align-items: center;
             pointer-events: none;
+            z-index: 2;
         }
 
         .letter-text {
             font-family: 'Georgia', serif;
             font-weight: bold;
             color: #1e293b;
-            display: inline-block;
-            line-height: 1 !important;
             text-align: center;
+            display: block;
+            width: 100%;
         }
 
-        /* 🎯 मोठी लिपी (कॅपिटल अक्षरे - चौकटीत परफेक्ट बसण्यासाठी बदललेली साईझ) */
+        /* मोठी लिपी (पहिल्या लाल रेषेपासून दुसऱ्या निळ्या रेषेपर्यंत परफेक्ट मॅच) */
         .align-ABC {
-            font-size: 78px;
-            transform: translateY(-4px); 
+            font-size: 82px;
+            line-height: 80px;
+            margin-top: -38px;
         }
 
         /* लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) */
         .align-small-tall {
-            font-size: 78px;
-            transform: translateY(-6px);
+            font-size: 82px;
+            line-height: 80px;
+            margin-top: -38px;
         }
 
         /* लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) */
         .align-small-mid {
-            font-size: 50px;
-            transform: translateY(14px); 
+            font-size: 54px;
+            line-height: 40px;
+            margin-top: 2px;
         }
 
         /* लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) */
         .align-small-desc {
-            font-size: 76px;
-            transform: translateY(22px); 
+            font-size: 82px;
+            line-height: 80px;
+            margin-top: 2px;
         }
 
         .sound-tag {
@@ -272,19 +280,18 @@
         let currentCase = getCase();
         
         txtNode.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
-        txtNode.className = "letter-text";
+        txtNode.style.marginTop = ""; // जुनी मार्जिन रीसेट
 
-        // अक्षरांचे फॉन्ट अलाईनमेंट क्लासेस
         if(currentCase === "ABC") {
-            txtNode.classList.add("align-ABC");
+            txtNode.className = "letter-text align-ABC";
         } else {
             let ch = letter.toLowerCase();
             if(['b', 'd', 'f', 'h', 'k', 'l', 't'].includes(ch)) {
-                txtNode.classList.add("align-small-tall");
+                txtNode.className = "letter-text align-small-tall";
             } else if(['g', 'j', 'p', 'q', 'y'].includes(ch)) {
-                txtNode.classList.add("align-small-desc");
+                txtNode.className = "letter-text align-small-desc";
             } else {
-                txtNode.classList.add("align-small-mid");
+                txtNode.className = "letter-text align-small-mid";
             }
         }
 
