@@ -8,6 +8,8 @@
         :root { 
             --primary: #00f2fe; 
             --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); 
+            --fourline-red: #ff4d4d;
+            --fourline-blue: #3399ff;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -79,7 +81,7 @@
             color: #050b14;
         }
 
-        /* 🎯 परफेक्ट वहीचे पान - फोर लाईन बॅकग्राउंड */
+        /* 🎯 नवीन १००% गॅरंटीड फोर-लाईन बॉक्स मांडणी */
         .four-line-card {
             background: #ffffff; 
             border-radius: 20px;
@@ -90,31 +92,39 @@
             cursor: pointer;
             border: 4px solid #1e293b;
             overflow: hidden;
-            
-            /* खऱ्या फोरलाईन वहीसारख्या रेषा तयार केल्या आहेत (कधीच कट होणार नाहीत) */
-            background-image: 
-                linear-gradient(#ff4d4d 2px, transparent 2px), /* पहिली लाल रेषा */
-                linear-gradient(#3399ff 2px, transparent 2px), /* पहिली निळी रेषा */
-                linear-gradient(#3399ff 2px, transparent 2px), /* दुसरी निळी रेषा */
-                linear-gradient(#ff4d4d 2px, transparent 2px); /* खालची लाल रेषा */
-            background-size: 100% 180px;
-            background-position: 
-                0px 35px, 
-                0px 70px, 
-                0px 105px, 
-                0px 140px;
-            background-repeat: no-repeat;
         }
 
-        /* अक्षरासाठी कंटेनर */
-        .letter-holder {
+        /* ४ ओळींची प्रत्यक्ष बॅकग्राउंड रचना */
+        .lines-container {
             position: absolute;
+            width: 100%;
+            height: 100%;
             top: 0;
             left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0;
+        }
+        .fl-space {
+            height: 35px; /* प्रत्येक ओळीमधील परफेक्ट अंतर */
             width: 100%;
-            height: 180px;
+            position: relative;
+        }
+        .line-r { border-top: 2.5px solid var(--fourline-red); }
+        .line-b { border-top: 2px solid var(--fourline-blue); }
+        .line-bottom-r { border-bottom: 2.5px solid var(--fourline-red); }
+
+        /* 🎯 अक्षराचा मुख्य फॉन्ट आणि १००% अचूक पोझिशनिंग */
+        .letter-holder {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
             display: flex;
             justify-content: center;
+            align-items: center;
             pointer-events: none;
         }
 
@@ -122,35 +132,37 @@
             font-family: 'Georgia', serif;
             font-weight: bold;
             color: #1e293b;
+            position: absolute;
             text-align: center;
+            width: 100%;
         }
 
-        /* 🅰️ मोठी लिपी (पहिल्या लाल रेषेपासून दुसऱ्या निळ्या रेषेपर्यंत परफेक्ट ३ खाप्या व्यापते) */
+        /* मोठी लिपी - पहिल्या लाल रेषेपासून दुसऱ्या निळ्या रेषेपर्यंत */
         .align-ABC {
-            font-size: 82px;
-            line-height: 105px; /* ३५px ते १४०px = १०५px */
-            margin-top: 32px;
+            font-size: 100px;
+            top: 15px;
+            line-height: 95px;
         }
 
-        /* 🔤 लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) */
+        /* लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) - वरच्या ३ ओळीत */
         .align-small-tall {
-            font-size: 82px;
-            line-height: 105px;
-            margin-top: 30px;
+            font-size: 95px;
+            top: 16px;
+            line-height: 95px;
         }
 
-        /* 🔤 लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) */
+        /* लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) - फक्त २ निळ्या ओळीत */
         .align-small-mid {
-            font-size: 55px;
-            line-height: 35px; /* फक्त मधली एक खापी ३५px */
-            margin-top: 70px;
+            font-size: 68px;
+            top: 52px;
+            line-height: 55px;
         }
 
-        /* 🔤 लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) */
+        /* लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) - खालच्या ३ ओळीत परफेक्ट लॉक */
         .align-small-desc {
-            font-size: 82px;
-            line-height: 105px;
-            margin-top: 66px; /* खालच्या ३ ओळीत */
+            font-size: 95px;
+            top: 50px;
+            line-height: 80px;
         }
 
         .sound-tag {
@@ -166,7 +178,7 @@
             z-index: 5;
         }
 
-        /* ग्रिड बटने */
+        /* ग्रिड रचना */
         .alphabet-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -220,9 +232,16 @@
     </div>
 
     <div class="four-line-card" onclick="speakLetter()">
-        <div class="letter-holder">
-            <div class="letter-text" id="display-letter">A</div>
+        <div class="lines-container">
+            <div class="fl-space line-r"></div>
+            <div class="fl-space line-b"></div>
+            <div class="fl-space line-b line-bottom-r"></div>
         </div>
+        
+        <div class="letter-holder">
+            <div class="letter-text align-ABC" id="display-letter">A</div>
+        </div>
+        
         <div class="sound-tag">🔊 Sound</div>
     </div>
 
@@ -238,6 +257,7 @@
     let currentIndex = 0;
     const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     
+    // शुद्ध इंग्रजी फॉनिक्स साउंड्स
     const phonicSounds = {
         'A': 'ah', 'B': 'buh', 'C': 'kuh', 'D': 'duh', 'E': 'eh', 'F': 'fuh', 'G': 'guh', 
         'H': 'huh', 'I': 'ih', 'J': 'juh', 'K': 'kuh', 'L': 'uhl', 'M': 'muh', 'N': 'nuh', 
@@ -258,17 +278,19 @@
         let currentCase = getCase();
         
         txtNode.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
+        txtNode.className = "letter-text"; 
 
+        // 🎯 प्रत्येक प्रकारच्या अक्षराला रेषेवर फिक्स बसवणे
         if(currentCase === "ABC") {
-            txtNode.className = "letter-text align-ABC";
+            txtNode.classList.add("align-ABC");
         } else {
             let ch = letter.toLowerCase();
             if(['b', 'd', 'f', 'h', 'k', 'l', 't'].includes(ch)) {
-                txtNode.className = "letter-text align-small-tall";
+                txtNode.classList.add("align-small-tall");
             } else if(['g', 'j', 'p', 'q', 'y'].includes(ch)) {
-                txtNode.className = "letter-text align-small-desc";
+                txtNode.classList.add("align-small-desc");
             } else {
-                txtNode.className = "letter-text align-small-mid";
+                txtNode.classList.add("align-small-mid");
             }
         }
 
@@ -299,6 +321,7 @@
         speakLetter();
     }
 
+    // 🔊 केवळ इंग्रजी उच्चार सिस्टीम
     function speakLetter() {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
