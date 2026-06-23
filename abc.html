@@ -81,7 +81,7 @@
             color: #050b14;
         }
 
-        /* 🎯 नवीन १००% गॅरंटीड फोर-लाईन बॉक्स मांडणी */
+        /* 🎯 फिक्स साईझ फोर-लाईन कार्ड (टक्केवारी नाही, पिक्सेल लॉक) */
         .four-line-card {
             background: #ffffff; 
             border-radius: 20px;
@@ -92,77 +92,76 @@
             cursor: pointer;
             border: 4px solid #1e293b;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* ४ ओळींची प्रत्यक्ष बॅकग्राउंड रचना */
+        /* ४ ओळींचा साचा - एकूण उंची १२०px (४०px चे ३ कप्पे) */
         .lines-container {
             position: absolute;
             width: 100%;
-            height: 100%;
-            top: 0;
+            height: 120px;
+            top: 30px;
             left: 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            padding: 0;
+            pointer-events: none;
+            z-index: 1;
         }
         .fl-space {
-            height: 35px; /* प्रत्येक ओळीमधील परफेक्ट अंतर */
+            height: 40px;
             width: 100%;
-            position: relative;
         }
-        .line-r { border-top: 2.5px solid var(--fourline-red); }
-        .line-b { border-top: 2px solid var(--fourline-blue); }
-        .line-bottom-r { border-bottom: 2.5px solid var(--fourline-red); }
+        .line-r { border-top: 3px solid var(--fourline-red); }
+        .line-b { border-top: 3px solid var(--fourline-blue); }
+        .line-bottom-b { border-bottom: 3px solid var(--fourline-blue); }
+        .line-bottom-r { border-bottom: 3px solid var(--fourline-red); }
 
-        /* 🎯 अक्षराचा मुख्य फॉन्ट आणि १००% अचूक पोझिशनिंग */
+        /* 🎯 अक्षराचा बॉक्स - ओळींच्या साच्यावर तंतोतंत लॉक */
         .letter-holder {
             position: absolute;
             width: 100%;
-            height: 100%;
-            top: 0;
+            height: 120px;
+            top: 30px;
             left: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             pointer-events: none;
+            z-index: 2;
         }
 
         .letter-text {
             font-family: 'Georgia', serif;
             font-weight: bold;
             color: #1e293b;
-            position: absolute;
             text-align: center;
-            width: 100%;
+            line-height: 1 !important;
         }
 
-        /* मोठी लिपी - पहिल्या लाल रेषेपासून दुसऱ्या निळ्या रेषेपर्यंत */
+        /* 🅰️ मोठी लिपी - वरच्या लाल रेषेपासून खालच्या निळ्या रेषेपर्यंत (८०px) */
         .align-ABC {
-            font-size: 100px;
-            top: 15px;
-            line-height: 95px;
+            font-size: 84px;
+            margin-top: -33px;
         }
 
-        /* लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) - वरच्या ३ ओळीत */
+        /* 🔤 लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) - वरच्या लाल रेषेपर्यंत */
         .align-small-tall {
-            font-size: 95px;
-            top: 16px;
-            line-height: 95px;
+            font-size: 84px;
+            margin-top: -35px;
         }
 
-        /* लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) - फक्त २ निळ्या ओळीत */
+        /* 🔤 लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) - फक्त २ निळ्या रेषेच्या आत (४०px) */
         .align-small-mid {
-            font-size: 68px;
-            top: 52px;
-            line-height: 55px;
+            font-size: 44px;
+            margin-top: 6px;
         }
 
-        /* लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) - खालच्या ३ ओळीत परफेक्ट लॉक */
+        /* 🔤 लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) - पहिल्या निळ्या रेषेपासून खालच्या लाल रेषेपर्यंत */
         .align-small-desc {
-            font-size: 95px;
-            top: 50px;
-            line-height: 80px;
+            font-size: 84px;
+            margin-top: 5px;
         }
 
         .sound-tag {
@@ -235,7 +234,7 @@
         <div class="lines-container">
             <div class="fl-space line-r"></div>
             <div class="fl-space line-b"></div>
-            <div class="fl-space line-b line-bottom-r"></div>
+            <div class="fl-space line-bottom-b line-bottom-r"></div>
         </div>
         
         <div class="letter-holder">
@@ -257,7 +256,6 @@
     let currentIndex = 0;
     const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     
-    // शुद्ध इंग्रजी फॉनिक्स साउंड्स
     const phonicSounds = {
         'A': 'ah', 'B': 'buh', 'C': 'kuh', 'D': 'duh', 'E': 'eh', 'F': 'fuh', 'G': 'guh', 
         'H': 'huh', 'I': 'ih', 'J': 'juh', 'K': 'kuh', 'L': 'uhl', 'M': 'muh', 'N': 'nuh', 
@@ -278,19 +276,18 @@
         let currentCase = getCase();
         
         txtNode.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
-        txtNode.className = "letter-text"; 
 
-        // 🎯 प्रत्येक प्रकारच्या अक्षराला रेषेवर फिक्स बसवणे
+        // प्रत्येक प्रकारच्या अक्षरासाठी पिक्सेल अलाईनमेंट मॅपिंग
         if(currentCase === "ABC") {
-            txtNode.classList.add("align-ABC");
+            txtNode.className = "letter-text align-ABC";
         } else {
             let ch = letter.toLowerCase();
             if(['b', 'd', 'f', 'h', 'k', 'l', 't'].includes(ch)) {
-                txtNode.classList.add("align-small-tall");
+                txtNode.className = "letter-text align-small-tall";
             } else if(['g', 'j', 'p', 'q', 'y'].includes(ch)) {
-                txtNode.classList.add("align-small-desc");
+                txtNode.className = "letter-text align-small-desc";
             } else {
-                txtNode.classList.add("align-small-mid");
+                txtNode.className = "letter-text align-small-mid";
             }
         }
 
@@ -321,7 +318,6 @@
         speakLetter();
     }
 
-    // 🔊 केवळ इंग्रजी उच्चार सिस्टीम
     function speakLetter() {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
