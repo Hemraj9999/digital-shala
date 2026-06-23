@@ -68,7 +68,6 @@
             gap: 15px;
         }
 
-        /* लिपी निवडण्यासाठी सुंदर टॉगल बॉक्स */
         .case-selector {
             background: rgba(0, 0, 0, 0.4);
             padding: 4px;
@@ -96,7 +95,6 @@
             box-shadow: 0 4px 10px rgba(0, 242, 254, 0.2);
         }
 
-        /* सूचना पट्टी */
         .info-bar {
             background: rgba(0, 242, 254, 0.03);
             border-left: 4px solid #00f2fe;
@@ -110,9 +108,8 @@
             color: #e2e8f0;
         }
 
-        /* ४ लाईन अक्षराचा मुख्य डिस्प्ले बॉक्स */
         .four-line-display-card {
-            background: #ffffff; /* फोर लाईन स्पष्ट दिसण्यासाठी पांढरा बॅकग्राउंड */
+            background: #ffffff; 
             border-radius: 20px;
             width: 100%;
             max-width: 410px;
@@ -126,7 +123,6 @@
             cursor: pointer;
         }
 
-        /* फोर लाईनचे लॉजिक */
         .four-lines {
             width: 100%;
             height: 120px;
@@ -143,7 +139,6 @@
         .line.red { background-color: var(--fourline-red); }
         .line.blue { background-color: var(--fourline-blue); }
 
-        /* अक्षराची मांडणी */
         .letter-overlay {
             position: absolute;
             width: 100%;
@@ -153,24 +148,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* इंग्रजी वळणदार अक्षरांसाठी खास सेमी-करसिव्ह स्टाईल फॉन्ट */
             font-family: 'Georgia', 'Times New Roman', serif;
-            font-size: 90px;
+            font-size: 92px;
             font-weight: bold;
             color: #1e293b;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
             line-height: 1;
         }
 
-        /* कॅपिटल 'A' आणि स्मॉल 'a' साठी अचूक फोर लाईन पोझिशनिंग */
         .case-ABC .letter-overlay {
-            transform: translateY(-9px); /* कॅपिटल अक्षरे वरच्या ३ ओळीत बसतात */
+            transform: translateY(-9px); 
         }
         .case-abc .letter-overlay {
-            transform: translateY(-2px); /* स्मॉल अक्षरे मधल्या किंवा खालच्या ओळीनुसार */
+            transform: translateY(-2px); 
         }
 
-        /* साउंड प्ले करण्याचे सुंदर बटन */
         .sound-indicator {
             position: absolute;
             bottom: 10px;
@@ -187,7 +179,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* खालील ए ते झेड ग्रिड */
         .alphabet-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -224,7 +215,6 @@
             transform: scale(0.95);
         }
 
-        /* नेव्हिगेशन बटन्स */
         .nav-flex {
             display: flex;
             justify-content: space-between;
@@ -250,7 +240,7 @@
 <body>
 
 <header>
-    <a href="ganit.html" class="back-btn">⬅ मागे जा</a>
+    <a href="index.html" class="back-btn">⬅ मागे जा</a>
     <h2>✨ English Phonics Smart Shala</h2>
     <div style="width:65px;"></div>
 </header>
@@ -277,7 +267,7 @@
             <div class="line red"></div>
         </div>
         <div class="letter-overlay" id="big-letter-text">A</div>
-        <div class="sound-indicator">🔊 उचार ऐका</div>
+        <div class="sound-indicator">🔊 उच्चार ऐका</div>
     </div>
 
     <div class="nav-flex">
@@ -292,7 +282,7 @@
 <script>
     let currentIndex = 0;
     const alphabet = [
-        { cap: 'A', sm: 'a', sound: 'ॲ (ऍ)' }, { cap: 'B', sm: 'b', sound: 'ब' },
+        { cap: 'A', sm: 'a', sound: 'ॲ' }, { cap: 'B', sm: 'b', sound: 'ब' },
         { cap: 'C', sm: 'c', sound: 'क' }, { cap: 'D', sm: 'd', sound: 'ड' },
         { cap: 'E', sm: 'e', sound: 'ए' }, { cap: 'F', sm: 'f', sound: 'फ' },
         { cap: 'G', sm: 'g', sound: 'ग' }, { cap: 'H', sm: 'h', sound: 'ह' },
@@ -300,20 +290,18 @@
         { cap: 'K', sm: 'k', sound: 'क' }, { cap: 'L', sm: 'l', sound: 'ल' },
         { cap: 'M', sm: 'm', sound: 'म' }, { cap: 'N', sm: 'n', sound: 'न' },
         { cap: 'O', sm: 'o', sound: 'ऑ' }, { cap: 'P', sm: 'p', sound: 'प' },
-        { cap: 'Q', sm: 'q', sound: 'क्व' }, { cap: 'R', sm: 'r', sound: 'र' },
+        { cap: 'Q', sm: 'q', sound: 'क्वे' }, { cap: 'R', sm: 'r', sound: 'र' },
         { cap: 'S', sm: 's', sound: 'स' }, { cap: 'T', sm: 't', sound: 'ट' },
         { cap: 'U', sm: 'u', sound: 'अ' }, { cap: 'V', sm: 'v', sound: 'व्ह' },
         { cap: 'W', sm: 'w', sound: 'व' }, { cap: 'X', sm: 'x', sound: 'क्स' },
         { cap: 'Y', sm: 'y', sound: 'य' }, { cap: 'Z', sm: 'z', sound: 'झ' }
     ];
 
-    // सध्या कोणती लिपी सिलेक्ट आहे ते शोधणे
     function getSelectedCase() {
         let checkedRadio = document.querySelector('input[name="letter-case"]:checked');
         return checkedRadio ? checkedRadio.value : "ABC";
     }
 
-    // लिपी बदलल्यावर स्क्रीन अपडेट करणे
     function onCaseChange() {
         let card = document.getElementById("main-display-card");
         let currentCase = getSelectedCase();
@@ -328,16 +316,13 @@
         renderGridButtons();
     }
 
-    // स्क्रीनवरील मुख्य अक्षर आणि ओळींचे पोझिशनिंग अचूक करणे
     function updateDisplay() {
         let item = alphabet[currentIndex];
         let displayCase = getSelectedCase();
         let letterText = document.getElementById("big-letter-text");
         
-        // कॅपिटल किंवा स्मॉल नुसार अक्षर सेट करणे
         letterText.innerText = (displayCase === "ABC") ? item.cap : item.sm;
 
-        // स्मॉल लिपीतील काही अक्षरे (उदा. g, j, p, q, y) फोर लाईनमध्ये खालच्या ओळीला स्पर्श करतात, त्यांचे पोझिशनिंग बदलणे
         if(displayCase === "abc") {
             if(['g', 'j', 'p', 'q', 'y'].includes(item.sm)) {
                 letterText.style.transform = "translateY(12px)";
@@ -350,7 +335,6 @@
             letterText.style.transform = "translateY(-9px)";
         }
 
-        // ग्रिडमधील चालू बटन हायलाईट करणे
         let allButtons = document.querySelectorAll(".grid-btn");
         allButtons.forEach((btn, idx) => {
             if(idx === currentIndex) btn.classList.add("active");
@@ -358,9 +342,9 @@
         });
     }
 
-    // खालील अक्षरांची संपूर्ण ग्रिड तयार करणे
     function renderGridButtons() {
         let gridContainer = document.getElementById("letters-buttons-grid");
+        if(!gridContainer) return;
         gridContainer.innerHTML = "";
         let displayCase = getSelectedCase();
 
@@ -381,7 +365,6 @@
         });
     }
 
-    // नेव्हिगेशन बटन (मागे / पुढे)
     function navigateLetter(step) {
         currentIndex += step;
         if(currentIndex >= alphabet.length) currentIndex = 0;
@@ -390,42 +373,42 @@
         speakCurrentLetter();
     }
 
-    // 🔊 टेक्स्ट-टू-स्पीच (Text-to-Speech) द्वारे अस्खलित इंग्रजी उच्चार आवाज प्ले करणे
     function speakCurrentLetter() {
         let item = alphabet[currentIndex];
+        let displayCase = getSelectedCase();
+        let targetLetter = (displayCase === "ABC") ? item.cap : item.sm;
         
-        // मोबाईलची सिस्टीम स्पीच सिलेक्ट करणे
         if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel(); // जुना आवाज थांबवणे
+            window.speechSynthesis.cancel(); 
             
-            // आधी मूळ अक्षर बोलणार (उदा. "A")
-            let letterUtterance = new SpeechSynthesisUtterance(item.cap);
+            let letterUtterance = new SpeechSynthesisUtterance(targetLetter);
             letterUtterance.lang = 'en-US';
-            letterUtterance.rate = 0.8; // लहान मुलांसाठी आवाज थोडा हळू ठेवला आहे
+            letterUtterance.rate = 0.85; 
             
-            // त्यानंतर त्याचा फोनीक्स आवाज बोलणार (A says ॲ)
-            let soundUtterance = new SpeechSynthesisUtterance("says " + getEnglishPhonicPhoneme(item.cap));
+            let phonicTarget = getEnglishPhonicPhoneme(item.cap);
+            let soundUtterance = new SpeechSynthesisUtterance(phonicTarget);
             soundUtterance.lang = 'en-US';
-            soundUtterance.rate = 0.75;
+            soundUtterance.rate = 0.75; 
 
             window.speechSynthesis.speak(letterUtterance);
-            window.speechSynthesis.speak(soundUtterance);
+            
+            setTimeout(() => {
+                window.speechSynthesis.speak(soundUtterance);
+            }, 300);
         }
     }
 
-    // इंग्रजी सिस्टीमला फोनीक्सचा शुद्ध उच्चार समजण्यासाठी मॅपिंग लॉजिक
     function getEnglishPhonicPhoneme(letter) {
         const phonicMap = {
             'A': 'ah', 'B': 'buh', 'C': 'kuh', 'D': 'duh', 'E': 'eh', 
             'F': 'fuh', 'G': 'guh', 'H': 'huh', 'I': 'ih', 'J': 'juh', 
-            'K': 'kuh', 'L': 'uhl', 'M': 'mvh', 'N': 'nuh', 'O': 'ahf', 
+            'K': 'kuh', 'L': 'uhl', 'M': 'muh', 'N': 'nuh', 'O': 'ahf', 
             'P': 'puh', 'Q': 'kwuh', 'R': 'ruh', 'S': 'suh', 'T': 'tuh', 
             'U': 'uh', 'V': 'vuh', 'W': 'wuh', 'X': 'ks', 'Y': 'yuh', 'Z': 'zuh'
         };
         return phonicMap[letter] || letter;
     }
 
-    // पेज लोड झाल्यावर खेळ सुरू करणे
     window.onload = function() {
         onCaseChange();
     };
