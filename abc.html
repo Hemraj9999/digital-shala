@@ -97,7 +97,6 @@
             justify-content: center;
         }
 
-        /* 📏 अचूक ४ ओळी आणि अक्षरांचे इन-बिल्ट SVG प्लेनमेंट */
         .svg-container {
             width: 100%;
             height: 100%;
@@ -193,21 +192,33 @@
         'V': 'vuh', 'W': 'wuh', 'X': 'ks', 'Y': 'yuh', 'Z': 'zuh'
     };
 
-    // 📏 प्रत्येक अक्षराला रेषेवर अचूक बसवण्यासाठी त्याचे Y-Coordinates (गणिते) ठरवली आहेत
+    // 📏 प्रत्येक अक्षराची रेषेवरील उंची आणि 'Baseline' (alignment-baseline) परफेक्ट सेट केली आहे
     function getOffsetY(letter, isSmall) {
-        if (!isSmall) return 155; // सर्व कॅपिटल अक्षरे एकाच रेषेवर लॉक
+        if (!isSmall) return 155; // कॅपिटल अक्षरे (पहिली लाल ते दुसरी निळी रेषा)
         
-        // लहान अक्षरांसाठी विशेष नियम (काही वर जातात, काही खाली)
-        if (['g', 'j', 'p', 'q', 'y'].includes(letter)) return 190; 
+        // शेपटी खाली जाणारी लहान अक्षरे (g, j, p, q, y) थेट खालच्या लाल रेषेपर्यंत (y=207) जातील
+        if (['g', 'j', 'p', 'q', 'y'].includes(letter)) return 155; 
+        
+        // वर जाणारी लहान अक्षरे (b, d, h, k, l, t, f)
         if (['b', 'd', 'h', 'k', 'l', 't', 'f'].includes(letter)) return 155;
+        
+        // फक्त दोन निळ्या रेषेतील अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z)
         return 155; 
     }
 
-    function getFontSize(letter, isSmall) {
-        if (!isSmall) return "135px";
-        if (['b', 'd', 'h', 'k', 'l', 't', 'f'].includes(letter)) return "135px";
-        if (['g', 'j', 'p', 'q', 'y'].includes(letter)) return "100px";
-        return "100px"; 
+    // अक्षराचा अचूक फॉन्ट टाईप (घटोत्कच / वळणदार आणि सुबक अक्षरांसाठी 'dominant-baseline' चा वापर)
+    function getLetterStyle(letter, isSmall) {
+        if (!isSmall) {
+            return `font-size: 130px; dominant-baseline: auto;`;
+        }
+        // लहान अक्षरांसाठी विशेष मापे
+        if (['g', 'j', 'p', 'q', 'y'].includes(letter)) {
+            return `font-size: 105px; dominant-baseline: hanging;`; // टांगते अक्षर - ज्यामुळे शेपटी खाली जाईल
+        }
+        if (['b', 'd', 'h', 'k', 'l', 't', 'f'].includes(letter)) {
+            return `font-size: 130px; dominant-baseline: auto;`;
+        }
+        return `font-size: 105px; dominant-baseline: auto;`;
     }
 
     function getCase() { return document.querySelector('input[name="letter-case"]:checked').value; }
@@ -226,21 +237,21 @@
         let container = document.getElementById("board-container");
         
         let yPos = getOffsetY(displayLetter, isSmall);
-        let fSize = getFontSize(displayLetter, isSmall);
+        let styleCss = getLetterStyle(displayLetter, isSmall);
 
-        // 🖼️ कोडच्या आतच SVG द्वारे परफेक्ट ४ रेषा आणि वळणदार गुगल फॉन्ट अक्षर तयार करणे
+        // 📏 ४ रेषांची अचूक गणितीय रचना (y1 = 50, 102, 155, 207)
         container.innerHTML = `
             <svg width="100%" height="100%" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
-                <line x1="10" y1="50" x2="390" y2="50" stroke="#ff4d4d" stroke-width="3.5" />
-                <line x1="10" y1="102" x2="390" y2="102" stroke="#3399ff" stroke-width="2.5" />
-                <line x1="10" y1="155" x2="390" y2="155" stroke="#3399ff" stroke-width="2.5" />
-                <line x1="10" y1="207" x2="390" y2="207" stroke="#ff4d4d" stroke-width="3.5" />
+                <line x1="15" y1="50" x2="385" y2="50" stroke="#ff4d4d" stroke-width="4" stroke-linecap="round"/>
+                <line x1="15" y1="102" x2="385" y2="102" stroke="#3399ff" stroke-width="3" stroke-linecap="round"/>
+                <line x1="15" y1="155" x2="385" y2="155" stroke="#3399ff" stroke-width="3" stroke-linecap="round"/>
+                <line x1="15" y1="207" x2="385" y2="207" stroke="#ff4d4d" stroke-width="4" stroke-linecap="round"/>
                 
                 <text x="200" y="${yPos}" 
                       text-anchor="middle" 
-                      font-family="system-ui, sans-serif" 
+                      font-family="'Comic Sans MS', 'Chalkboard SE', 'Fredoka', sans-serif" 
                       font-weight="bold" 
-                      font-size="${fSize}" 
+                      style="${styleCss}"
                       fill="#1e293b">${displayLetter}</text>
             </svg>
         `;
