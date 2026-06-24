@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>English Phonics Four Line Shala</title>
+    <title>English Phonics Shala</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
 
     <style>
         :root { 
             --primary: #00f2fe; 
             --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); 
-            --fourline-red: #ff4d4d;
-            --fourline-blue: #3399ff;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -86,89 +84,41 @@
             color: #050b14;
         }
 
-        /* 🎯 ४-लाईन कार्ड बॉक्स मास्टर */
-        .four-line-card {
+        /* 🎯 अक्षराचा मुख्य पांढरा बॉक्स (फोर-लाईन हटवली आहे) */
+        .letter-card {
             background: #ffffff; 
-            border-radius: 20px;
+            border-radius: 24px;
             width: 100%;
             height: 220px;
             position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             cursor: pointer;
             border: 4px solid #1e293b;
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* 📏 ४ रेषांची अचूक गणितीय रचना */
-        .four-lines-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            pointer-events: none;
-        }
-        .row-line { width: 100%; padding: 0 15px; }
-        .line-red { border-top: 3.5px solid var(--fourline-red); margin: 20px 0; }
-        .line-blue { border-top: 2.5px solid var(--fourline-blue); margin: 20px 0; }
-
-        /* 🔤 अक्षरांची स्टाईल - ओळींवर अचूक लॉक करण्यासाठी */
-        .letter-display-box {
-            position: relative;
-            z-index: 2;
+        /* 🔤 ठळक अक्षर स्टाईल */
+        .letter-display {
             font-family: 'Fredoka', sans-serif;
-            font-weight: 500;
-            color: #1e293b;
-            line-height: 1;
-            text-align: center;
+            font-size: 140px; /* एकदम मोठे आणि स्पष्ट अक्षर */
+            font-weight: 600;
+            color: #0f172a; /* डार्क रंग जेणेकरून उठून दिसेल */
             user-select: none;
             pointer-events: none;
         }
 
-        /* मोठी लिपी रेषेवर बसवण्यासाठी */
-        .letter-capital {
-            font-size: 122px;
-            margin-top: -10px;
-        }
-
-        /* लहान लिपी रेषेवर बसवण्यासाठी */
-        .letter-small {
-            font-size: 85px;
-            margin-top: 31px;
-        }
-
-        /* विशिष्ट लहान अक्षरे जी खाली रेषेबाहेर जातात (g, j, p, q, y) */
-        .letter-descender {
-            margin-top: 55px !important;
-        }
-        /* विशिष्ट लहान अक्षरे जी वर रेषेपर्यंत जातात (b, d, h, k, l, t) */
-        .letter-ascender {
-            font-size: 120px !important;
-            margin-top: -12px !important;
-        }
-        /* 'f' अक्षरासाठी विशेष सेटिंग */
-        .letter-f-fix {
-            font-size: 118px !important;
-            margin-top: -10px !important;
-        }
-
         .sound-tag {
             position: absolute;
-            bottom: 8px;
-            right: 12px;
+            bottom: 10px;
+            right: 14px;
             background: #00f2fe;
             color: #0f172a;
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 10px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 800;
-            z-index: 5;
         }
 
         /* ग्रिड रचना */
@@ -224,16 +174,8 @@
         </label>
     </div>
 
-    <div class="four-line-card" onclick="speakLetter()">
-        <div class="four-lines-container">
-            <div class="row-line line-red"></div>
-            <div class="row-line line-blue"></div>
-            <div class="row-line line-blue"></div>
-            <div class="row-line line-red"></div>
-        </div>
-        
-        <div id="letter-holder" class="letter-display-box">A</div>
-        
+    <div class="letter-card" onclick="speakLetter()">
+        <div id="letter-holder" class="letter-display">A</div>
         <div class="sound-tag">🔊 Sound</div>
     </div>
 
@@ -249,6 +191,7 @@
     let currentIndex = 0;
     const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     
+    // फोनिक्स साऊंड्स
     const phonicSounds = {
         'A': 'ah', 'B': 'buh', 'C': 'kuh', 'D': 'duh', 'E': 'eh', 'F': 'fuh', 'G': 'guh', 
         'H': 'huh', 'I': 'ih', 'J': 'juh', 'K': 'kuh', 'L': 'uhl', 'M': 'muh', 'N': 'nuh', 
@@ -268,31 +211,17 @@
         let holder = document.getElementById("letter-holder");
         let currentCase = getCase();
         
+        // कॅपिटल किंवा स्मॉल अक्षर स्क्रीनवर सेट करणे
         if (currentCase === "ABC") {
             holder.innerText = letter;
-            holder.className = "letter-display-box letter-capital";
         } else {
-            let smallLetter = letter.toLowerCase();
-            holder.innerText = smallLetter;
-            holder.className = "letter-display-box letter-small";
-            
-            // खाली जाणाऱ्या लहान अक्षरांसाठी स्पेशल क्लास (g, j, p, q, y)
-            if (['g', 'j', 'p', 'q', 'y'].includes(smallLetter)) {
-                holder.classList.add("letter-descender");
-            }
-            // वर जाणाऱ्या लहान अक्षरांसाठी स्पेशल क्लास (b, d, h, k, l, t)
-            else if (['b', 'd', 'h', 'k', 'l', 't'].includes(smallLetter)) {
-                holder.classList.add("letter-ascender");
-            }
-            // 'f' अक्षराच्या अचूक उंचीसाठी
-            else if (smallLetter === 'f') {
-                holder.classList.add("letter-f-fix");
-            }
+            holder.innerText = letter.toLowerCase();
         }
 
+        // खालील ग्रिड बटण ॲक्टिव्ह करणे
         document.querySelectorAll(".grid-btn").forEach((b, i) => {
             if(i === currentIndex) b.classList.add("active");
-            else b.classList.remove("active");
+            else b.classList.remove("none");
         });
     }
 
@@ -317,6 +246,7 @@
         speakLetter();
     }
 
+    // साऊंड प्ले करणारे फंक्शन
     function speakLetter() {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
@@ -324,10 +254,12 @@
             let currentCase = getCase();
             let speakText = (currentCase === "ABC") ? letter : letter.toLowerCase();
 
+            // १. अक्षराचा उच्चार
             let u1 = new SpeechSynthesisUtterance(speakText);
             u1.lang = 'en-US';
             u1.rate = 0.8;
 
+            // २. फोनिक्स साऊंडचा उच्चार
             let u2 = new SpeechSynthesisUtterance(phonicSounds[letter]);
             u2.lang = 'en-US';
             u2.rate = 0.7;
