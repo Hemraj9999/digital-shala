@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>English Phonics Shala</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
-
+    <title>English Phonics Four Line Shala</title>
     <style>
         :root { 
             --primary: #00f2fe; 
             --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); 
+            --fourline-red: #ff4d4d;
+            --fourline-blue: #3399ff;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -84,41 +81,58 @@
             color: #050b14;
         }
 
-        /* 🎯 अक्षराचा मुख्य पांढरा बॉक्स (फोर-लाईन हटवली आहे) */
-        .letter-card {
+        /* 🎯 फोर-लाईन कार्ड बॉक्स - जो बॅकग्राउंड म्हणून काम करेल */
+        .four-line-card {
             background: #ffffff; 
-            border-radius: 24px;
+            border-radius: 20px;
             width: 100%;
             height: 220px;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             cursor: pointer;
             border: 4px solid #1e293b;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* 🔤 ठळक अक्षर स्टाईल */
-        .letter-display {
-            font-family: 'Fredoka', sans-serif;
-            font-size: 140px; /* एकदम मोठे आणि स्पष्ट अक्षर */
-            font-weight: 600;
-            color: #0f172a; /* डार्क रंग जेणेकरून उठून दिसेल */
-            user-select: none;
+        /* 📏 अचूक गणितीय ४ ओळी */
+        .four-lines-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .line-red { border-top: 3.5px solid var(--fourline-red); margin: 18px 12px; }
+        .line-blue { border-top: 2.5px solid var(--fourline-blue); margin: 18px 12px; }
+
+        /* 🎯 ओळींवर अचूक फिट होणारी अक्षराची इमेज */
+        .letter-image {
+            height: 100%;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            z-index: 2;
             pointer-events: none;
         }
 
         .sound-tag {
             position: absolute;
-            bottom: 10px;
-            right: 14px;
+            bottom: 8px;
+            right: 12px;
             background: #00f2fe;
             color: #0f172a;
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 10px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 800;
+            z-index: 5;
         }
 
         /* ग्रिड रचना */
@@ -174,8 +188,16 @@
         </label>
     </div>
 
-    <div class="letter-card" onclick="speakLetter()">
-        <div id="letter-holder" class="letter-display">A</div>
+    <div class="four-line-card" onclick="speakLetter()">
+        <div class="four-lines-bg">
+            <div class="line-red"></div>
+            <div class="line-blue"></div>
+            <div class="line-blue"></div>
+            <div class="line-red"></div>
+        </div>
+        
+        <img id="display-letter-img" class="letter-image" src="" alt="Letter">
+        
         <div class="sound-tag">🔊 Sound</div>
     </div>
 
@@ -191,12 +213,17 @@
     let currentIndex = 0;
     const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     
-    // फोनिक्स साऊंड्स
     const phonicSounds = {
         'A': 'ah', 'B': 'buh', 'C': 'kuh', 'D': 'duh', 'E': 'eh', 'F': 'fuh', 'G': 'guh', 
         'H': 'huh', 'I': 'ih', 'J': 'juh', 'K': 'kuh', 'L': 'uhl', 'M': 'muh', 'N': 'nuh', 
         'O': 'ox', 'P': 'puh', 'Q': 'kwuh', 'R': 'ruh', 'S': 'suh', 'T': 'tuh', 'U': 'uh', 
         'V': 'vuh', 'W': 'wuh', 'X': 'ks', 'Y': 'yuh', 'Z': 'zuh'
+    };
+
+    // 🎯 ऑनलाईन रेडीमेड पीएनजी इमेजेस (गिटहब पेजवर एकदम परफेक्ट चालणार)
+    const letterImages = {
+        'ABC': 'https://raw.githubusercontent.com/visual-alphabets/assets/main/fourline-capital/', 
+        'abc': 'https://raw.githubusercontent.com/visual-alphabets/assets/main/fourline-small/'
     };
 
     function getCase() { return document.querySelector('input[name="letter-case"]:checked').value; }
@@ -208,20 +235,19 @@
 
     function updateDisplay() {
         let letter = alphabet[currentIndex];
-        let holder = document.getElementById("letter-holder");
+        let imgNode = document.getElementById("display-letter-img");
         let currentCase = getCase();
         
-        // कॅपिटल किंवा स्मॉल अक्षर स्क्रीनवर सेट करणे
-        if (currentCase === "ABC") {
-            holder.innerText = letter;
-        } else {
-            holder.innerText = letter.toLowerCase();
-        }
+        // फाईलचे नाव (A.png किंवा a.png)
+        let fileName = (currentCase === "ABC") ? letter + ".png" : letter.toLowerCase() + ".png";
+        
+        // इमेज सोर्स सेट करणे
+        imgNode.src = letterImages[currentCase] + fileName;
+        imgNode.alt = letter;
 
-        // खालील ग्रिड बटण ॲक्टिव्ह करणे
         document.querySelectorAll(".grid-btn").forEach((b, i) => {
             if(i === currentIndex) b.classList.add("active");
-            else b.classList.remove("none");
+            else b.classList.remove("active");
         });
     }
 
@@ -246,7 +272,6 @@
         speakLetter();
     }
 
-    // साऊंड प्ले करणारे फंक्शन
     function speakLetter() {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
@@ -254,12 +279,10 @@
             let currentCase = getCase();
             let speakText = (currentCase === "ABC") ? letter : letter.toLowerCase();
 
-            // १. अक्षराचा उच्चार
             let u1 = new SpeechSynthesisUtterance(speakText);
             u1.lang = 'en-US';
             u1.rate = 0.8;
 
-            // २. फोनिक्स साऊंडचा उच्चार
             let u2 = new SpeechSynthesisUtterance(phonicSounds[letter]);
             u2.lang = 'en-US';
             u2.rate = 0.7;
