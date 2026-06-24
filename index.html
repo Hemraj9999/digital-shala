@@ -1,104 +1,162 @@
-
 <!DOCTYPE html>
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>माझी डिजिटल शाळा - मुख्य पान</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>डिजिटल शाळा - मुख्य पान</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        :root { 
+            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); 
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+        
         body { 
-            background: #0f172a; 
-            color: #f8fafc; 
-            padding: 30px 15px; 
-            min-height: 100vh;
+            background: var(--bg-gradient); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            padding: 20px 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .main-title { 
-            text-align: center; 
-            font-size: 26px; 
-            font-weight: 800; 
-            color: #ffffff; 
-            margin-bottom: 35px; 
+
+        .main-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #00f2fe;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0,242,254,0.2);
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-sub);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .section-heading {
+            width: 100%;
+            max-width: 380px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #00f2fe;
+            margin: 15px 0 10px 0;
+            padding-left: 5px;
+            border-left: 4px solid #00f2fe;
+        }
+        
+        .section-heading.math-section {
+            color: #10b981;
+            border-left-color: #10b981;
+        }
+
+        .menu-grid {
+            width: 100%;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* 🎛️ खेळ निवडण्याचे सुंदर बटण */
+        .menu-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 16px;
+            text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
         }
-        
-        .grid-container { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 20px; 
-            width: 100%; 
-            max-width: 410px; 
-        }
-        
-        .subject-card { 
-            background: #1e293b; 
-            border: 2px solid rgba(255, 255, 255, 0.05); 
-            border-radius: 24px; 
-            padding: 20px; 
-            display: flex; 
-            align-items: center; 
-            gap: 18px; 
-            text-decoration: none;
-            color: inherit;
-            transition: transform 0.2s, border-color 0.2s;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        
-        /* गणित कार्डची विशेष बॉर्डर */
-        .math-card { border-color: rgba(255, 107, 107, 0.2); }
-        .math-card .icon-box { background: rgba(255, 107, 107, 0.1); color: #ff6b6b; }
-        .math-card:active { transform: scale(0.98); background: #243049; border-color: #ff6b6b; }
 
-        /* इंग्रजी कार्डची विशेष बॉर्डर */
-        .english-card { border-color: rgba(0, 242, 254, 0.2); }
-        .english-card .icon-box { background: rgba(0, 242, 254, 0.1); color: #00f2fe; }
-        .english-card:active { transform: scale(0.98); background: #243049; border-color: #00f2fe; }
-        
-        .icon-box { 
-            width: 65px; 
-            height: 65px; 
-            border-radius: 18px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 32px; 
-            flex-shrink: 0;
+        .menu-card:active {
+            transform: scale(0.97);
         }
-        
-        .card-info { flex-grow: 1; }
-        .card-info h3 { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
-        .card-info p { font-size: 13px; color: #94a3b8; line-height: 1.4; }
-        
-        .arrow { font-size: 18px; color: #64748b; margin-left: auto; }
+
+        .icon-box {
+            font-size: 36px;
+            background: rgba(255,255,255,0.03);
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .text-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 3px;
+        }
+
+        .text-box p {
+            font-size: 12px;
+            color: var(--text-sub);
+        }
     </style>
 </head>
 <body>
 
-    <h2 class="main-title">🏫 माझी डिजिटल शाळा</h2>
+    <div class="main-title">✨ डिजिटल बालशाळा ✨</div>
+    <div class="subtitle">पाचोरा पॅटर्न डिजिटल शिक्षण</div>
 
-    <div class="grid-container">
-        
-        <a href="ganit.html" class="subject-card math-card">
-            <div class="icon-box">🔢</div>
-            <div class="card-info">
-                <h3>गणित डिजिटल शाळा</h3>
-                <p>अंक ओळख, बेरीज, संख्या मोजणे आणि इतर खेळ खेळण्यासाठी येथे क्लिक करा.</p>
+    <div class="section-heading">🔤 English Learning</div>
+    <div class="menu-grid">
+        <a href="abc.html" class="menu-card" style="border-left: 5px solid #00f2fe;">
+            <div class="icon-box">✍️</div>
+            <div class="text-box">
+                <h3>English Phonics Shala</h3>
+                <p>फोर-लाईन पाटीवर अक्षरे आणि उच्चार शिका</p>
             </div>
-            <div class="arrow">➔</div>
+        </a>
+    </div>
+
+    <div class="section-heading math-section">🔢 गणिताची गंमत (Mathematics)</div>
+    <div class="menu-grid">
+        
+        <a href="ank_olakha.html" class="menu-card" style="border-left: 5px solid #10b981;">
+            <div class="icon-box">🔢</div>
+            <div class="text-box">
+                <h3>अंक ओळख</h3>
+                <p>१ ते १०० अंक ओळखायला शिका</p>
+            </div>
         </a>
 
-        <a href="abc.html" class="subject-card english-card">
-            <div class="icon-box">🔤</div>
-            <div class="card-info">
-                <h3>इंग्रजी डिजिटल शाळा</h3>
-                <p>A to Z Phonics, लहान-मोठी लिपी आणि फोर-लाईन वळण शिकण्यासाठी येथे क्लिक करा.</p>
+        <a href="sankhya_mojne.html" class="menu-card" style="border-left: 5px solid #10b981;">
+            <div class="icon-box">🍎</div>
+            <div class="text-box">
+                <h3>संख्या मोजणे</h3>
+                <p>चित्रे मोजा आणि योग्य संख्या सांगा</p>
             </div>
-            <div class="arrow">➔</div>
+        </a>
+
+        <a href="chitre_berij.html" class="menu-card" style="border-left: 5px solid #10b981;">
+            <div class="icon-box">➕</div>
+            <div class="text-box">
+                <h3>चित्रांची बेरीज</h3>
+                <p>मजेशीर चित्रे एकत्र करून बेरीज शिका</p>
+            </div>
+        </a>
+
+        <a href="math_drag.html" class="menu-card" style="border-left: 5px solid #eab308;">
+            <div class="icon-box">🧩</div>
+            <div class="text-box">
+                <h3>Number Puzzle (नवीन खेळ)</h3>
+                <p>संख्या उचलून बरोबर त्याच्या खाचेत बसवा</p>
+            </div>
         </a>
 
     </div>
