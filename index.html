@@ -1,1 +1,107 @@
 
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>माझी डिजिटल शाळा - मुख्य पान</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        body { 
+            background: #0f172a; 
+            color: #f8fafc; 
+            padding: 30px 15px; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .main-title { 
+            text-align: center; 
+            font-size: 26px; 
+            font-weight: 800; 
+            color: #ffffff; 
+            margin-bottom: 35px; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .grid-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+            width: 100%; 
+            max-width: 410px; 
+        }
+        
+        .subject-card { 
+            background: #1e293b; 
+            border: 2px solid rgba(255, 255, 255, 0.05); 
+            border-radius: 24px; 
+            padding: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 18px; 
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, border-color 0.2s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        /* गणित कार्डची विशेष बॉर्डर */
+        .math-card { border-color: rgba(255, 107, 107, 0.2); }
+        .math-card .icon-box { background: rgba(255, 107, 107, 0.1); color: #ff6b6b; }
+        .math-card:active { transform: scale(0.98); background: #243049; border-color: #ff6b6b; }
+
+        /* इंग्रजी कार्डची विशेष बॉर्डर */
+        .english-card { border-color: rgba(0, 242, 254, 0.2); }
+        .english-card .icon-box { background: rgba(0, 242, 254, 0.1); color: #00f2fe; }
+        .english-card:active { transform: scale(0.98); background: #243049; border-color: #00f2fe; }
+        
+        .icon-box { 
+            width: 65px; 
+            height: 65px; 
+            border-radius: 18px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 32px; 
+            flex-shrink: 0;
+        }
+        
+        .card-info { flex-grow: 1; }
+        .card-info h3 { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+        .card-info p { font-size: 13px; color: #94a3b8; line-height: 1.4; }
+        
+        .arrow { font-size: 18px; color: #64748b; margin-left: auto; }
+    </style>
+</head>
+<body>
+
+    <h2 class="main-title">🏫 माझी डिजिटल शाळा</h2>
+
+    <div class="grid-container">
+        
+        <a href="ganit.html" class="subject-card math-card">
+            <div class="icon-box">🔢</div>
+            <div class="card-info">
+                <h3>गणित डिजिटल शाळा</h3>
+                <p>अंक ओळख, बेरीज, संख्या मोजणे आणि इतर खेळ खेळण्यासाठी येथे क्लिक करा.</p>
+            </div>
+            <div class="arrow">➔</div>
+        </a>
+
+        <a href="abc.html" class="subject-card english-card">
+            <div class="icon-box">🔤</div>
+            <div class="card-info">
+                <h3>इंग्रजी डिजिटल शाळा</h3>
+                <p>A to Z Phonics, लहान-मोठी लिपी आणि फोर-लाईन वळण शिकण्यासाठी येथे क्लिक करा.</p>
+            </div>
+            <div class="arrow">➔</div>
+        </a>
+
+    </div>
+
+</body>
+</html>
