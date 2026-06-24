@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>English Phonics Four Line Shala</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+
     <style>
         :root { 
             --primary: #00f2fe; 
@@ -81,12 +86,12 @@
             color: #050b14;
         }
 
-        /* 🎯 व्हेक्टर कॅनव्हास मास्टर बॉक्स */
+        /* 🎯 ४-लाईन कार्ड बॉक्स मास्टर */
         .four-line-card {
             background: #ffffff; 
             border-radius: 20px;
             width: 100%;
-            height: 200px;
+            height: 220px;
             position: relative;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             cursor: pointer;
@@ -97,25 +102,60 @@
             justify-content: center;
         }
 
-        .svg-canvas {
+        /* 📏 ४ रेषांची अचूक गणितीय रचना */
+        .four-lines-container {
+            position: absolute;
             width: 100%;
             height: 100%;
-            display: block;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .row-line { width: 100%; padding: 0 15px; }
+        .line-red { border-top: 3.5px solid var(--fourline-red); margin: 20px 0; }
+        .line-blue { border-top: 2.5px solid var(--fourline-blue); margin: 20px 0; }
+
+        /* 🔤 अक्षरांची स्टाईल - ओळींवर अचूक लॉक करण्यासाठी */
+        .letter-display-box {
+            position: relative;
+            z-index: 2;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 500;
+            color: #1e293b;
+            line-height: 1;
+            text-align: center;
+            user-select: none;
+            pointer-events: none;
         }
 
-        /* निश्चित भौमितिक ४ ओळी (Mathematical Matrix) */
-        .grid-line {
-            stroke-linecap: round;
+        /* मोठी लिपी रेषेवर बसवण्यासाठी */
+        .letter-capital {
+            font-size: 122px;
+            margin-top: -10px;
         }
 
-        /* 🎯 अक्षराचा व्हेक्टर पाथ - रेषेला चुंबकासारखा खिळवून ठेवणारा */
-        .letter-path {
-            fill: none;
-            stroke: #1e293b;
-            stroke-width: 13; /* जाड आणि ठळक बालवाडी डिझाईन */
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            transition: d 0.2s ease-in-out; /* स्मूथ अक्षर बदल */
+        /* लहान लिपी रेषेवर बसवण्यासाठी */
+        .letter-small {
+            font-size: 85px;
+            margin-top: 31px;
+        }
+
+        /* विशिष्ट लहान अक्षरे जी खाली रेषेबाहेर जातात (g, j, p, q, y) */
+        .letter-descender {
+            margin-top: 55px !important;
+        }
+        /* विशिष्ट लहान अक्षरे जी वर रेषेपर्यंत जातात (b, d, h, k, l, t) */
+        .letter-ascender {
+            font-size: 120px !important;
+            margin-top: -12px !important;
+        }
+        /* 'f' अक्षरासाठी विशेष सेटिंग */
+        .letter-f-fix {
+            font-size: 118px !important;
+            margin-top: -10px !important;
         }
 
         .sound-tag {
@@ -185,14 +225,14 @@
     </div>
 
     <div class="four-line-card" onclick="speakLetter()">
-        <svg class="svg-canvas" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
-            <line class="grid-line" x1="10" y1="40" x2="390" y2="40" stroke="#ff4d4d" stroke-width="3.5" />
-            <line class="grid-line" x1="10" y1="73.3" x2="390" y2="73.3" stroke="#3399ff" stroke-width="2.5" />
-            <line class="grid-line" x1="10" y1="106.6" x2="390" y2="106.6" stroke="#3399ff" stroke-width="2.5" />
-            <line class="grid-line" x1="10" y1="140" x2="390" y2="140" stroke="#ff4d4d" stroke-width="3.5" />
-            
-            <g id="svg-letter-group"></g>
-        </svg>
+        <div class="four-lines-container">
+            <div class="row-line line-red"></div>
+            <div class="row-line line-blue"></div>
+            <div class="row-line line-blue"></div>
+            <div class="row-line line-red"></div>
+        </div>
+        
+        <div id="letter-holder" class="letter-display-box">A</div>
         
         <div class="sound-tag">🔊 Sound</div>
     </div>
@@ -216,67 +256,6 @@
         'V': 'vuh', 'W': 'wuh', 'X': 'ks', 'Y': 'yuh', 'Z': 'zuh'
     };
 
-    // 🎯 अचूक भूमितीय को-ऑर्डिनेट्स डेटाबेस (सर्व २६ कॅपिटल आणि स्मॉल अक्षरे परफेक्ट लॉक)
-    // वरची लाल = ४०, पहिली निळी = ७३.३, दुसरी निळी = १०६.६, खालची लाल = १४०
-    const vectorData = {
-        'ABC': {
-            'A': '<path class="letter-path" d="M165,140 L200,40 L235,140 M176,100 L224,100"/>',
-            'B': '<path class="letter-path" d="M170,40 L170,140 M170,40 C220,40 220,90 170,90 C225,90 225,140 170,140"/>',
-            'C': '<path class="letter-path" d="M230,65 C220,40 170,40 170,90 C170,140 220,140 230,115"/>',
-            'D': '<path class="letter-path" d="M170,40 L170,140 C235,140 235,40 170,40"/>',
-            'E': '<path class="letter-path" d="M225,40 L170,40 L170,140 L225,140 M170,90 L215,90"/>',
-            'F': '<path class="letter-path" d="M225,40 L170,40 L170,140 M170,90 L215,90"/>',
-            'G': '<path class="letter-path" d="M230,65 C220,40 170,40 170,90 C170,140 220,140 230,140 L230,100 L205,100"/>',
-            'H': '<path class="letter-path" d="M170,40 L170,140 M230,40 L230,140 M170,90 L230,90"/>',
-            'I': '<path class="letter-path" d="M175,40 L225,40 M200,40 L200,140 M175,140 L225,140"/>',
-            'J': '<path class="letter-path" d="M175,40 L235,40 M210,40 L210,120 C210,145 175,145 175,125"/>',
-            'K': '<path class="letter-path" d="M170,40 L170,140 M225,40 L172,90 L225,140"/>',
-            'L': '<path class="letter-path" d="M175,40 L175,140 L225,140"/>',
-            'M': '<path class="letter-path" d="M165,140 L165,40 L200,100 L235,40 L235,140"/>',
-            'N': '<path class="letter-path" d="M170,140 L170,40 L230,140 L230,40"/>',
-            'O': '<path class="letter-path" d="M200,40 C165,40 165,140 200,140 C235,140 235,40 200,40 Z"/>',
-            'P': '<path class="letter-path" d="M170,40 L170,140 M170,40 C225,40 225,95 170,95"/>',
-            'Q': '<path class="letter-path" d="M200,40 C165,40 165,140 200,140 C235,140 235,40 200,40 Z M215,120 L235,145"/>',
-            'R': '<path class="letter-path" d="M170,40 L170,140 M170,40 C225,40 225,90 170,90 L225,140"/>',
-            'S': '<path class="letter-path" d="M225,60 C220,40 175,42 175,65 C175,90 225,85 225,115 C225,140 175,138 170,120"/>',
-            'T': '<path class="letter-path" d="M170,40 L230,40 M200,40 L200,140"/>',
-            'U': '<path class="letter-path" d="M170,40 L170,115 C170,140 230,140 230,115 L230,40"/>',
-            'V': '<path class="letter-path" d="M165,40 L200,140 L235,40"/>',
-            'W': '<path class="letter-path" d="M160,40 L180,140 L200,80 L220,140 L240,40"/>',
-            'X': '<path class="letter-path" d="M170,40 L230,140 M230,40 L170,140"/>',
-            'Y': '<path class="letter-path" d="M165,40 L200,90 L235,40 M200,90 L200,140"/>',
-            'Z': '<path class="letter-path" d="M170,40 L230,40 L170,140 L230,140"/>'
-        },
-        'abc': {
-            'A': '<path class="letter-path" d="M225,73.3 L225,140 M225,95 C225,73.3 175,73.3 175,106.6 C175,140 225,140 225,115"/>',
-            'B': '<path class="letter-path" d="M175,40 L175,140 M175,106.6 C175,73.3 225,73.3 225,106.6 C225,140 175,140 175,135"/>',
-            'C': '<path class="letter-path" d="M225,95 C215,73.3 175,73.3 175,106.6 C175,140 215,140 225,120"/>',
-            'D': '<path class="letter-path" d="M225,40 L225,140 M225,106.6 C225,73.3 175,73.3 175,106.6 C175,140 225,140 225,135"/>',
-            'E': '<path class="letter-path" d="M175,110 L225,110 C225,70 175,70 175,106.6 C175,140 220,140 225,125"/>',
-            'F': '<path class="letter-path" d="M215,45 C205,40 190,40 190,60 L190,140 M175,73.3 L210,73.3"/>',
-            'G': '<path class="letter-path" d="M225,73.3 L225,140 C225,175 175,170 175,150 M225,106.6 C225,73.3 175,73.3 175,106.6 C175,140 225,140 225,115"/>',
-            'H': '<path class="letter-path" d="M175,40 L175,140 M175,95 C190,73.3 225,73.3 225,105 L225,140"/>',
-            'I': '<path class="letter-path" d="M200,73.3 L200,140 M200,48 L200,50"/>',
-            'J': '<path class="letter-path" d="M210,73.3 L210,145 C210,175 175,175 175,155 M210,48 L210,50"/>',
-            'K': '<path class="letter-path" d="M175,40 L175,140 M220,73.3 L176,106.6 L220,140"/>',
-            'L': '<path class="letter-path" d="M200,40 L200,140"/>',
-            'M': '<path class="letter-path" d="M165,73.3 L165,140 M165,95 C175,73.3 200,73.3 200,105 L200,140 M200,95 C210,73.3 235,73.3 235,105 L235,140"/>',
-            'N': '<path class="letter-path" d="M175,73.3 L175,140 M175,95 C190,73.3 225,73.3 225,105 L225,140"/>',
-            'O': '<path class="letter-path" d="M200,73.3 C175,73.3 175,140 200,140 C225,140 225,73.3 200,73.3 Z"/>',
-            'P': '<path class="letter-path" d="M175,73.3 L175,173.3 M175,106.6 C175,73.3 225,73.3 225,106.6 C225,140 175,140 175,135"/>',
-            'Q': '<path class="letter-path" d="M225,73.3 L225,173.3 M225,106.6 C225,73.3 175,73.3 175,106.6 C175,140 225,140 225,135"/>',
-            'R': '<path class="letter-path" d="M175,73.3 L175,140 M175,100 C185,80 220,75 225,85"/>',
-            'S': '<path class="letter-path" d="M220,88 C215,73.3 180,73.3 180,90 C180,106.6 220,106.6 220,122 C220,140 180,140 175,128"/>',
-            'T': '<path class="letter-path" d="M195,48 L195,130 C195,142 215,140 220,135 M180,73.3 L215,73.3"/>',
-            'U': '<path class="letter-path" d="M175,73.3 L175,115 C175,140 225,140 225,115 L225,73.3 M225,105 L225,140"/>',
-            'V': '<path class="letter-path" d="M170,73.3 L200,140 L230,73.3"/>',
-            'W': '<path class="letter-path" d="M165,73.3 L180,140 L200,95 L220,140 L235,73.3"/>',
-            'X': '<path class="letter-path" d="M175,73.3 L225,140 M225,73.3 L175,140"/>',
-            'Y': '<path class="letter-path" d="M175,73.3 L200,120 L225,73.3 M200,120 L200,173.3 C200,175 175,175 170,165"/>',
-            'Z': '<path class="letter-path" d="M175,73.3 L225,73.3 L175,140 L225,140"/>'
-        }
-    };
-
     function getCase() { return document.querySelector('input[name="letter-case"]:checked').value; }
 
     function onCaseChange() {
@@ -286,11 +265,30 @@
 
     function updateDisplay() {
         let letter = alphabet[currentIndex];
-        let groupNode = document.getElementById("svg-letter-group");
+        let holder = document.getElementById("letter-holder");
         let currentCase = getCase();
         
-        // 🎯 थेट SVG पाथ लोड करणे (फॉन्ट विरहित रचना)
-        groupNode.innerHTML = vectorData[currentCase][letter];
+        if (currentCase === "ABC") {
+            holder.innerText = letter;
+            holder.className = "letter-display-box letter-capital";
+        } else {
+            let smallLetter = letter.toLowerCase();
+            holder.innerText = smallLetter;
+            holder.className = "letter-display-box letter-small";
+            
+            // खाली जाणाऱ्या लहान अक्षरांसाठी स्पेशल क्लास (g, j, p, q, y)
+            if (['g', 'j', 'p', 'q', 'y'].includes(smallLetter)) {
+                holder.classList.add("letter-descender");
+            }
+            // वर जाणाऱ्या लहान अक्षरांसाठी स्पेशल क्लास (b, d, h, k, l, t)
+            else if (['b', 'd', 'h', 'k', 'l', 't'].includes(smallLetter)) {
+                holder.classList.add("letter-ascender");
+            }
+            // 'f' अक्षराच्या अचूक उंचीसाठी
+            else if (smallLetter === 'f') {
+                holder.classList.add("letter-f-fix");
+            }
+        }
 
         document.querySelectorAll(".grid-btn").forEach((b, i) => {
             if(i === currentIndex) b.classList.add("active");
