@@ -81,81 +81,28 @@
             color: #050b14;
         }
 
-        /* 🎯 नवीन मॅग्नेटिक फोर-लाईन डिझाईन बॉक्स */
+        /* 🎯 व्हेक्टर कॅनव्हास बॉक्स (Perfect Locked Box) */
         .four-line-card {
             background: #ffffff; 
             border-radius: 20px;
             width: 100%;
-            height: 220px; /* उंची वाढवून ४ ओळी पूर्ण लॉक केल्या */
+            height: 200px;
             position: relative;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             cursor: pointer;
             border: 4px solid #1e293b;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
+            align-items: center;
             justify-content: center;
         }
 
-        /* ४ ओळींची अचूक ग्रिड रचना (३ कप्पे, प्रत्येकी समान ४५px) */
-        .fourline-system {
+        /* 🎯 १००% अचूक SVG रचना - यात रेषा आणि अक्षर गणिती पद्धतीने एकत्र जोडले आहेत */
+        .svg-canvas {
             width: 100%;
-            height: 135px; /* ४५px × ३ = १३५px एकूण सुबक उंची */
-            position: relative;
+            height: 100%;
+            display: block;
         }
-
-        .base-line {
-            position: absolute;
-            width: 100%;
-            left: 0;
-        }
-        /* ४ ओळींचे अचूक पिक्सेल पोझिशनिंग */
-        .bl-1 { top: 0px; border-top: 3.5px solid var(--fourline-red); }
-        .bl-2 { top: 45px; border-top: 2.5px solid var(--fourline-blue); }
-        .bl-3 { top: 90px; border-top: 2.5px solid var(--fourline-blue); }
-        .bl-4 { top: 135px; border-top: 3.5px solid var(--fourline-red); }
-
-        /* 🎯 अक्षर अचूक लॉक करणारा कंटेनर बॉक्स */
-        .letter-container {
-            position: absolute;
-            width: 100%;
-            left: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end; /* बेसलाइन मॅचिंगसाठी कडक लॉक */
-        }
-
-        /* उप-वर्ग १: कॅपिटल अक्षरे आणि उंच स्मॉल अक्षरे (वरच्या ३ ओळीत - एकूण ९०px उंची) */
-        .box-top3 {
-            top: 0px;
-            height: 90px;
-        }
-
-        /* उप-वर्ग २: लहान अक्षरे (फक्त मधल्या २ निळ्या ओळीत - एकूण ४५px उंची) */
-        .box-mid2 {
-            top: 45px;
-            height: 45px;
-        }
-
-        /* उप-वर्ग ३: खाली जाणारी लहान अक्षरे (खालच्या ३ ओळीत - एकूण ९०px उंची) */
-        .box-bottom3 {
-            top: 45px;
-            height: 90px;
-        }
-
-        /* 🎯 प्रत्यक्ष अक्षराचा फॉन्ट आणि अंतर्गत जागा काढणे (Zero Line-Height Technique) */
-        .letter-content {
-            font-family: 'Arial', sans-serif;
-            font-weight: 900;
-            color: #1e293b;
-            line-height: 0.78 !important; /* फॉन्टची डीफॉल्ट मोकळी जागा खेचून घेतली */
-            display: inline-block;
-            text-align: center;
-        }
-
-        /* अचूक साईझ मॅपिंग */
-        .size-large { font-size: 102px; }
-        .size-medium { font-size: 51px; }
 
         .sound-tag {
             position: absolute;
@@ -224,16 +171,20 @@
     </div>
 
     <div class="four-line-card" onclick="speakLetter()">
-        <div class="fourline-system">
-            <div class="base-line bl-1"></div>
-            <div class="base-line bl-2"></div>
-            <div class="base-line bl-3"></div>
-            <div class="base-line bl-4"></div>
+        <svg class="svg-canvas" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+            <line x1="0" y1="40" x2="400" y2="40" stroke="#ff4d4d" stroke-width="3" />
+            <line x1="0" y1="90" x2="400" y2="90" stroke="#3399ff" stroke-width="2.5" />
+            <line x1="0" y1="140" x2="400" y2="140" stroke="#3399ff" stroke-width="2.5" />
+            <line x1="0" y1="190" x2="400" y2="190" stroke="#ff4d4d" stroke-width="3" />
             
-            <div id="dynamic-container" class="letter-container box-top3">
-                <span id="display-letter" class="letter-content size-large">A</span>
-            </div>
-        </div>
+            <text x="200" y="140" id="svg-letter" 
+                  font-family="Arial, Helvetica, sans-serif" 
+                  font-weight="bold" 
+                  font-size="115" 
+                  text-anchor="middle" 
+                  dominant-baseline="alphabetic" 
+                  fill="#1e293b">A</text>
+        </svg>
         
         <div class="sound-tag">🔊 Sound</div>
     </div>
@@ -266,30 +217,31 @@
 
     function updateDisplay() {
         let letter = alphabet[currentIndex];
-        let container = document.getElementById("dynamic-container");
-        let txtNode = document.getElementById("display-letter");
+        let svgText = document.getElementById("svg-letter");
         let currentCase = getCase();
         
-        txtNode.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
+        let targetText = (currentCase === "ABC") ? letter : letter.toLowerCase();
+        svgText.textContent = targetText;
 
-        // 🎯 मॅग्नेटिक ग्रिड प्रकारांचे अचूक वर्गीकरण आणि क्लास सिस्टिम
-        if(currentCase === "ABC") {
-            container.className = "letter-container box-top3";
-            txtNode.className = "letter-content size-large";
+        // 🎯 SVG पोझिशनिंग मॅट्रिक्स (अक्षराच्या प्रकारानुसार अचूक उंची आणि रेषेची जुळवाजुळव)
+        if (currentCase === "ABC") {
+            // कॅपिटल अक्षरे: वरची लाल (40) ते दुसरी निळी (140) = परफेक्ट लॉक
+            svgText.setAttribute("y", "140");
+            svgText.setAttribute("font-size", "115");
         } else {
             let ch = letter.toLowerCase();
-            if(['b', 'd', 'f', 'h', 'k', 'l', 't'].includes(ch)) {
-                // उंच अक्षरे (b, d, f, h, k, l, t) -> वरच्या ३ ओळी
-                container.className = "letter-container box-top3";
-                txtNode.className = "letter-content size-large";
-            } else if(['g', 'j', 'p', 'q', 'y'].includes(ch)) {
-                // खाली जाणारी अक्षरे (g, j, p, q, y) -> खालच्या ३ ओळी
-                container.className = "letter-container box-bottom3";
-                txtNode.className = "letter-content size-large";
+            if (['b', 'd', 'f', 'h', 'k', 'l', 't'].includes(ch)) {
+                // उंच लहान अक्षरे (b, d, f, h, k, l, t) -> वरच्या ३ ओळीत (40 ते 140)
+                svgText.setAttribute("y", "140");
+                svgText.setAttribute("font-size", "115");
+            } else if (['g', 'j', 'p', 'q', 'y'].includes(ch)) {
+                // खाली जाणारी अक्षरे (g, j, p, q, y) -> पहिल्या निळ्या रेषेपासून (90) खालच्या लाल रेषेपर्यंत (190)
+                svgText.setAttribute("y", "190");
+                svgText.setAttribute("font-size", "115");
             } else {
-                // मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) -> फक्त मधल्या २ ओळी
-                container.className = "letter-container box-mid2";
-                txtNode.className = "letter-content size-medium";
+                // मधली लहान अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) -> फक्त २ निळ्या रेषेच्या आत (90 ते 140)
+                svgText.setAttribute("y", "140");
+                svgText.setAttribute("font-size", "62"); // मधल्या कप्प्यासाठी सुबक आकार
             }
         }
 
@@ -344,3 +296,4 @@
 </script>
 </body>
 </html>
+
