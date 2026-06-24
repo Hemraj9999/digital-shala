@@ -81,86 +81,81 @@
             color: #050b14;
         }
 
-        /* 🎯 कार्डची उंची वाढवली (200px) जेणेकरून चौथी ओळ कट होणार नाही */
+        /* 🎯 नवीन मॅग्नेटिक फोर-लाईन डिझाईन बॉक्स */
         .four-line-card {
             background: #ffffff; 
             border-radius: 20px;
             width: 100%;
-            height: 200px;
+            height: 220px; /* उंची वाढवून ४ ओळी पूर्ण लॉक केल्या */
             position: relative;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             cursor: pointer;
             border: 4px solid #1e293b;
             overflow: hidden;
-        }
-
-        /* 🎯 ४ ओळींचा साचा (३ कप्पे, प्रत्येक कप्पा ४०px = एकूण १२०px उंची) */
-        .lines-container {
-            position: absolute;
-            width: 100%;
-            height: 120px;
-            top: 40px; /* वरून अंतर वाढवले */
-            left: 0;
             display: flex;
             flex-direction: column;
-            pointer-events: none;
-            z-index: 1;
+            justify-content: center;
         }
-        .fl-space {
-            height: 40px;
-            width: 100%;
-        }
-        /* अचूक ४ ओळींची रचना */
-        .line-1 { border-top: 3px solid var(--fourline-red); }
-        .line-2 { border-top: 3px solid var(--fourline-blue); }
-        .line-3 { border-top: 3px solid var(--fourline-blue); }
-        .line-4 { border-bottom: 3px solid var(--fourline-red); } /* चौथी ओळ आता १००% दिसेल */
 
-        /* 🎯 अक्षराचा मुख्य होल्डर बॉक्स */
-        .letter-holder {
+        /* ४ ओळींची अचूक ग्रिड रचना (३ कप्पे, प्रत्येकी समान ४५px) */
+        .fourline-system {
+            width: 100%;
+            height: 135px; /* ४५px × ३ = १३५px एकूण सुबक उंची */
+            position: relative;
+        }
+
+        .base-line {
             position: absolute;
             width: 100%;
-            height: 120px;
-            top: 40px;
+            left: 0;
+        }
+        /* ४ ओळींचे अचूक पिक्सेल पोझिशनिंग */
+        .bl-1 { top: 0px; border-top: 3.5px solid var(--fourline-red); }
+        .bl-2 { top: 45px; border-top: 2.5px solid var(--fourline-blue); }
+        .bl-3 { top: 90px; border-top: 2.5px solid var(--fourline-blue); }
+        .bl-4 { top: 135px; border-top: 3.5px solid var(--fourline-red); }
+
+        /* 🎯 अक्षर अचूक लॉक करणारा कंटेनर बॉक्स */
+        .letter-container {
+            position: absolute;
+            width: 100%;
             left: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            pointer-events: none;
-            z-index: 2;
+            align-items: flex-end; /* बेसलाइन मॅचिंगसाठी कडक लॉक */
         }
 
-        .letter-text {
+        /* उप-वर्ग १: कॅपिटल अक्षरे आणि उंच स्मॉल अक्षरे (वरच्या ३ ओळीत - एकूण ९०px उंची) */
+        .box-top3 {
+            top: 0px;
+            height: 90px;
+        }
+
+        /* उप-वर्ग २: लहान अक्षरे (फक्त मधल्या २ निळ्या ओळीत - एकूण ४५px उंची) */
+        .box-mid2 {
+            top: 45px;
+            height: 45px;
+        }
+
+        /* उप-वर्ग ३: खाली जाणारी लहान अक्षरे (खालच्या ३ ओळीत - एकूण ९०px उंची) */
+        .box-bottom3 {
+            top: 45px;
+            height: 90px;
+        }
+
+        /* 🎯 प्रत्यक्ष अक्षराचा फॉन्ट आणि अंतर्गत जागा काढणे (Zero Line-Height Technique) */
+        .letter-content {
             font-family: 'Arial', sans-serif;
-            font-weight: bold;
+            font-weight: 900;
             color: #1e293b;
+            line-height: 0.78 !important; /* फॉन्टची डीफॉल्ट मोकळी जागा खेचून घेतली */
+            display: inline-block;
             text-align: center;
-            line-height: 1 !important;
         }
 
-        /* 🅰️ मोठी लिपी (पहिल्या लाल रेषेपासून दुसऱ्या निळ्या रेषेपर्यंत = ८०px) */
-        .align-ABC {
-            font-size: 82px;
-            transform: translateY(2px);
-        }
-
-        /* 🔤 लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) */
-        .align-small-tall {
-            font-size: 82px;
-            transform: translateY(1px);
-        }
-
-        /* 🔤 लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) */
-        .align-small-mid {
-            font-size: 42px;
-            transform: translateY(20px);
-        }
-
-        /* 🔤 लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) */
-        .align-small-desc {
-            font-size: 82px;
-            transform: translateY(41px);
-        }
+        /* अचूक साईझ मॅपिंग */
+        .size-large { font-size: 102px; }
+        .size-medium { font-size: 51px; }
 
         .sound-tag {
             position: absolute;
@@ -229,14 +224,15 @@
     </div>
 
     <div class="four-line-card" onclick="speakLetter()">
-        <div class="lines-container">
-            <div class="fl-space line-1"></div>
-            <div class="fl-space line-2"></div>
-            <div class="fl-space line-3 line-4"></div>
-        </div>
-        
-        <div class="letter-holder">
-            <div class="letter-text align-ABC" id="display-letter">A</div>
+        <div class="fourline-system">
+            <div class="base-line bl-1"></div>
+            <div class="base-line bl-2"></div>
+            <div class="base-line bl-3"></div>
+            <div class="base-line bl-4"></div>
+            
+            <div id="dynamic-container" class="letter-container box-top3">
+                <span id="display-letter" class="letter-content size-large">A</span>
+            </div>
         </div>
         
         <div class="sound-tag">🔊 Sound</div>
@@ -270,21 +266,30 @@
 
     function updateDisplay() {
         let letter = alphabet[currentIndex];
+        let container = document.getElementById("dynamic-container");
         let txtNode = document.getElementById("display-letter");
         let currentCase = getCase();
         
         txtNode.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
 
+        // 🎯 मॅग्नेटिक ग्रिड प्रकारांचे अचूक वर्गीकरण आणि क्लास सिस्टिम
         if(currentCase === "ABC") {
-            txtNode.className = "letter-text align-ABC";
+            container.className = "letter-container box-top3";
+            txtNode.className = "letter-content size-large";
         } else {
             let ch = letter.toLowerCase();
             if(['b', 'd', 'f', 'h', 'k', 'l', 't'].includes(ch)) {
-                txtNode.className = "letter-text align-small-tall";
+                // उंच अक्षरे (b, d, f, h, k, l, t) -> वरच्या ३ ओळी
+                container.className = "letter-container box-top3";
+                txtNode.className = "letter-content size-large";
             } else if(['g', 'j', 'p', 'q', 'y'].includes(ch)) {
-                txtNode.className = "letter-text align-small-desc";
+                // खाली जाणारी अक्षरे (g, j, p, q, y) -> खालच्या ३ ओळी
+                container.className = "letter-container box-bottom3";
+                txtNode.className = "letter-content size-large";
             } else {
-                txtNode.className = "letter-text align-small-mid";
+                // मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) -> फक्त मधल्या २ ओळी
+                container.className = "letter-container box-mid2";
+                txtNode.className = "letter-content size-medium";
             }
         }
 
