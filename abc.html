@@ -81,28 +81,25 @@
             color: #050b14;
         }
 
-        /* 🎯 फिक्स साईझ फोर-लाईन कार्ड (टक्केवारी नाही, पिक्सेल लॉक) */
+        /* 🎯 कार्डची उंची वाढवली (200px) जेणेकरून चौथी ओळ कट होणार नाही */
         .four-line-card {
             background: #ffffff; 
             border-radius: 20px;
             width: 100%;
-            height: 180px;
+            height: 200px;
             position: relative;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             cursor: pointer;
             border: 4px solid #1e293b;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        /* ४ ओळींचा साचा - एकूण उंची १२०px (४०px चे ३ कप्पे) */
+        /* 🎯 ४ ओळींचा साचा (३ कप्पे, प्रत्येक कप्पा ४०px = एकूण १२०px उंची) */
         .lines-container {
             position: absolute;
             width: 100%;
             height: 120px;
-            top: 30px;
+            top: 40px; /* वरून अंतर वाढवले */
             left: 0;
             display: flex;
             flex-direction: column;
@@ -113,17 +110,18 @@
             height: 40px;
             width: 100%;
         }
-        .line-r { border-top: 3px solid var(--fourline-red); }
-        .line-b { border-top: 3px solid var(--fourline-blue); }
-        .line-bottom-b { border-bottom: 3px solid var(--fourline-blue); }
-        .line-bottom-r { border-bottom: 3px solid var(--fourline-red); }
+        /* अचूक ४ ओळींची रचना */
+        .line-1 { border-top: 3px solid var(--fourline-red); }
+        .line-2 { border-top: 3px solid var(--fourline-blue); }
+        .line-3 { border-top: 3px solid var(--fourline-blue); }
+        .line-4 { border-bottom: 3px solid var(--fourline-red); } /* चौथी ओळ आता १००% दिसेल */
 
-        /* 🎯 अक्षराचा बॉक्स - ओळींच्या साच्यावर तंतोतंत लॉक */
+        /* 🎯 अक्षराचा मुख्य होल्डर बॉक्स */
         .letter-holder {
             position: absolute;
             width: 100%;
             height: 120px;
-            top: 30px;
+            top: 40px;
             left: 0;
             display: flex;
             justify-content: center;
@@ -133,35 +131,35 @@
         }
 
         .letter-text {
-            font-family: 'Georgia', serif;
+            font-family: 'Arial', sans-serif;
             font-weight: bold;
             color: #1e293b;
             text-align: center;
             line-height: 1 !important;
         }
 
-        /* 🅰️ मोठी लिपी - वरच्या लाल रेषेपासून खालच्या निळ्या रेषेपर्यंत (८०px) */
+        /* 🅰️ मोठी लिपी (पहिल्या लाल रेषेपासून दुसऱ्या निळ्या रेषेपर्यंत = ८०px) */
         .align-ABC {
-            font-size: 84px;
-            margin-top: -33px;
+            font-size: 82px;
+            transform: translateY(2px);
         }
 
-        /* 🔤 लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) - वरच्या लाल रेषेपर्यंत */
+        /* 🔤 लहान लिपी - उंच अक्षरे (b, d, f, h, k, l, t) */
         .align-small-tall {
-            font-size: 84px;
-            margin-top: -35px;
+            font-size: 82px;
+            transform: translateY(1px);
         }
 
-        /* 🔤 लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) - फक्त २ निळ्या रेषेच्या आत (४०px) */
+        /* 🔤 लहान लिपी - मधली अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z) */
         .align-small-mid {
-            font-size: 44px;
-            margin-top: 6px;
+            font-size: 42px;
+            transform: translateY(20px);
         }
 
-        /* 🔤 लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) - पहिल्या निळ्या रेषेपासून खालच्या लाल रेषेपर्यंत */
+        /* 🔤 लहान लिपी - खाली जाणारी अक्षरे (g, j, p, q, y) */
         .align-small-desc {
-            font-size: 84px;
-            margin-top: 5px;
+            font-size: 82px;
+            transform: translateY(41px);
         }
 
         .sound-tag {
@@ -232,9 +230,9 @@
 
     <div class="four-line-card" onclick="speakLetter()">
         <div class="lines-container">
-            <div class="fl-space line-r"></div>
-            <div class="fl-space line-b"></div>
-            <div class="fl-space line-bottom-b line-bottom-r"></div>
+            <div class="fl-space line-1"></div>
+            <div class="fl-space line-2"></div>
+            <div class="fl-space line-3 line-4"></div>
         </div>
         
         <div class="letter-holder">
@@ -277,7 +275,6 @@
         
         txtNode.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
 
-        // प्रत्येक प्रकारच्या अक्षरासाठी पिक्सेल अलाईनमेंट मॅपिंग
         if(currentCase === "ABC") {
             txtNode.className = "letter-text align-ABC";
         } else {
