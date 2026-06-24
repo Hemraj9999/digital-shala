@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Number Fit Puzzle Shala</title>
+    <style>
+        :root { 
+            --primary: #00f2fe; 
+            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); 
+            --board-bg: #ffffff;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background: var(--bg-gradient); 
+            color: #f8fafc; 
+            min-height: 100vh; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 30px;
+            user-select: none;
+        }
+        
+        header { 
+            background: #0f172a; 
+            width: 100%;
+            max-width: 410px;
+            padding: 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+        }
+        
+        .back-btn { 
+            color: #00f2fe; 
+            text-decoration: none; 
+            background: rgba(0, 242, 254, 0.1); 
+            padding: 6px 14px; 
+            border-radius: 30px; 
+            font-size: 13px; 
+            font-weight: 700;
+            border: 1px solid rgba(0, 242, 254, 0.3); 
+        }
+        
+        header h2 { font-size: 16px; font-weight: 800; color: #00f2fe; }
+
+        .main-wrapper {
+            width: 100%;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            max-width: 410px;
+        }
+
+        .instruction-text {
+            font-size: 16px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-align: center;
+        }
+
+        /* 🎯 मुख्य डिजिटल पाटी */
+        .math-board {
+            background: var(--board-bg); 
+            border-radius: 20px;
+            width: 100%;
+            height: 250px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 4px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 📥 मुख्य नंबरची 'खाच' (Target Slot Outline) */
+        .number-slot {
+            font-size: 130px;
+            font-weight: 900;
+            color: rgba(30, 41, 59, 0.08); /* अतिशय फिकट - खाच सारखी */
+            text-shadow: 
+                -2px -2px 0 rgba(0,0,0,0.1),  
+                 2px -2px 0 rgba(0,0,0,0.1),
+                -2px  2px 0 rgba(0,0,0,0.1),
+                 2px  2px 0 rgba(0,0,0,0.1); /* बॉर्डर इफेक्ट ज्यामुळे खाच स्पष्ट दिसेल */
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            border: 3px dashed rgba(51, 153, 255, 0.3);
+            background: rgba(51, 153, 255, 0.02);
+            transition: all 0.3s;
+        }
+
+        /* जेव्हा नंबर खाचेच्या अगदी जवळ येईल */
+        .number-slot.hovered {
+            background: rgba(0, 242, 254, 0.15);
+            border-color: #00f2fe;
+            color: rgba(0, 242, 254, 0.3);
+        }
+
+        /* नंबर अचूक फिट झाल्यावर */
+        .number-slot.success {
+            background: #10b981;
+            border: 3px solid #10b981;
+            color: #ffffff !important;
+            text-shadow: none;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+            animation: celebrate 0.5s ease;
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* 🔢 ड्रॅग करायच्या संख्यांची कीपॅड ग्रिड */
+        .drag-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        /* 🖐️ उचलून नेण्यासारखे नंबर बटण */
+        .drag-btn {
+            background: #1e293b;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            height: 70px;
+            font-size: 30px;
+            font-weight: 800;
+            color: #f1f5f9;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            touch-action: none;
+            position: relative;
+            z-index: 10;
+        }
+
+        .drag-btn:active {
+            cursor: grabbing;
+        }
+
+        .drag-btn.dragging {
+            opacity: 0.8;
+            background: #00f2fe;
+            color: #050b14;
+            box-shadow: 0 10px 20px rgba(0,242,254,0.4);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn">⬅ Home</a>
+    <h2>🧩 Number Puzzle Shala</h2>
+    <div style="width:60px;"></div>
+</header>
+
+<div class="main-wrapper">
+    
+    <div class="instruction-text" id="instruction">योग्य संख्या उचलून खाचेमध्ये बसवा 🖐️</div>
+
+    <div class="math-board">
+        <div class="number-slot" id="slot-target">?</div>
+    </div>
+
+    <div class="drag-container" id="drag-box"></div>
+
+</div>
+
+<script>
+    let currentNumber = 0;
+    let activeDragBtn = null;
+
+    function initGame() {
+        // ० ते ९ मधील कोणताही एक रँडम नंबर गेमसाठी निवडणे
+        currentNumber = Math.floor(Math.random() * 10); 
+
+        // १. वरच्या पाटीत त्या नंबरची फिकट खाच (Outline) तयार करणे
+        let slotTarget = document.getElementById("slot-target");
+        slotTarget.innerText = currentNumber; // खाचेचा आकार तोच असेल
+        slotTarget.className = "number-slot";
+        document.getElementById("instruction").innerText = "योग्य संख्या उचलून खाचेमध्ये बसवा 🖐️";
+
+        // २. खाली दाखवण्यासाठी ४ पर्याय तयार करणे
+        let options = [currentNumber];
+        while(options.length < 4) {
+            let rand = Math.floor(Math.random() * 10);
+            if(!options.includes(rand)) options.push(rand);
+        }
+        options.sort(() => Math.random() - 0.5); // पर्याय मागे-पुढे करणे
+
+        // ३. ड्रॅग कीपॅड बटणे तयार करणे
+        let dragBox = document.getElementById("drag-box");
+        dragBox.innerHTML = "";
+        
+        options.forEach(num => {
+            let btn = document.createElement("div");
+            btn.className = "drag-btn";
+            btn.innerText = num;
+            btn.setAttribute("data-number", num);
+            
+            // मोबाईल टच इव्हेंट्स (Touch Controllers)
+            btn.addEventListener('touchstart', handleTouchStart, {passive: false});
+            btn.addEventListener('touchmove', handleTouchMove, {passive: false});
+            btn.addEventListener('touchend', handleTouchEnd);
+
+            dragBox.appendChild(btn);
+        });
+    }
+
+    // --- मोबाईल बोटाचा टच मॅनेजमेंट (Drag and Drop) ---
+    let startX = 0, startY = 0;
+
+    function handleTouchStart(e) {
+        activeDragBtn = e.target;
+        activeDragBtn.classList.add("dragging");
+        let touch = e.touches[0];
+        startX = touch.clientX - activeDragBtn.offsetLeft;
+        startY = touch.clientY - activeDragBtn.offsetTop;
+    }
+
+    function handleTouchMove(e) {
+        if (!activeDragBtn) return;
+        e.preventDefault(); // स्क्रीन हलण्यापासून रोखणे
+        
+        let touch = e.touches[0];
+        
+        // बटन बोटासोबत स्क्रीनवर फिरेल
+        activeDragBtn.style.position = 'fixed';
+        activeDragBtn.style.left = touch.clientX - (activeDragBtn.offsetWidth / 2) + 'px';
+        activeDragBtn.style.top = touch.clientY - (activeDragBtn.offsetHeight / 2) + 'px';
+
+        // जर बटन वरच्या खाचेच्या जवळ पोहोचले तर खाच हायलाईट करा
+        let target = document.getElementById("slot-target");
+        let rect = target.getBoundingClientRect();
+        
+        if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+            touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+            target.classList.add("hovered");
+        } else {
+            target.classList.remove("hovered");
+        }
+    }
+
+    function handleTouchEnd(e) {
+        if (!activeDragBtn) return;
+        activeDragBtn.classList.remove("dragging");
+        
+        let target = document.getElementById("slot-target");
+        let rect = target.getBoundingClientRect();
+        let touch = e.changedTouches[0];
+        
+        // तपासणी: संख्या खाचेच्या क्षेत्रात सोडली आहे का?
+        if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+            touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+            
+            let selectedNum = parseInt(activeDragBtn.getAttribute("data-number"));
+            
+            if (selectedNum === currentNumber) {
+                // 🎉 परफेक्ट फिट! संख्या खाचेमध्ये घट्ट बसली
+                target.innerText = currentNumber;
+                target.className = "number-slot success"; // हिरवा रंग आणि इफेक्ट
+                document.getElementById("instruction").innerText = "🎉 अतिशय सुंदर! नंबर खाचेत फिट बसला.";
+                speakNumber(currentNumber);
+                activeDragBtn.style.visibility = "hidden"; // खालील बटन लपवणे
+                
+                setTimeout(initGame, 3000); // ३ सेकंदांनी नवीन कोडे देणे
+            } else {
+                // ❌ चुकीचा नंबर टाकल्यास तो परत खाली फेकला जाईल
+                document.getElementById("instruction").innerText = "❌ चुकीचा नंबर! हा या खाचेचा नाही.";
+                resetBtnPosition(activeDragBtn);
+                speakWrong();
+            }
+        } else {
+            // बाहेर कुठेही सोडल्यास बटन मूळ जागी जाईल
+            resetBtnPosition(activeDragBtn);
+        }
+        
+        target.classList.remove("hovered");
+        activeDragBtn = null;
+    }
+
+    function resetBtnPosition(btn) {
+        btn.style.position = 'static';
+        btn.style.left = 'auto';
+        btn.style.top = 'auto';
+    }
+
+    function speakNumber(num) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            let utter = new SpeechSynthesisUtterance(num.toString());
+            utter.lang = 'en-US';
+            utter.rate = 0.8;
+            window.speechSynthesis.speak(utter);
+        }
+    }
+
+    function speakWrong() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            let utter = new SpeechSynthesisUtterance("Try again");
+            utter.lang = 'en-US';
+            window.speechSynthesis.speak(utter);
+        }
+    }
+
+    window.onload = initGame;
+</script>
+</body>
+</html>
