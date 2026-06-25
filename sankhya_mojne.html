@@ -54,7 +54,6 @@
             font-size: 14px;
         }
 
-        /* 🌐 भाषा आणि गट निवड */
         .controls-row {
             width: 100%;
             max-width: 450px;
@@ -101,7 +100,6 @@
             flex: 1;
         }
 
-        /* 🖼️ मुख्य खेळ पाटी */
         .game-panel {
             background: #1e293b;
             border: 2px solid rgba(255,255,255,0.05);
@@ -160,7 +158,6 @@
             color: #10b981;
         }
 
-        /* 🔢 पर्यायांची ग्रीड */
         .options-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -182,7 +179,6 @@
 
         .option-btn:active { transform: scale(0.95); }
 
-        /* 🔘 पुढील प्रश्न बटन */
         .next-btn {
             width: 100%;
             background: #10b981;
@@ -223,7 +219,7 @@
         </div>
     </div>
 
-    <div class="game-panel">
+    <div class="game-panel" onclick="unlockAudioContext()">
         <div class="instruction" id="instruct-text">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
         
         <div class="emoji-display-area" id="emoji-box"></div>
@@ -240,9 +236,9 @@
     let score = 0;
     let targetNumber = 0;
     let currentLang = 'mr'; 
+    let audioUnlocked = false;
     const fruits = ['🍎', '🥭', '🍇', '🍓', '🍊', '🍉', '🍌', '🍍', '🔔', '⭐'];
 
-    // मराठी आणि इंग्रजी अंकांचे साऊंड मॅपिंग डेटाबेस
     const numberSounds = {
         1: { mr: 'एक', en: 'One', mrChar: '१', enChar: '1' },
         2: { mr: 'दोन', en: 'Two', mrChar: '२', enChar: '2' },
@@ -270,12 +266,26 @@
     let voices = [];
 
     function loadVoices() {
-        if (synth) voices = synth.getVoices();
+        if (synth) {
+            voices = synth.getVoices();
+        }
     }
-    if (synth && synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
-    loadVoices();
+    if (synth && synth.onvoiceschanged !== undefined) {
+        synth.onvoiceschanged = loadVoices;
+    }
+
+    // 🔓 कॉम्प्युटरवर ब्राउझरची साऊंड सिस्टीम पहिली क्लिक होताच अनलॉक करणे
+    function unlockAudioContext() {
+        if (audioUnlocked) return;
+        loadVoices();
+        // एक शांत रिकामी टोन प्ले करून सिस्टीम वेक-अप करणे
+        let u = new SpeechSynthesisUtterance("");
+        if(synth) synth.speak(u);
+        audioUnlocked = true;
+    }
 
     function setLanguage(lang) {
+        unlockAudioContext();
         currentLang = lang;
         document.getElementById("lang-mr").classList.toggle("active", lang === 'mr');
         document.getElementById("lang-en").classList.toggle("active", lang === 'en');
@@ -283,7 +293,6 @@
         document.getElementById("instruct-text").innerText = lang === 'mr' ? "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!" : "Count the pictures and select correct number!";
         document.getElementById("next-question-btn").innerText = lang === 'mr' ? "पुढचे उदाहरण ➡️" : "Next Question ➡️";
         
-        // चालू असलेले पर्याय आणि उत्तर अपडेट करणे
         updateElementsLang();
     }
 
@@ -298,7 +307,6 @@
         document.getElementById("feedback-view").innerText = "";
         document.getElementById("next-question-btn").style.display = "none";
         
-        // चित्रे जनरेट करणे
         let emojiBox = document.getElementById("emoji-box");
         emojiBox.innerHTML = "";
         let randomEmoji = fruits[Math.floor(Math.random() * fruits.length)];
@@ -310,7 +318,6 @@
             emojiBox.appendChild(span);
         }
 
-        // पर्याय तयार करणे
         generateOptions(minRange, maxRange);
     }
 
@@ -332,19 +339,20 @@
             btn.className = "option-btn";
             btn.setAttribute("data-value", num);
             btn.innerText = currentLang === 'mr' ? numberSounds[num].mrChar : numberSounds[num].enChar;
-            btn.onclick = () => checkAnswer(num);
+            btn.onclick = (e) => {
+                e.stopPropagation(); // क्लिक इव्हेंट थांबवणे
+                checkAnswer(num);
+            };
             optionsBox.appendChild(btn);
         });
     }
 
     function updateElementsLang() {
-        // उत्तर बॉक्स बदलणे
         let currentSlot = document.getElementById("slot-view").innerText;
         if(currentSlot !== "?" && currentSlot !== "") {
             document.getElementById("slot-view").innerText = currentLang === 'mr' ? numberSounds[targetNumber].mrChar : numberSounds[targetNumber].enChar;
         }
 
-        // ग्रिड मधील पर्याय बदलणे
         let buttons = document.querySelectorAll(".option-btn");
         buttons.forEach(btn => {
             let val = parseInt(btn.getAttribute("data-value"));
@@ -353,7 +361,7 @@
     }
 
     function checkAnswer(chosenNum) {
-        // आधी योग्य भाषेतला उच्चार करणे
+        unlockAudioContext();
         speakNumber(chosenNum);
 
         if(chosenNum === targetNumber) {
@@ -370,10 +378,9 @@
         }
     }
 
-    // 🔊 अचूक स्वतंत्र मराठी-इंग्रजी ध्वनी इंजिन
     function speakNumber(num) {
         if (!synth) return;
-        synth.cancel(); // जुना आवाज क्लिअर करणे
+        synth.cancel(); 
 
         let textToSpeak = currentLang === 'mr' ? numberSounds[num].mr : numberSounds[num].en;
         let langCode = currentLang === 'mr' ? 'mr-IN' : 'en-US';
@@ -381,7 +388,7 @@
         let utter = new SpeechSynthesisUtterance(textToSpeak);
         loadVoices();
 
-        // मोबाईल/कॉम्प्युटरमधील सर्वोत्तम व्हॉईस मॅच शोधणे
+        // कॉम्प्युटरसाठी मजबूत व्हॉईस मॅचिंग
         let matchedVoice = voices.find(v => v.lang.startsWith(langCode) || v.lang.includes(langCode.replace('-', '_')));
         
         if (matchedVoice) {
@@ -390,7 +397,7 @@
             utter.lang = langCode;
         }
 
-        utter.rate = currentLang === 'mr' ? 0.85 : 0.80; // लहान मुलांसाठी संथ स्पष्टता
+        utter.rate = currentLang === 'mr' ? 0.80 : 0.85; 
         utter.pitch = 1.0;
 
         synth.speak(utter);
