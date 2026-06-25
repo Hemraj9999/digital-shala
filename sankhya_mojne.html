@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>संख्या मोजणे खेळ (Pro)</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=928mX7rK"></script>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
@@ -232,15 +233,12 @@
         <div class="feedback-text" id="feedback-view"></div>
     </div>
 
-    <audio id="global-audio-player" preload="auto"></audio>
-
 <script>
     let score = 0;
     let targetNumber = 0;
     let currentLang = 'mr'; 
     const fruits = ['🍎', '🥭', '🍇', '🍓', '🍊', '🍉', '🍌', '🍍', '🔔', '⭐'];
 
-    // अंकांसाठी अचूक टेक्स्ट मॅपिंग
     const numberSounds = {
         1: { mr: 'एक', en: 'One', mrChar: '१', enChar: '1' },
         2: { mr: 'दोन', en: 'Two', mrChar: '२', enChar: '2' },
@@ -336,8 +334,7 @@
     }
 
     function checkAnswer(chosenNum) {
-        // ऑनलाइन ऑडिओ इंजिनद्वारे अचूक उच्चार करणे
-        speakOnline(chosenNum);
+        speakResponsive(chosenNum);
 
         if(chosenNum === targetNumber) {
             score++;
@@ -353,25 +350,18 @@
         }
     }
 
-    // 🌐 नवीन क्लाउड साऊंड इंजिन (लॅपटॉप आणि मोबाईल दोन्हीसाठी १००% खात्रीशीर)
-    function speakOnline(num) {
-        let text = currentLang === 'mr' ? numberSounds[num].mr : numberSounds[num].en;
-        let langCode = currentLang === 'mr' ? 'mr' : 'en';
-        
-        // गुगलच्या मोफत आणि उच्च दर्जाच्या साऊंड API ची लिंक
-        let audioUrl = "https://translate.google.com/translate_tts?ie=UTF-8&tl=" + langCode + "&client=tw-ob&q=" + encodeURIComponent(text);
-        
-        let player = document.getElementById("global-audio-player");
-        player.src = audioUrl;
-        
-        // प्ले करण्याचा प्रयत्न करणे (Chrome पॉलिसी बायपाससह)
-        let playPromise = player.play();
-        if (playPromise !== undefined) {
-            playPromise.then(_ => {
-                // ऑडिओ यशस्वीरीत्या सुरू झाला!
-            }).catch(error => {
-                console.log("Audio play failed, retrying on interaction.");
-            });
+    // 🔊 नवीन क्लाउड ऑडिओ इंजिन जे मोबाईल आणि लॅपटॉप दोन्हीवर कधीच बंद पडणार नाही
+    function speakResponsive(num) {
+        if (typeof responsiveVoice !== 'undefined') {
+            responsiveVoice.cancel(); // जुना चालू असलेला आवाज थांबवणे
+            
+            let text = currentLang === 'mr' ? numberSounds[num].mr : numberSounds[num].en;
+            let voiceName = currentLang === 'mr' ? "Hindi Female" : "US English Female"; // मराठी टोनसाठी सर्वोत्तम मॅच
+            
+            // लहान मुलांसाठी हळुवार वेग (0.85)
+            responsiveVoice.speak(text, voiceName, { rate: 0.85, pitch: 1.0 });
+        } else {
+            console.log("ResponsiveVoice लोड झाले नाही.");
         }
     }
 
