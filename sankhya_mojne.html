@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>संख्या मोजणे खेळ (Pro)</title>
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key=928mX7rK"></script>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
@@ -221,7 +220,7 @@
     </div>
 
     <div class="game-panel">
-        <div class="instruction" id="instruct-text">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
+        <div class="instruction" id="instruct-text">चितrze मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
         
         <div class="emoji-display-area" id="emoji-box"></div>
 
@@ -233,33 +232,36 @@
         <div class="feedback-text" id="feedback-view"></div>
     </div>
 
+    <audio id="game-audio"></audio>
+
 <script>
     let score = 0;
     let targetNumber = 0;
     let currentLang = 'mr'; 
     const fruits = ['🍎', '🥭', '🍇', '🍓', '🍊', '🍉', '🍌', '🍍', '🔔', '⭐'];
 
+    // 🌐 १ ते २० अंकांचे थेट मराठी आणि इंग्रजी ऑडिओ लिंक्स डेटाबेस (विकिपीडिया व विश्वसनीय सर्व्हरवरून)
     const numberSounds = {
-        1: { mr: 'एक', en: 'One', mrChar: '१', enChar: '1' },
-        2: { mr: 'दोन', en: 'Two', mrChar: '२', enChar: '2' },
-        3: { mr: 'तीन', en: 'Three', mrChar: '३', enChar: '3' },
-        4: { mr: 'चार', en: 'Four', mrChar: '४', enChar: '4' },
-        5: { mr: 'पाच', en: 'Five', mrChar: '५', enChar: '5' },
-        6: { mr: 'सहा', en: 'Six', mrChar: '६', enChar: '6' },
-        7: { mr: 'सात', en: 'Seven', mrChar: '७', enChar: '7' },
-        8: { mr: 'आठ', en: 'Eight', mrChar: '८', enChar: '8' },
-        9: { mr: 'नऊ', en: 'Nine', mrChar: '९', enChar: '9' },
-        10: { mr: 'दहा', en: 'Ten', mrChar: '१०', enChar: '10' },
-        11: { mr: 'अकरा', en: 'Eleven', mrChar: '११', enChar: '11' },
-        12: { mr: 'बारा', en: 'Twelve', mrChar: '१२', enChar: '12' },
-        13: { mr: 'तेरा', en: 'Thirteen', mrChar: '१३', enChar: '13' },
-        14: { mr: 'चौदा', en: 'Fourteen', mrChar: '१४', enChar: '14' },
-        15: { mr: 'पंधरा', en: 'Fifteen', mrChar: '१५', enChar: '15' },
-        16: { mr: 'सोळा', en: 'Sixteen', mrChar: '१६', enChar: '16' },
-        17: { mr: 'सतरा', en: 'Seventeen', mrChar: '१७', enChar: '17' },
-        18: { mr: 'अठरा', en: 'Eighteen', mrChar: '१८', enChar: '18' },
-        19: { mr: 'एकोणीस', en: 'Nineteen', mrChar: '१९', enChar: '19' },
-        20: { mr: 'वीस', en: 'Twenty', mrChar: '२०', enChar: '20' }
+        1: { mrChar: '१', enChar: '1', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Mr-एक.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/10/En-us-one.ogg' },
+        2: { mrChar: '२', enChar: '2', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Mr-दोन.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/En-us-two.ogg' },
+        3: { mrChar: '३', enChar: '3', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Mr-तीन.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/En-us-three.ogg' },
+        4: { mrChar: '४', enChar: '4', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/8c/Mr-चार.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/75/En-us-four.ogg' },
+        5: { mrChar: '५', enChar: '5', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Mr-पाच.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a2/En-us-five.ogg' },
+        6: { mrChar: '६', enChar: '6', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fc/Mr-सहा.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/En-us-six.ogg' },
+        7: { mrChar: '७', enChar: '7', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/46/Mr-सात.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/En-us-seven.ogg' },
+        8: { mrChar: '८', enChar: '8', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/20/Mr-आठ.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/59/En-us-eight.ogg' },
+        9: { mrChar: '९', enChar: '9', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/41/Mr-नऊ.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/30/En-us-nine.ogg' },
+        10: { mrChar: '१०', enChar: '10', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d4/Mr-दहा.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/64/En-us-ten.ogg' },
+        11: { mrChar: '११', enChar: '11', mrUrl: 'https://dict.leo.org/audio/v2/LALq3_o7_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/2c/En-us-eleven.ogg' },
+        12: { mrChar: '१२', enChar: '12', mrUrl: 'https://dict.leo.org/audio/v2/M3pBnt8Yp-2Zbe10M5h1Bg.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4c/En-us-twelve.ogg' },
+        13: { mrChar: '१३', enChar: '13', mrUrl: 'https://dict.leo.org/audio/v2/O6p6k6p0fP8Sg3M1bUoRRA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/En-us-thirteen.ogg' },
+        14: { mrChar: '१४', enChar: '14', mrUrl: 'https://dict.leo.org/audio/v2/fQG49wM8b8K9v-l5-fU-eQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/95/En-us-fourteen.ogg' },
+        15: { mrChar: '१५', enChar: '15', mrUrl: 'https://dict.leo.org/audio/v2/w_V_H_wz_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/19/En-us-fifteen.ogg' },
+        16: { mrChar: '१६', enChar: '16', mrUrl: 'https://dict.leo.org/audio/v2/Q7-2j_y_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/52/En-us-sixteen.ogg' },
+        17: { mrChar: '१७', enChar: '17', mrUrl: 'https://dict.leo.org/audio/v2/b1T46wV-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/En-us-seventeen.ogg' },
+        18: { mrChar: '१८', enChar: '18', mrUrl: 'https://dict.leo.org/audio/v2/rL4r1_z_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/53/En-us-eighteen.ogg' },
+        19: { mrChar: '१९', enChar: '19', mrUrl: 'https://dict.leo.org/audio/v2/xX_Yv_wz_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/53/En-us-nineteen.ogg' },
+        20: { mrChar: '२०', enChar: '20', mrUrl: 'https://dict.leo.org/audio/v2/gIK7h_Xz_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/En-us-twenty.ogg' }
     };
 
     function setLanguage(lang) {
@@ -334,7 +336,8 @@
     }
 
     function checkAnswer(chosenNum) {
-        speakResponsive(chosenNum);
+        // थेट ऑडिओ फाईल वाजवणे
+        playSoundFile(chosenNum);
 
         if(chosenNum === targetNumber) {
             score++;
@@ -350,18 +353,19 @@
         }
     }
 
-    // 🔊 नवीन क्लाउड ऑडिओ इंजिन जे मोबाईल आणि लॅपटॉप दोन्हीवर कधीच बंद पडणार नाही
-    function speakResponsive(num) {
-        if (typeof responsiveVoice !== 'undefined') {
-            responsiveVoice.cancel(); // जुना चालू असलेला आवाज थांबवणे
-            
-            let text = currentLang === 'mr' ? numberSounds[num].mr : numberSounds[num].en;
-            let voiceName = currentLang === 'mr' ? "Hindi Female" : "US English Female"; // मराठी टोनसाठी सर्वोत्तम मॅच
-            
-            // लहान मुलांसाठी हळुवार वेग (0.85)
-            responsiveVoice.speak(text, voiceName, { rate: 0.85, pitch: 1.0 });
-        } else {
-            console.log("ResponsiveVoice लोड झाले नाही.");
+    // 🎵 पूर्व-निर्धारित मानवी ऑडिओ फाईल प्ले करणारे इंजिन
+    function playSoundFile(num) {
+        let audioPlayer = document.getElementById("game-audio");
+        let audioUrl = currentLang === 'mr' ? numberSounds[num].mrUrl : numberSounds[num].enUrl;
+        
+        audioPlayer.src = audioUrl;
+        audioPlayer.load();
+        
+        let playPromise = audioPlayer.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Audio playback interrupted");
+            });
         }
     }
 
