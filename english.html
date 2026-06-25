@@ -2,79 +2,366 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Practice - Digital Shala</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Phonics Shala</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; text-align: center; }
-        header { background: #10ac84; color: white; padding: 15px; display: flex; align-items: center; justify-content: space-between; }
-        .back-btn { color: white; text-decoration: none; font-weight: bold; background: rgba(0,0,0,0.2); padding: 8px 15px; border-radius: 20px; }
-        .game-container { max-width: 600px; margin: 30px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .score-board { font-size: 18px; font-weight: bold; background: #f1f5f9; padding: 10px; display: inline-block; border-radius: 10px; margin-bottom: 20px; }
-        .pic-display { font-size: 60px; margin: 20px 0; letter-spacing: 5px; }
-        .instruction { font-size: 22px; font-weight: bold; color: #475569; margin-bottom: 20px; }
-        .options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 400px; margin: 0 auto; }
-        .option-btn { padding: 15px; font-size: 20px; font-weight: bold; background: white; border: 2px solid #cbd5e1; border-radius: 8px; cursor: pointer; }
-        .option-btn:hover { border-color: #10ac84; }
-        .submit-btn { font-size: 18px; background: #10ac84; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; display: none; }
-        .result { font-size: 22px; font-weight: bold; margin-top: 20px; min-height: 40px; }
-        .correct { color: #10b981; }
-        .wrong { color: #ef4444; }
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+            --panel-bg: #1e293b;
+            --primary: #00f2fe;
+            --btn-active: #2563eb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background: var(--bg-gradient);
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            user-select: none;
+        }
+
+        header {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            color: #00f2fe;
+            text-decoration: none;
+            background: rgba(0, 242, 254, 0.1);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid rgba(0, 242, 254, 0.2);
+        }
+
+        /* 🔠 कॅपिटल / स्मॉल स्विच */
+        .mode-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            max-width: 420px;
+            margin-bottom: 15px;
+            background: #0f172a;
+            padding: 4px;
+            border-radius: 14px;
+        }
+
+        .mode-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: #2563eb;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+
+        /* 📋 ४ लाईन पाटी */
+        .display-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            height: 240px;
+            border-radius: 24px;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border: 4px solid #1e293b;
+            margin-bottom: 20px;
+        }
+
+        .four-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 28px;
+            padding: 0 10px;
+            pointer-events: none;
+        }
+
+        .line-red { border-top: 2px solid #ff4d4d; width: 100%; }
+        .line-blue { border-top: 2px solid #3399ff; width: 100%; }
+
+        .content-box {
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .letter-display {
+            font-size: 100px;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1;
+        }
+
+        .object-emoji {
+            font-size: 80px;
+            animation: bounceIn 0.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .sound-badge {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: #00f2fe;
+            color: #0f172a;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        /* 🎮 नेव्हिगेशन बटणे */
+        .nav-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 420px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .nav-btn.next {
+            background: #00f2fe;
+            color: #0f172a;
+            border: none;
+        }
+
+        /* ⌨️ एबीसीडी कीपॅड ग्रिड */
+        .keyboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .key-btn {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.06);
+            color: #fff;
+            height: 55px;
+            border-radius: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .key-btn.active {
+            background: transparent;
+            border: 2px solid #00f2fe;
+            color: #00f2fe;
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.2);
+        }
+
+        .key-btn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
 
-<header>
-    <a href="index.html" class="back-btn">⬅ Home</a>
-    <h2>🅰 English Math Shala</h2>
-    <div style="width:70px;"></div>
-</header>
+    <header>
+        <a href="index.html" class="back-btn">⬅ Home</a>
+        <div style="font-size: 16px; font-weight: 800; color: #00f2fe;">✨ English Phonics Shala</div>
+        <div style="width:50px;"></div>
+    </header>
 
-<div class="game-container">
-    <div class="score-board" id="score-board">Score: 0</div>
-    <div class="instruction">Count the pictures and select correct spelling:</div>
-    <div class="pic-display" id="pic-box">⚽⚽⚽</div>
-    <div class="options-container" id="options-box"></div>
-    <button id="next-btn" class="submit-btn" onclick="generateQuestion()">Next Question</button>
-    <div class="result" id="result-message"></div>
-</div>
+    <div class="mode-container">
+        <button class="mode-btn active" id="btn-capital" onclick="setMode('capital')">🅰 Capital</button>
+        <button class="mode-btn" id="btn-small" onclick="setMode('small')">a Small</button>
+    </div>
+
+    <div class="display-card" onclick="playPhonics()">
+        <div class="four-lines">
+            <div class="line-red"></div>
+            <div class="line-blue"></div>
+            <div class="line-blue"></div>
+            <div class="line-red"></div>
+        </div>
+        
+        <div class="content-box">
+            <div class="letter-display" id="letter-view">A</div>
+            <div class="object-emoji" id="emoji-view">🍎</div>
+        </div>
+
+        <div class="sound-badge">🔊 Sound</div>
+    </div>
+
+    <div class="nav-container">
+        <button class="nav-btn" onclick="navigateLetter(-1)">⬅ Back</button>
+        <button class="nav-btn next" onclick="navigateLetter(1)">Next ➡️</button>
+    </div>
+
+    <div class="keyboard-grid" id="keyboard-box"></div>
 
 <script>
-    let score = 0, currentObj = {};
-    const data = [
-        { count: 1, pic: "⭐", correct: "ONE", options: ["TWO", "ONE", "THREE", "FIVE"] },
-        { count: 2, pic: "⚽", correct: "TWO", options: ["ONE", "FOUR", "TWO", "THREE"] },
-        { count: 3, pic: "🎈", correct: "THREE", options: ["FOUR", "TWO", "THREE", "ONE"] },
-        { count: 4, pic: "💎", correct: "FOUR", options: ["THREE", "FIVE", "FOUR", "TWO"] },
-        { count: 5, pic: "🌸", correct: "FIVE", options: ["FIVE", "THREE", "SIX", "FOUR"] }
+    let currentIndex = 0;
+    let currentMode = 'capital'; // डीफॉल्ट कॅपिटल मोड
+
+    // अक्षरे, त्यांचे हाय-क्वालिटी इमोजी आणि फोनेक्स उच्चार (मराठी/इंग्रजी टोन मिक्स)
+    const alphabetData = [
+        { cap: 'A', sm: 'a', emoji: '🍎', phonic: 'A for Apple... aa aa aa' },
+        { cap: 'B', sm: 'b', emoji: '🎈', phonic: 'B for Balloon... ba ba ba' },
+        { cap: 'C', sm: 'c', emoji: '🐱', phonic: 'C for Cat... ka ka ka' },
+        { cap: 'D', sm: 'd', emoji: '🐕', phonic: 'D for Dog... da da da' },
+        { cap: 'E', sm: 'e', emoji: '🥚', phonic: 'E for Egg... ae ae ae' },
+        { cap: 'F', sm: 'f', emoji: '🐟', phonic: 'F for Fish... fa fa fa' },
+        { cap: 'G', sm: 'g', emoji: '🍇', phonic: 'G for Grapes... ga ga ga' },
+        { cap: 'H', sm: 'h', emoji: '🏠', phonic: 'H for House... ha ha ha' },
+        { cap: 'I', sm: 'i', emoji: '🍦', phonic: 'I for Ice cream... ee ee ee' },
+        { cap: 'J', sm: 'j', emoji: '🃏', phonic: 'J for Joker... ja ja ja' },
+        { cap: 'K', sm: 'k', emoji: '🪁', phonic: 'K for Kite... ka ka ka' },
+        { cap: 'L', sm: 'l', emoji: '🦁', phonic: 'L for Lion... la la la' },
+        { cap: 'M', sm: 'm', emoji: '🐒', phonic: 'M for Monkey... ma ma ma' },
+        { cap: 'N', sm: 'n', emoji: '🪺', phonic: 'N for Nest... na na na' },
+        { cap: 'O', sm: 'o', emoji: '🍊', phonic: 'O for Orange... aw aw aw' },
+        { cap: 'P', sm: 'p', emoji: '🦜', phonic: 'P for Parrot... pa pa pa' },
+        { cap: 'Q', sm: 'q', emoji: '👑', phonic: 'Q for Queen... qua qua qua' },
+        { cap: 'R', sm: 'r', emoji: '🌹', phonic: 'R for Rose... ra ra ra' },
+        { cap: 'S', sm: 's', emoji: '☀️', phonic: 'S for Sun... sa sa sa' },
+        { cap: 'T', sm: 't', emoji: '🐯', phonic: 'T for Tiger... ta ta ta' },
+        { cap: 'U', sm: 'u', emoji: '☂️', phonic: 'U for Umbrella... uh uh uh' },
+        { cap: 'V', sm: 'v', emoji: '🚐', phonic: 'V for Van... va va va' },
+        { cap: 'W', sm: 'w', emoji: '⌚', phonic: 'W for Watch... wa wa wa' },
+        { cap: 'X', sm: 'x', emoji: '🎄', phonic: 'X for Xmas Tree... ks ks ks' },
+        { cap: 'Y', sm: 'y', emoji: '🪵', phonic: 'Y for Yak... ya ya ya' },
+        { cap: 'Z', sm: 'z', emoji: '🦓', phonic: 'Z for Zebra... za za za' }
     ];
 
-    function generateQuestion() {
-        document.getElementById("result-message").innerText = "";
-        document.getElementById("next-btn").style.display = "none";
-        currentObj = data[Math.floor(Math.random() * data.length)];
-        document.getElementById("pic-box").innerText = currentObj.pic.repeat(currentObj.count);
+    let synth = window.speechSynthesis;
+
+    function renderKeyboard() {
+        let keyboardBox = document.getElementById("keyboard-box");
+        keyboardBox.innerHTML = "";
         
-        let html = "";
-        currentObj.options.forEach(opt => {
-            html += `<button class="option-btn" onclick="checkAnswer('${opt}')">${opt}</button>`;
+        alphabetData.forEach((item, index) => {
+            let btn = document.createElement("button");
+            btn.className = "key-btn";
+            if(index === currentIndex) btn.classList.add("active");
+            
+            btn.innerText = currentMode === 'capital' ? item.cap : item.sm;
+            btn.onclick = () => selectLetter(index);
+            keyboardBox.appendChild(btn);
         });
-        document.getElementById("options-box").innerHTML = html;
     }
 
-    function checkAnswer(selected) {
-        let res = document.getElementById("result-message");
-        if(selected === currentObj.correct) {
-            res.innerText = "✓ Well Done! Correct! ⭐"; res.className = "result correct"; score++;
-        } else {
-            res.innerText = "✗ Wrong! Correct is: " + currentObj.correct; res.className = "result wrong";
-        }
-        document.getElementById("score-board").innerText = "Score: " + score;
-        document.getElementById("options-box").innerHTML = "";
-        document.getElementById("next-btn").style.display = "inline-block";
+    function setMode(mode) {
+        currentMode = mode;
+        document.getElementById("btn-capital").classList.toggle("active", mode === 'capital');
+        document.getElementById("btn-small").classList.toggle("active", mode === 'small');
+        updateDisplay();
     }
 
-    window.onload = generateQuestion;
+    function selectLetter(index) {
+        currentIndex = index;
+        updateDisplay();
+        playPhonics();
+    }
+
+    function navigateLetter(step) {
+        currentIndex += step;
+        if(currentIndex < 0) currentIndex = 25;
+        if(currentIndex > 25) currentIndex = 0;
+        updateDisplay();
+        playPhonics();
+    }
+
+    function updateDisplay() {
+        let currentItem = alphabetData[currentIndex];
+        document.getElementById("letter-view").innerText = currentMode === 'capital' ? currentItem.cap : currentItem.sm;
+        document.getElementById("emoji-view").innerText = currentItem.emoji;
+        
+        // कीबोर्डवरील ऍक्टिव्ह बटन हायलाईट बदलणे
+        let keys = document.querySelectorAll(".key-btn");
+        keys.forEach((key, idx) => {
+            key.classList.toggle("active", idx === currentIndex);
+            key.innerText = currentMode === 'capital' ? alphabetData[idx].cap : alphabetData[idx].sm;
+        });
+    }
+
+    // 🔊 दोन्ही डिव्हाइसेसवर चालणारी अचूक फोनेक्स साऊंड सिस्टीम
+    function playPhonics() {
+        if (!synth) return;
+        synth.cancel(); // चालू असलेला जुना आवाज थांबवणे
+
+        let currentItem = alphabetData[currentIndex];
+        let utter = new SpeechSynthesisUtterance(currentItem.phonic);
+        
+        // इंग्रजी भाषेचा स्पष्ट उच्चार सेट करणे
+        utter.lang = 'en-US';
+        utter.rate = 0.75; // लहान मुलांसाठी समजायला सोपा संथ स्पीड
+        utter.pitch = 1.1; // थोडा बालिश गोड आवाज
+        
+        synth.speak(utter);
+    }
+
+    window.onload = () => {
+        renderKeyboard();
+        updateDisplay();
+    };
 </script>
 </body>
 </html>
