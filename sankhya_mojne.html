@@ -139,7 +139,7 @@
         }
 
         @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
+            0 { transform: scale(0); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
 
@@ -200,7 +200,7 @@
         }
     </style>
 </head>
-<body>
+<body onclick="unlockAudioContext()">
 
     <header>
         <a href="ganit.html" class="back-btn">⬅ मागे</a>
@@ -214,12 +214,12 @@
         </select>
 
         <div class="lang-container">
-            <button class="lang-btn active" id="lang-mr" onclick="setLanguage('mr')">मराठी</button>
-            <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
+            <button class="lang-btn active" id="lang-mr" onclick="setLanguage('mr', event)">मराठी</button>
+            <button class="lang-btn" id="lang-en" onclick="setLanguage('en', event)">EN</button>
         </div>
     </div>
 
-    <div class="game-panel" onclick="unlockAudioContext()">
+    <div class="game-panel">
         <div class="instruction" id="instruct-text">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
         
         <div class="emoji-display-area" id="emoji-box"></div>
@@ -270,21 +270,25 @@
             voices = synth.getVoices();
         }
     }
+    
     if (synth && synth.onvoiceschanged !== undefined) {
-        synth.onvoiceschanged = loadVoices;
+        synth.onvoiceschanged = () => {
+            loadVoices();
+        };
     }
 
-    // 🔓 कॉम्प्युटरवर ब्राउझरची साऊंड सिस्टीम पहिली क्लिक होताच अनलॉक करणे
     function unlockAudioContext() {
         if (audioUnlocked) return;
         loadVoices();
-        // एक शांत रिकामी टोन प्ले करून सिस्टीम वेक-अप करणे
-        let u = new SpeechSynthesisUtterance("");
-        if(synth) synth.speak(u);
+        if (synth) {
+            let u = new SpeechSynthesisUtterance("");
+            synth.speak(u);
+        }
         audioUnlocked = true;
     }
 
-    function setLanguage(lang) {
+    function setLanguage(lang, event) {
+        if(event) event.stopPropagation();
         unlockAudioContext();
         currentLang = lang;
         document.getElementById("lang-mr").classList.toggle("active", lang === 'mr');
@@ -340,7 +344,7 @@
             btn.setAttribute("data-value", num);
             btn.innerText = currentLang === 'mr' ? numberSounds[num].mrChar : numberSounds[num].enChar;
             btn.onclick = (e) => {
-                e.stopPropagation(); // क्लिक इव्हेंट थांबवणे
+                e.stopPropagation(); 
                 checkAnswer(num);
             };
             optionsBox.appendChild(btn);
@@ -386,9 +390,9 @@
         let langCode = currentLang === 'mr' ? 'mr-IN' : 'en-US';
 
         let utter = new SpeechSynthesisUtterance(textToSpeak);
+        
+        // सुरक्षित आणि अचूक व्हॉईस मॅचिंग सिस्टीम
         loadVoices();
-
-        // कॉम्प्युटरसाठी मजबूत व्हॉईस मॅचिंग
         let matchedVoice = voices.find(v => v.lang.startsWith(langCode) || v.lang.includes(langCode.replace('-', '_')));
         
         if (matchedVoice) {
@@ -397,7 +401,8 @@
             utter.lang = langCode;
         }
 
-        utter.rate = currentLang === 'mr' ? 0.80 : 0.85; 
+        // आवाजाची गती संथ आणि लहान मुलांसाठी स्पष्ट ठेवणे
+        utter.rate = currentLang === 'mr' ? 0.75 : 0.80; 
         utter.pitch = 1.0;
 
         synth.speak(utter);
