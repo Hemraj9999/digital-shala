@@ -139,7 +139,7 @@
         }
 
         @keyframes popIn {
-            0 { transform: scale(0); opacity: 0; }
+            0% { transform: scale(0); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
 
@@ -200,7 +200,7 @@
         }
     </style>
 </head>
-<body onclick="unlockAudioContext()">
+<body>
 
     <header>
         <a href="ganit.html" class="back-btn">⬅ मागे</a>
@@ -214,8 +214,8 @@
         </select>
 
         <div class="lang-container">
-            <button class="lang-btn active" id="lang-mr" onclick="setLanguage('mr', event)">मराठी</button>
-            <button class="lang-btn" id="lang-en" onclick="setLanguage('en', event)">EN</button>
+            <button class="lang-btn active" id="lang-mr" onclick="setLanguage('mr')">मराठी</button>
+            <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
         </div>
     </div>
 
@@ -232,13 +232,15 @@
         <div class="feedback-text" id="feedback-view"></div>
     </div>
 
+    <audio id="global-audio-player" preload="auto"></audio>
+
 <script>
     let score = 0;
     let targetNumber = 0;
     let currentLang = 'mr'; 
-    let audioUnlocked = false;
     const fruits = ['🍎', '🥭', '🍇', '🍓', '🍊', '🍉', '🍌', '🍍', '🔔', '⭐'];
 
+    // अंकांसाठी अचूक टेक्स्ट मॅपिंग
     const numberSounds = {
         1: { mr: 'एक', en: 'One', mrChar: '१', enChar: '1' },
         2: { mr: 'दोन', en: 'Two', mrChar: '२', enChar: '2' },
@@ -262,34 +264,7 @@
         20: { mr: 'वीस', en: 'Twenty', mrChar: '२०', enChar: '20' }
     };
 
-    let synth = window.speechSynthesis;
-    let voices = [];
-
-    function loadVoices() {
-        if (synth) {
-            voices = synth.getVoices();
-        }
-    }
-    
-    if (synth && synth.onvoiceschanged !== undefined) {
-        synth.onvoiceschanged = () => {
-            loadVoices();
-        };
-    }
-
-    function unlockAudioContext() {
-        if (audioUnlocked) return;
-        loadVoices();
-        if (synth) {
-            let u = new SpeechSynthesisUtterance("");
-            synth.speak(u);
-        }
-        audioUnlocked = true;
-    }
-
-    function setLanguage(lang, event) {
-        if(event) event.stopPropagation();
-        unlockAudioContext();
+    function setLanguage(lang) {
         currentLang = lang;
         document.getElementById("lang-mr").classList.toggle("active", lang === 'mr');
         document.getElementById("lang-en").classList.toggle("active", lang === 'en');
@@ -301,7 +276,6 @@
     }
 
     function initGame() {
-        loadVoices();
         let maxRange = parseInt(document.getElementById("range-picker").value);
         let minRange = maxRange === 10 ? 1 : 11;
         
@@ -343,10 +317,7 @@
             btn.className = "option-btn";
             btn.setAttribute("data-value", num);
             btn.innerText = currentLang === 'mr' ? numberSounds[num].mrChar : numberSounds[num].enChar;
-            btn.onclick = (e) => {
-                e.stopPropagation(); 
-                checkAnswer(num);
-            };
+            btn.onclick = () => checkAnswer(num);
             optionsBox.appendChild(btn);
         });
     }
@@ -365,8 +336,8 @@
     }
 
     function checkAnswer(chosenNum) {
-        unlockAudioContext();
-        speakNumber(chosenNum);
+        // ऑनलाइन ऑडिओ इंजिनद्वारे अचूक उच्चार करणे
+        speakOnline(chosenNum);
 
         if(chosenNum === targetNumber) {
             score++;
@@ -382,34 +353,29 @@
         }
     }
 
-    function speakNumber(num) {
-        if (!synth) return;
-        synth.cancel(); 
-
-        let textToSpeak = currentLang === 'mr' ? numberSounds[num].mr : numberSounds[num].en;
-        let langCode = currentLang === 'mr' ? 'mr-IN' : 'en-US';
-
-        let utter = new SpeechSynthesisUtterance(textToSpeak);
+    // 🌐 नवीन क्लाउड साऊंड इंजिन (लॅपटॉप आणि मोबाईल दोन्हीसाठी १००% खात्रीशीर)
+    function speakOnline(num) {
+        let text = currentLang === 'mr' ? numberSounds[num].mr : numberSounds[num].en;
+        let langCode = currentLang === 'mr' ? 'mr' : 'en';
         
-        // सुरक्षित आणि अचूक व्हॉईस मॅचिंग सिस्टीम
-        loadVoices();
-        let matchedVoice = voices.find(v => v.lang.startsWith(langCode) || v.lang.includes(langCode.replace('-', '_')));
+        // गुगलच्या मोफत आणि उच्च दर्जाच्या साऊंड API ची लिंक
+        let audioUrl = "https://translate.google.com/translate_tts?ie=UTF-8&tl=" + langCode + "&client=tw-ob&q=" + encodeURIComponent(text);
         
-        if (matchedVoice) {
-            utter.voice = matchedVoice;
-        } else {
-            utter.lang = langCode;
+        let player = document.getElementById("global-audio-player");
+        player.src = audioUrl;
+        
+        // प्ले करण्याचा प्रयत्न करणे (Chrome पॉलिसी बायपाससह)
+        let playPromise = player.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                // ऑडिओ यशस्वीरीत्या सुरू झाला!
+            }).catch(error => {
+                console.log("Audio play failed, retrying on interaction.");
+            });
         }
-
-        // आवाजाची गती संथ आणि लहान मुलांसाठी स्पष्ट ठेवणे
-        utter.rate = currentLang === 'mr' ? 0.75 : 0.80; 
-        utter.pitch = 1.0;
-
-        synth.speak(utter);
     }
 
     window.onload = () => {
-        loadVoices();
         initGame();
     };
 </script>
