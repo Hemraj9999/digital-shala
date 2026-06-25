@@ -73,10 +73,31 @@
             font-size: 14px;
         }
 
-        .lang-indicator {
-            font-size: 13px;
+        /* 🌐 भाषा निवडण्याचे सुंदर बटण */
+        .lang-switch {
+            display: flex;
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 2px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
             color: #94a3b8;
-            font-weight: bold;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active {
+            background: #10b981;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
         }
 
         .setup-section {
@@ -111,11 +132,10 @@
             margin-bottom: 15px;
         }
 
-        /* 🍎 चित्र प्रदर्शन पाटी */
         .display-board {
             background: rgba(15, 23, 42, 0.6);
             border-radius: 16px;
-            min-height: 110px;
+            min-height: 120px;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
@@ -127,8 +147,9 @@
         }
 
         .item-emoji {
-            font-size: 32px;
+            font-size: 35px;
             animation: popIn 0.3s ease;
+            display: inline-block;
         }
 
         @keyframes popIn {
@@ -158,7 +179,6 @@
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
         }
 
-        /* 🔢 पर्याय कीपॅड ग्रिड */
         .options-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -172,7 +192,7 @@
             color: #fff;
             height: 55px;
             border-radius: 12px;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -205,9 +225,9 @@
 
         .feedback-text {
             margin-top: 12px;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 700;
-            min-height: 20px;
+            min-height: 22px;
         }
     </style>
 </head>
@@ -222,18 +242,22 @@
     <div class="game-panel">
         <div class="stats-bar">
             <div class="score-box" id="score-display">SCORE: ०</div>
-            <div class="lang-indicator">🔊 मराठी आवाज एक्टिव्ह</div>
+            
+            <div class="lang-switch">
+                <button class="lang-btn active" id="lang-mr" onclick="setLanguage('mr')">मराठी</button>
+                <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
+            </div>
         </div>
 
         <div class="setup-section">
-            <label>🎯 अभ्यासासाठी संख्या गट निवडा:</label>
+            <label id="label-range">🎯 अभ्यासासाठी संख्या गट निवडा:</label>
             <select id="range-selector" onchange="initGame()">
-                <option value="1-10">🔢 गट: १ ते १०</option>
-                <option value="1-20">🔢 गट: १ ते २०</option>
+                <option value="1-10">🔢 गट: १ ते १० (1 to 10)</option>
+                <option value="1-20">🔢 गट: १ ते २० (1 to 20)</option>
             </select>
         </div>
 
-        <div class="instruction">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
+        <div class="instruction" id="text-instruction">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
 
         <div class="display-board" id="item-board"></div>
 
@@ -241,7 +265,7 @@
 
         <div class="options-grid" id="options-box"></div>
 
-        <button class="next-btn" onclick="initGame()">पुढचे उदाहरण ➡️</button>
+        <button class="next-btn" id="btn-next" onclick="initGame()">पुढचे उदाहरण ➡️</button>
         
         <div class="feedback-text" id="feedback"></div>
     </div>
@@ -249,42 +273,62 @@
 <script>
     let currentCount = 0;
     let score = 0;
-    const emojis = ['🍎', '⭐', '🎈', '🍉', '🐱', '🦋', '🚗', '🍦', '🥭', '🌻'];
+    let currentLang = 'mr'; // डीफॉल्ट भाषा मराठी
+    const emojis = ['🍎', '🥭', '⭐', '🎈', '🍉', '🐱', '🦋', '🚗', '🍦', '🌻'];
     
-    // मराठी अंकांचे मॅपिंग (कॉम्प्युटर आणि मोबाईल दोन्हीसाठी सुरक्षित)
     const marathiNumbers = {
         0:'०', 1:'१', 2:'२', 3:'३', 4:'४', 5:'५', 6:'६', 7:'७', 8:'८', 9:'९', 10:'१०',
         11:'११', 12:'१२', 13:'१३', 14:'१४', 15:'१५', 16:'१६', 17:'१७', 18:'१८', 19:'१९', 20:'२०'
     };
 
-    // कॉम्प्युटरवर व्हॉईस लोड होण्यासाठी इव्हेंट रायडर
     let synth = window.speechSynthesis;
-    let marathiVoice = null;
+    let allVoices = [];
 
-    function loadVoices() {
+    function populateVoices() {
         if (!synth) return;
-        let voices = synth.getVoices();
-        // कॉम्प्युटर आणि मोबाईल सिस्टीम मधील सर्वोत्कृष्ट मराठी व्हॉईस शोधणे
-        marathiVoice = voices.find(v => v.lang.includes('mr') || v.lang.includes('MR') || v.name.toLowerCase().includes('marathi'));
+        allVoices = synth.getVoices();
+    }
+    if (synth && synth.onvoiceschanged !== undefined) {
+        synth.onvoiceschanged = populateVoices;
+    }
+    populateVoices();
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        document.getElementById("lang-mr").classList.toggle("active", lang === 'mr');
+        document.getElementById("lang-en").classList.toggle("active", lang === 'en');
+        
+        // UI मजकूर भाषानुसार बदलणे
+        if(lang === 'mr') {
+            document.getElementById("label-range").innerText = "🎯 अभ्यासासाठी संख्या गट निवडा:";
+            document.getElementById("text-instruction").innerText = "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!";
+            document.getElementById("btn-next").innerText = "पुढचे उदाहरण ➡️";
+            document.getElementById("score-display").innerText = "SCORE: " + convertNum(score);
+        } else {
+            document.getElementById("label-range").innerText = "🎯 Select Number Range:";
+            document.getElementById("text-instruction").innerText = "Count the items and select the correct number!";
+            document.getElementById("btn-next").innerText = "Next Example ➡️";
+            document.getElementById("score-display").innerText = "SCORE: " + score;
+        }
+        initGame();
     }
 
-    if (synth && synth.onvoiceschanged !== undefined) {
-        synth.onvoiceschanged = loadVoices;
+    function convertNum(num) {
+        if (currentLang === 'mr') {
+            return marathiNumbers[num] || num;
+        }
+        return num;
     }
-    loadVoices();
 
     function initGame() {
         document.getElementById("answer-slot").innerText = "?";
         document.getElementById("answer-slot").className = "target-slot";
         document.getElementById("feedback").innerText = "";
-        document.getElementById("feedback").style.color = "#fff";
 
-        // रेंज ठरवणे
         let range = document.getElementById("range-selector").value;
         let max = range === "1-10" ? 10 : 20;
         currentCount = Math.floor(Math.random() * max) + 1;
 
-        // १. बोर्डवर रँडम चित्रे रेंडर करणे
         let itemBoard = document.getElementById("item-board");
         itemBoard.innerHTML = "";
         let randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
@@ -296,7 +340,6 @@
             itemBoard.appendChild(span);
         }
 
-        // २. पर्यायांची रचना करणे (४ पर्याय)
         let options = [currentCount];
         while(options.length < 4) {
             let rand = Math.floor(Math.random() * max) + 1;
@@ -304,13 +347,12 @@
         }
         options.sort(() => Math.random() - 0.5);
 
-        // ३. पर्याय बटणे बनवणे
         let optionsBox = document.getElementById("options-box");
         optionsBox.innerHTML = "";
         options.forEach(num => {
             let btn = document.createElement("button");
             btn.className = "option-btn";
-            btn.innerText = marathiNumbers[num] || num;
+            btn.innerText = convertNum(num);
             btn.onclick = () => checkAnswer(num);
             optionsBox.appendChild(btn);
         });
@@ -318,43 +360,68 @@
 
     function checkAnswer(selectedNum) {
         let slot = document.getElementById("answer-slot");
-        slot.innerText = marathiNumbers[currentCount] || currentCount;
+        slot.innerText = convertNum(currentCount);
 
         if(selectedNum === currentCount) {
             score++;
-            document.getElementById("score-display").innerText = "SCORE: " + (marathiNumbers[score] || score);
+            document.getElementById("score-display").innerText = "SCORE: " + convertNum(score);
             slot.className = "target-slot success";
-            document.getElementById("feedback").innerText = "✔ बरोबर उत्तर आहे! 🎉";
-            document.getElementById("feedback").style.color = "#10b981";
-            speakMarathi(marathiNumbers[currentCount]);
+            
+            if(currentLang === 'mr') {
+                document.getElementById("feedback").innerText = "✔ बरोबर उत्तर आहे! 🎉";
+                document.getElementById("feedback").style.color = "#10b981";
+                speakUniversal(currentCount.toString(), 'mr-IN');
+            } else {
+                document.getElementById("feedback").innerText = "✔ Correct Answer! 🎉";
+                document.getElementById("feedback").style.color = "#10b981";
+                speakUniversal(currentCount.toString(), 'en-US');
+            }
         } else {
             slot.className = "target-slot";
             slot.style.borderColor = "#ff6b6b";
             slot.style.color = "#ff6b6b";
-            document.getElementById("feedback").innerText = "❌ चुकीचे उत्तर! पुन्हा प्रयत्न करा.";
-            document.getElementById("feedback").style.color = "#ff6b6b";
-            speakMarathi("पुन्हा प्रयत्न करा");
+            
+            if(currentLang === 'mr') {
+                document.getElementById("feedback").innerText = "❌ चुकीचे उत्तर! पुन्हा प्रयत्न करा.";
+                document.getElementById("feedback").style.color = "#ff6b6b";
+                speakUniversal("पुन्हा प्रयत्न करा", 'mr-IN');
+            } else {
+                document.getElementById("feedback").innerText = "❌ Wrong Answer! Try Again.";
+                document.getElementById("feedback").style.color = "#ff6b6b";
+                speakUniversal("Try again", 'en-US');
+            }
         }
     }
 
-    function speakMarathi(text) {
+    // 🔊 मोबाईल आणि कॉम्प्युटर दोन्हीसाठी १००% चालणारा व्हॉईस पॅटर्न
+    function speakUniversal(text, langCode) {
         if (!synth) return;
-        synth.cancel(); // जुना आवाज थांबवणे
-        
+        synth.cancel(); 
+
         let utter = new SpeechSynthesisUtterance(text);
         
-        if (marathiVoice) {
-            utter.voice = marathiVoice;
+        // कॉम्प्युटरसाठी अचूक व्हॉईस मॅचिंग फिल्टर
+        populateVoices();
+        let targetVoice = allVoices.find(v => v.lang.startsWith(langCode) || v.lang.includes(langCode.replace('-', '_')));
+        
+        if (targetVoice) {
+            utter.voice = targetVoice;
         } else {
-            utter.lang = 'mr-IN'; // बॅकअप म्हणून मराठी कोड देणे
+            utter.lang = langCode; // मोबाईलसाठी थेट लँग्वेज कोड जो फिक्स काम करतो
+        }
+
+        // आवाजाची सुस्पष्टता सुधारण्यासाठी संथ गती
+        if(langCode.startsWith('mr')) {
+            utter.rate = 0.75; 
+        } else {
+            utter.rate = 0.85;
         }
         
-        utter.rate = 0.85; // लहान मुलांसाठी स्पष्ट स्पीड
         synth.speak(utter);
     }
 
     window.onload = () => {
-        loadVoices();
+        populateVoices();
         initGame();
     };
 </script>
