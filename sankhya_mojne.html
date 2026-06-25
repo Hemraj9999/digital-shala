@@ -3,462 +3,359 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>संख्या मोजणे - Digital Shala Pro</title>
+    <title>संख्या मोजणे खेळ (Pro)</title>
     <style>
-        :root { 
-            --primary: #00f2fe; 
-            --secondary: #4facfe;
-            --success: #00e676;
-            --error: #ff1744;
-            --bg-gradient: linear-gradient(135deg, #050b14, #101f32, #0a1128); 
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-        }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            background: var(--bg-gradient); 
-            color: #f8fafc; 
-            min-height: 100vh; 
-            display: flex;
-            flex-direction: column;
-            padding-bottom: 30px;
-        }
-        
-        header { 
-            background: rgba(10, 20, 38, 0.6); 
-            backdrop-filter: blur(15px); 
-            border-bottom: 1px solid var(--glass-border); 
-            padding: 8px 15px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            height: 50px;
-        }
-        
-        .back-btn { 
-            color: #00f2fe; 
-            text-decoration: none; 
-            background: rgba(0, 242, 254, 0.05); 
-            padding: 5px 12px; 
-            border-radius: 30px; 
-            font-size: 12px; 
-            font-weight: 600;
-            border: 1px solid rgba(0, 242, 254, 0.2); 
-        }
-        
-        header h2 { 
-            font-size: 14px; 
-            font-weight: 800; 
-            background: linear-gradient(90deg, #00f2fe, #4facfe); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-        }
-        
-        .game-outer-wrapper {
-            width: 100%;
-            padding: 10px;
-            display: flex;
-            justify-content: center;
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+            --panel-bg: #1e293b;
+            --primary: #10b981;
+            --primary-hover: #059669;
         }
 
-        .game-container { 
-            max-width: 410px; 
-            width: 100%; 
-            background: var(--glass); 
-            padding: 14px; 
-            border-radius: 20px; 
-            border: 1px solid var(--glass-border); 
-            backdrop-filter: blur(20px); 
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background: var(--bg-gradient);
+            color: #f8fafc;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            align-items: center;
+            padding: 15px;
+            user-select: none;
         }
-        
-        .top-row {
+
+        header {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            color: #10b981;
+            text-decoration: none;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .game-panel {
+            background: rgba(30, 41, 59, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 15px;
         }
 
-        .score-board { 
-            font-size: 12px; 
-            font-weight: 800; 
-            background: linear-gradient(135deg, #00e676, #00b0ff); 
-            color: white; 
-            padding: 4px 10px; 
-            border-radius: 20px; 
-        }
-        
-        .lang-selector-box { 
-            background: rgba(0,0,0,0.3); 
-            padding: 2px 4px; 
-            border-radius: 20px; 
-            display: flex; 
-            border: 1px solid var(--glass-border);
-        }
-        .lang-label { 
-            font-size: 11px; 
-            font-weight: 600; 
-            color: #94a3b8; 
-            cursor: pointer; 
-            padding: 3px 8px; 
-            border-radius: 15px; 
-        }
-        .lang-label input { display: none; }
-        .lang-label:has(input:checked) { 
-            background: rgba(0, 242, 254, 0.15); 
-            color: #00f2fe; 
-        }
-
-        .range-dropdown-box {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--glass-border);
-            padding: 10px;
-            border-radius: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        .range-dropdown-box label { font-size: 11px; font-weight: 700; color: #94a3b8; }
-        .styled-select {
-            background: #101f32;
-            color: #00f2fe;
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            padding: 8px;
-            border-radius: 8px;
+        .score-box {
+            background: #00f2fe;
+            color: #0f172a;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 800;
             font-size: 14px;
+        }
+
+        .lang-indicator {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: bold;
+        }
+
+        .setup-section {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .setup-section label {
+            display: block;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        select {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 700;
             outline: none;
-            width: 100%;
         }
 
-        .instruction-box { 
-            background: rgba(0, 242, 254, 0.02); 
-            padding: 6px 10px; 
-            border-radius: 10px; 
-            border-left: 3px solid #00f2fe; 
+        .instruction {
+            color: #00f2fe;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 15px;
         }
-        .inst-mr { font-size: 11px; font-weight: 600; color: #00f2fe; }
-        
-        .display-board-count { 
-            background: rgba(0,0,0,0.3); 
-            border: 1px solid rgba(255,255,255,0.05); 
-            border-radius: 16px; 
-            padding: 12px; 
-            font-size: 22px; 
-            min-height: 90px; 
-            max-height: 140px;
-            overflow-y: auto;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            flex-wrap: wrap; 
-            gap: 4px;
+
+        /* 🍎 चित्र प्रदर्शन पाटी */
+        .display-board {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 16px;
+            min-height: 110px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px dashed rgba(255,255,255,0.1);
         }
-        
-        .target-drop-box { 
-            width: 55px; 
-            height: 55px; 
-            border: 2px dashed #00f2fe; 
-            border-radius: 12px; 
-            background: rgba(0, 242, 254, 0.02); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 24px; 
-            font-weight: 900; 
-            color: #fff; 
-            margin: 5px auto; 
+
+        .item-emoji {
+            font-size: 32px;
+            animation: popIn 0.3s ease;
         }
-        .target-drop-box.filled { border-style: solid; background: rgba(0, 242, 254, 0.1); border-color: #00f2fe; color: #00f2fe; }
-        .target-drop-box.error-state { border-color: var(--error) !important; color: var(--error) !important; }
-        .target-drop-box.success-state { border-color: var(--success) !important; color: var(--success) !important; }
-        
-        /* 🎯 पर्यायांची जागा अगदी स्पष्ट केली आहे */
-        .options-flex { 
-            display: flex !important;
-            justify-content: space-between !important;
-            gap: 8px !important; 
-            margin: 10px 0 !important;
-            width: 100% !important;
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
         }
-        .opt-btn { 
-            flex: 1 !important;
-            background: #101f32 !important; 
-            border: 1px solid rgba(0, 242, 254, 0.4) !important; 
-            border-radius: 12px !important; 
-            height: 50px !important; 
-            font-size: 18px !important; 
-            font-weight: 800 !important; 
-            color: #00f2fe !important; 
-            cursor: pointer !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
+
+        .target-slot {
+            width: 65px;
+            height: 65px;
+            border: 2px dashed #10b981;
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: 14px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: #10b981;
         }
-        .opt-btn:disabled { opacity: 0.2; cursor: not-allowed; }
-        
-        .submit-btn { 
-            font-size: 14px; 
-            background: linear-gradient(135deg, #00f2fe, #4facfe); 
-            color: #050b14; 
-            border: none; 
-            padding: 12px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            font-weight: 800; 
-            width: 100%; 
+
+        .target-slot.success {
+            background: #10b981;
+            color: #fff;
+            border-style: solid;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
         }
-        
-        .result { font-size: 14px; font-weight: 700; min-height: 20px; text-align: center; }
-        .correct { color: #00e676; }
-        .wrong { color: #ff1744; }
+
+        /* 🔢 पर्याय कीपॅड ग्रिड */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            height: 55px;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .option-btn:active {
+            background: #334155;
+            transform: scale(0.95);
+        }
+
+        .next-btn {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .next-btn:active {
+            background: var(--primary-hover);
+        }
+
+        .feedback-text {
+            margin-top: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            min-height: 20px;
+        }
     </style>
 </head>
 <body>
 
-<header>
-    <a href="ganit.html" class="back-btn">⬅ मागे जा</a>
-    <h2>✨ संख्या मोजणे खेळ (Pro)</h2>
-    <div style="width:60px;"></div>
-</header>
+    <header>
+        <a href="ganit.html" class="back-btn">⬅ मागे</a>
+        <div style="font-size: 16px; font-weight: 800; color: #10b981;">🍎 संख्या मोजणे खेळ</div>
+        <div style="width:50px;"></div>
+    </header>
 
-<div class="game-outer-wrapper">
-    <div class="game-container">
-        <div class="top-row">
-            <div class="score-board" id="score-board-count">SCORE: ०</div>
-            <div class="lang-selector-box">
-                <label class="lang-label"><input type="radio" name="lang-select" value="mr" checked onchange="updateLanguageUI()">🚩 मराठी</label>
-                <label class="lang-label"><input type="radio" name="lang-select" value="en" onchange="updateLanguageUI()">🔤 EN</label>
-            </div>
+    <div class="game-panel">
+        <div class="stats-bar">
+            <div class="score-box" id="score-display">SCORE: ०</div>
+            <div class="lang-indicator">🔊 मराठी आवाज एक्टिव्ह</div>
         </div>
 
-        <div class="range-dropdown-box">
-            <label id="select-range-label" for="range-select-dropdown">🎯 अभ्यासासाठी संख्या गट निवडा:</label>
-            <select id="range-select-dropdown" class="styled-select" onchange="onRangeDropdownChange()">
+        <div class="setup-section">
+            <label>🎯 अभ्यासासाठी संख्या गट निवडा:</label>
+            <select id="range-selector" onchange="initGame()">
                 <option value="1-10">🔢 गट: १ ते १०</option>
-                <option value="11-20">🔢 गट: ११ ते २०</option>
-                <option value="21-30">🔢 गट: २१ ते ३०</option>
-                <option value="31-40">🔢 गट: ३१ ते ४०</option>
-                <option value="41-50">🔢 गट: ४१ ते ५०</option>
-                <option value="51-60">🔢 गट: ५१ ते ६०</option>
-                <option value="61-70">🔢 गट: ६१ ते ७०</option>
-                <option value="71-80">🔢 गट: ७१ ते ८०</option>
-                <option value="81-90">🔢 गट: ८१ ते ९०</option>
-                <option value="91-100">🔢 गट: ९१ ते १००</option>
+                <option value="1-20">🔢 गट: १ ते २०</option>
             </select>
         </div>
 
-        <div class="instruction-box">
-            <div class="inst-mr" id="instruction-text">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
-        </div>
+        <div class="instruction">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
+
+        <div class="display-board" id="item-board"></div>
+
+        <div class="target-slot" id="answer-slot">?</div>
+
+        <div class="options-grid" id="options-box"></div>
+
+        <button class="next-btn" onclick="initGame()">पुढचे उदाहरण ➡️</button>
         
-        <div class="display-board-count" id="count-image-board">🎈🎈🎈</div>
-        
-        <div class="target-drop-box" id="drop-target-box">?</div>
-        
-        <div class="options-flex" id="count-options-container"></div>
-        
-        <button id="action-btn-count" class="submit-btn" onclick="checkCountAnswer()">उत्तर तपासा</button>
-        <div class="result" id="result-message-count"></div>
+        <div class="feedback-text" id="feedback"></div>
     </div>
-</div>
 
 <script>
-    let scoreCount = 0, correctCountAns = 0, selectedCountAns = null;
-    let lastNumber = 0; 
-    let isReviewState = false; 
-    let generatedOptions = []; 
+    let currentCount = 0;
+    let score = 0;
+    const emojis = ['🍎', '⭐', '🎈', '🍉', '🐱', '🦋', '🚗', '🍦', '🥭', '🌻'];
     
-    let minRange = 1;
-    let maxRange = 10;
-    
-    const originalDesigns = ["🎈", "⭐", "🍎", "⚽", "🌸", "🍦", "🍭", "🍩"];
-    let availableDesigns = [...originalDesigns];
-    const marathiDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
+    // मराठी अंकांचे मॅपिंग (कॉम्प्युटर आणि मोबाईल दोन्हीसाठी सुरक्षित)
+    const marathiNumbers = {
+        0:'०', 1:'१', 2:'२', 3:'३', 4:'४', 5:'५', 6:'६', 7:'७', 8:'८', 9:'९', 10:'१०',
+        11:'११', 12:'१२', 13:'१३', 14:'१४', 15:'१५', 16:'१६', 17:'१७', 18:'१८', 19:'१९', 20:'२०'
+    };
 
-    function convertToMarathi(number) {
-        return number.toString().split('').map(digit => marathiDigits[digit] || digit).join('');
+    // कॉम्प्युटरवर व्हॉईस लोड होण्यासाठी इव्हेंट रायडर
+    let synth = window.speechSynthesis;
+    let marathiVoice = null;
+
+    function loadVoices() {
+        if (!synth) return;
+        let voices = synth.getVoices();
+        // कॉम्प्युटर आणि मोबाईल सिस्टीम मधील सर्वोत्कृष्ट मराठी व्हॉईस शोधणे
+        marathiVoice = voices.find(v => v.lang.includes('mr') || v.lang.includes('MR') || v.name.toLowerCase().includes('marathi'));
     }
 
-    function currentLanguage() {
-        return document.querySelector('input[name="lang-select"]:checked').value;
+    if (synth && synth.onvoiceschanged !== undefined) {
+        synth.onvoiceschanged = loadVoices;
     }
+    loadVoices();
 
-    function onRangeDropdownChange() {
-        let dropdown = document.getElementById("range-select-dropdown");
-        let val = dropdown.value;
-        let parts = val.split("-");
-        minRange = parseInt(parts[0]);
-        maxRange = parseInt(parts[1]);
+    function initGame() {
+        document.getElementById("answer-slot").innerText = "?";
+        document.getElementById("answer-slot").className = "target-slot";
+        document.getElementById("feedback").innerText = "";
+        document.getElementById("feedback").style.color = "#fff";
+
+        // रेंज ठरवणे
+        let range = document.getElementById("range-selector").value;
+        let max = range === "1-10" ? 10 : 20;
+        currentCount = Math.floor(Math.random() * max) + 1;
+
+        // १. बोर्डवर रँडम चित्रे रेंडर करणे
+        let itemBoard = document.getElementById("item-board");
+        itemBoard.innerHTML = "";
+        let randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
         
-        scoreCount = 0; 
-        lastNumber = 0; 
-        updateLanguageUI();
-        generateCountQuestion();
-    }
-
-    function speakText(text) {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = (currentLanguage() === 'mr') ? 'mr-IN' : 'en-US';
-            window.speechSynthesis.speak(utterance);
+        for(let i=0; i < currentCount; i++) {
+            let span = document.createElement("span");
+            span.className = "item-emoji";
+            span.innerText = randomEmoji;
+            itemBoard.appendChild(span);
         }
-    }
 
-    function updateLanguageUI() {
-        let lang = currentLanguage();
-        let btn = document.getElementById("action-btn-count");
-        let dropdown = document.getElementById("range-select-dropdown");
-        
-        if(lang === 'mr') {
-            document.getElementById("instruction-text").innerText = "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!";
-            document.getElementById("select-range-label").innerText = "🎯 अभ्यासासाठी संख्या गट निवडा:";
-            document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(scoreCount);
-            if(btn.getAttribute("data-state") === "next") btn.innerText = "पुढचे उदाहरण";
-            else if(btn.getAttribute("data-state") === "retry") btn.innerText = "पुन्हा प्रयत्न करा 🔄";
-            else btn.innerText = "उत्तर तपासा";
-        } else {
-            document.getElementById("instruction-text").innerText = "Count the pictures and select the correct number!";
-            document.getElementById("select-range-label").innerText = "🎯 Select Number Group:";
-            document.getElementById("score-board-count").innerText = "SCORE: " + scoreCount;
-            if(btn.getAttribute("data-state") === "next") btn.innerText = "Next Question";
-            else if(btn.getAttribute("data-state") === "retry") btn.innerText = "Try Again 🔄";
-            else btn.innerText = "Check Answer";
+        // २. पर्यायांची रचना करणे (४ पर्याय)
+        let options = [currentCount];
+        while(options.length < 4) {
+            let rand = Math.floor(Math.random() * max) + 1;
+            if(!options.includes(rand)) options.push(rand);
         }
-        renderOptions();
-    }
+        options.sort(() => Math.random() - 0.5);
 
-    function generateCountQuestion() {
-        selectedCountAns = null;
-        isReviewState = false;
-        
-        let newNumber;
-        let rangeDiff = maxRange - minRange + 1;
-        
-        do {
-            newNumber = Math.floor(Math.random() * rangeDiff) + minRange;
-        } while (newNumber === lastNumber && rangeDiff > 1);
-        
-        correctCountAns = newNumber;
-        lastNumber = correctCountAns;
-
-        if (availableDesigns.length === 0) availableDesigns = [...originalDesigns];
-        let randomIndex = Math.floor(Math.random() * availableDesigns.length);
-        let icon = availableDesigns.splice(randomIndex, 1)[0]; 
-
-        document.getElementById("count-image-board").innerText = icon.repeat(correctCountAns);
-        resetDropBox();
-        document.getElementById("result-message-count").innerText = "";
-        
-        // ४ अचूक पर्याय तयार करणे
-        let optionsSet = new Set();
-        optionsSet.add(correctCountAns);
-        
-        while(optionsSet.size < Math.min(4, rangeDiff)) {
-            let randOpt = Math.floor(Math.random() * rangeDiff) + minRange;
-            optionsSet.add(randOpt);
-        }
-        
-        if(optionsSet.size < 4) {
-            for(let i=minRange; i<=maxRange; i++) {
-                optionsSet.add(i);
-                if(optionsSet.size === 4) break;
-            }
-        }
-        
-        generatedOptions = Array.from(optionsSet).sort(() => Math.random() - 0.5);
-        renderOptions();
-        setButtonState("check");
-    }
-
-    function resetDropBox() {
-        let dropBox = document.getElementById("drop-target-box");
-        dropBox.innerText = "?";
-        dropBox.className = "target-drop-box";
-    }
-
-    function renderOptions() {
-        let lang = currentLanguage();
-        let optContainer = document.getElementById("count-options-container");
-        if(!optContainer) return;
-        optContainer.innerHTML = "";
-        
-        generatedOptions.forEach(val => {
-            let displayVal = (lang === 'mr') ? convertToMarathi(val) : val;
-            optContainer.innerHTML += `<button class="opt-btn" id="opt-${val}" onclick="selectCountNumber(${val})">${displayVal}</button>`;
+        // ३. पर्याय बटणे बनवणे
+        let optionsBox = document.getElementById("options-box");
+        optionsBox.innerHTML = "";
+        options.forEach(num => {
+            let btn = document.createElement("button");
+            btn.className = "option-btn";
+            btn.innerText = marathiNumbers[num] || num;
+            btn.onclick = () => checkAnswer(num);
+            optionsBox.appendChild(btn);
         });
     }
 
-    function selectCountNumber(val) {
-        selectedCountAns = val;
-        let lang = currentLanguage();
-        let dropBox = document.getElementById("drop-target-box");
-        dropBox.innerText = (lang === 'mr') ? convertToMarathi(val) : val;
-        dropBox.className = "target-drop-box filled";
-        speakText((lang === 'mr') ? convertToMarathi(val) : val.toString());
-    }
+    function checkAnswer(selectedNum) {
+        let slot = document.getElementById("answer-slot");
+        slot.innerText = marathiNumbers[currentCount] || currentCount;
 
-    function checkCountAnswer() {
-        let lang = currentLanguage();
-        if(selectedCountAns === null) {
-            alert((lang === 'mr') ? "कृपया आधी एक अंक निवडा!" : "Please select a number first!");
-            return;
-        }
-        
-        let res = document.getElementById("result-message-count");
-        let dropBox = document.getElementById("drop-target-box");
-        
-        if(selectedCountAns === correctCountAns) {
-            res.innerText = (lang === 'mr') ? "✓ बरोबर उत्तर आहे! 🎉" : "✓ Correct Answer! 🎉";
-            res.className = "result correct";
-            dropBox.className = "target-drop-box success-state";
-            speakText((lang === 'mr') ? "शाब्बास बरोबर उत्तर" : "Correct answer");
-
-            if(!isReviewState) {
-                scoreCount++;
-                document.getElementById("score-board-count").innerText = "SCORE: " + ((lang === 'mr') ? convertToMarathi(scoreCount) : scoreCount);
-            }
-            setButtonState("next");
+        if(selectedNum === currentCount) {
+            score++;
+            document.getElementById("score-display").innerText = "SCORE: " + (marathiNumbers[score] || score);
+            slot.className = "target-slot success";
+            document.getElementById("feedback").innerText = "✔ बरोबर उत्तर आहे! 🎉";
+            document.getElementById("feedback").style.color = "#10b981";
+            speakMarathi(marathiNumbers[currentCount]);
         } else {
-            res.innerText = (lang === 'mr') ? "✗ चुकीचे उत्तर! पुन्हा प्रयत्न करा." : "✗ Wrong Answer! Try again.";
-            res.className = "result wrong";
-            dropBox.className = "target-drop-box error-state";
-            document.getElementById(`opt-${selectedCountAns}`).disabled = true;
-            isReviewState = true; 
-            setButtonState("retry");
+            slot.className = "target-slot";
+            slot.style.borderColor = "#ff6b6b";
+            slot.style.color = "#ff6b6b";
+            document.getElementById("feedback").innerText = "❌ चुकीचे उत्तर! पुन्हा प्रयत्न करा.";
+            document.getElementById("feedback").style.color = "#ff6b6b";
+            speakMarathi("पुन्हा प्रयत्न करा");
         }
     }
 
-    function retryCurrentQuestion() {
-        selectedCountAns = null;
-        resetDropBox();
-        document.getElementById("result-message-count").innerText = "";
-        generateCountQuestion();
-    }
-
-    function setButtonState(state) {
-        let lang = currentLanguage();
-        let btn = document.getElementById("action-btn-count");
-        btn.setAttribute("data-state", state);
+    function speakMarathi(text) {
+        if (!synth) return;
+        synth.cancel(); // जुना आवाज थांबवणे
         
-        if(state === "check") {
-            btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
-            btn.setAttribute("onclick", "checkCountAnswer()");
-        } else if(state === "retry") {
-            btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
-            btn.setAttribute("onclick", "retryCurrentQuestion()");
-        } else if(state === "next") {
-            btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
-            btn.setAttribute("onclick", "generateCountQuestion()");
+        let utter = new SpeechSynthesisUtterance(text);
+        
+        if (marathiVoice) {
+            utter.voice = marathiVoice;
+        } else {
+            utter.lang = 'mr-IN'; // बॅकअप म्हणून मराठी कोड देणे
         }
+        
+        utter.rate = 0.85; // लहान मुलांसाठी स्पष्ट स्पीड
+        synth.speak(utter);
     }
 
-    window.onload = function() {
-        generateCountQuestion();
+    window.onload = () => {
+        loadVoices();
+        initGame();
     };
 </script>
 </body>
