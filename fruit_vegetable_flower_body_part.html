@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Learn English Words (Pro)</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+            --panel-bg: #1e293b;
+            --primary: #ec4899;
+            --accent: #3b82f6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background: var(--bg-gradient);
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            user-select: none;
+        }
+
+        header {
+            width: 100%;
+            max-width: 550px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            color: #ec4899;
+            text-decoration: none;
+            background: rgba(236, 72, 153, 0.1);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid rgba(236, 72, 153, 0.2);
+        }
+
+        .category-container {
+            width: 100%;
+            max-width: 550px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .cat-btn {
+            background: #0f172a;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #94a3b8;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .cat-btn.active {
+            background: #ec4899;
+            color: #fff;
+            border-color: #ec4899;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+        }
+
+        .display-panel {
+            background: #1e293b;
+            border: 2px solid rgba(255,255,255,0.05);
+            width: 100%;
+            max-width: 550px;
+            border-radius: 24px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+        }
+
+        .image-card {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 20px;
+            width: 100%;
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border: 1px dashed rgba(255,255,255,0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .image-card:active { transform: scale(0.98); }
+
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+        }
+
+        .word-text {
+            font-size: 36px;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .marathi-meaning {
+            font-size: 20px;
+            color: #e2e8f0;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .audio-hint {
+            font-size: 13px;
+            color: #ec4899;
+            background: rgba(236, 72, 153, 0.1);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .nav-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-btn:disabled {
+            background: #475569;
+            color: #94a3b8;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">⬅ मागे</a>
+    </header>
+
+    <div class="category-container">
+        <button class="cat-btn active" id="btn-fruits" onclick="switchCategory('fruits')">🍎 Fruits</button>
+        <button class="cat-btn" id="btn-vegetables" onclick="switchCategory('vegetables')">🥦 Vegetables</button>
+        <button class="cat-btn" id="btn-flowers" onclick="switchCategory('flowers')">🌻 Flowers</button>
+        <button class="cat-btn" id="btn-bodyparts" onclick="switchCategory('bodyparts')">💪 Body Parts</button>
+    </div>
+
+    <div class="display-panel">
+        <div class="image-card" onclick="playOnlineVoice()" title="आवाज ऐकण्यासाठी क्लिक करा">
+            <img id="item-image" src="" alt="Loading...">
+        </div>
+
+        <div class="word-text" id="item-name">APPLE</div>
+        <div class="marathi-meaning" id="item-marathi">(सफरचंद)</div>
+        
+        <div class="audio-hint">🔊 चित्रावर क्लिक करून आवाज ऐका</div>
+
+        <div class="nav-row">
+            <button class="nav-btn" id="prev-btn" onclick="prevItem()">⬅ मागे</button>
+            <button class="nav-btn" id="next-btn" onclick="nextItem()">पुढे ➡</button>
+        </div>
+    </div>
+
+    <audio id="online-audio-player"></audio>
+
+<script>
+    // 🌍 ४ प्रवर्गांचे ऑनलाईन फोटो आणि मराठी-इंग्रजी डेटाबेस
+    const dataset = {
+        fruits: [
+            { en: 'Apple', mr: 'सफरचंद', img: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500&q=80' },
+            { en: 'Mango', mr: 'आंबा', img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=500&q=80' },
+            { en: 'Banana', mr: 'केळी', img: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500&q=80' },
+            { en: 'Orange', mr: 'संत्री', img: 'https://images.unsplash.com/photo-1547514701-42782101795e?w=500&q=80' }
+        ],
+        vegetables: [
+            { en: 'Potato', mr: 'बटाटा', img: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=500&q=80' },
+            { en: 'Tomato', mr: 'टोमॅटो', img: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=500&q=80' },
+            { en: 'Onion', mr: 'कांदा', img: 'https://images.unsplash.com/photo-1508747703725-719ae2c73ee0?w=500&q=80' }
+        ],
+        flowers: [
+            { en: 'Rose', mr: 'गुलाब', img: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80' },
+            { en: 'Lotus', mr: 'कमळ', img: 'https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=500&q=80' },
+            { en: 'Sunflower', mr: 'सूर्यफूल', img: 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=500&q=80' }
+        ],
+        bodyparts: [
+            { en: 'Eye', mr: 'डोळा', img: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=500&q=80' },
+            { en: 'Hand', mr: 'हात', img: 'https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=500&q=80' },
+            { en: 'Nose', mr: 'नाक', img: 'https://images.unsplash.com/photo-1615715505717-b7607fc8d8ec?w=500&q=80' },
+            { en: 'Ear', mr: 'कान', img: 'https://images.unsplash.com/photo-1590650154753-1a4e25889704?w=500&q=80' }
+        ]
+    };
+
+    let currentCategory = 'fruits';
+    let currentIndex = 0;
+
+    function updateDisplay() {
+        const currentList = dataset[currentCategory];
+        const currentItem = currentList[currentIndex];
+
+        // १. ऑनलाईन इमेज लोड करणे
+        document.getElementById("item-image").src = currentItem.img;
+        document.getElementById("item-image").alt = currentItem.en;
+
+        // २. टेक्स्ट बदलणे
+        document.getElementById("item-name").innerText = currentItem.en;
+        document.getElementById("item-marathi").innerText = "(" + currentItem.mr + ")";
+
+        // ३. बटन कंट्रोल्स सेट करणे
+        document.getElementById("prev-btn").disabled = (currentIndex === 0);
+        document.getElementById("next-btn").disabled = (currentIndex === currentList.length - 1);
+
+        // ४. नवीन शब्द आल्यावर आपोआप ऑनलाईन आवाज प्ले करणे
+        setTimeout(playOnlineVoice, 400);
+    }
+
+    // 🔊 ऑनलाईन ऑडिओ इंजिन जे मोबाईल आणि लॅपटॉप दोन्हीवर थेट ओरिजिनल इंग्रजी उच्चार वाजवते
+    function playOnlineVoice() {
+        const currentList = dataset[currentCategory];
+        const currentItem = currentList[currentIndex];
+        let audioPlayer = document.getElementById("online-audio-player");
+
+        let word = currentItem.en.toLowerCase();
+        // युनिव्हर्सल ऑडिओ डिक्शनरी लिंक (US Accent)
+        let audioUrl = "https://dict.leo.org/audio/v2/US/" + word + ".mp3";
+
+        audioPlayer.src = audioUrl;
+        audioPlayer.load();
+
+        let playPromise = audioPlayer.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Audio play allowed after tap.");
+            });
+        }
+    }
+
+    // प्रवर्गाची निवड बदलणे
+    function switchCategory(cat) {
+        currentCategory = cat;
+        currentIndex = 0;
+        
+        const buttons = document.querySelectorAll(".cat-btn");
+        buttons.forEach(btn => btn.classList.remove("active"));
+        
+        // क्लिक केलेल्या बटनाला ॲक्टिव्ह करणे
+        if(cat === 'fruits') document.getElementById('btn-fruits').classList.add('active');
+        if(cat === 'vegetables') document.getElementById('btn-vegetables').classList.add('active');
+        if(cat === 'flowers') document.getElementById('btn-flowers').classList.add('active');
+        if(cat === 'bodyparts') document.getElementById('btn-bodyparts').classList.add('active');
+
+        updateDisplay();
+    }
+
+    function nextItem() {
+        if (currentIndex < dataset[currentCategory].length - 1) {
+            currentIndex++;
+            updateDisplay();
+        }
+    }
+
+    function prevItem() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateDisplay();
+        }
+    }
+
+    // गेम लोड झाल्यावर पहिली गोष्ट सुरू करणे
+    window.onload = () => {
+        updateDisplay();
+    };
+</script>
+</body>
+</html>
