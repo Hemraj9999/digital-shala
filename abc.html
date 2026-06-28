@@ -3,307 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>English Phonics Four Line Shala</title>
+    <title>English Learning Shala</title>
     <style>
-        :root { 
-            --primary: #00f2fe; 
-            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b); 
-            --fourline-red: #ff4d4d;
-            --fourline-blue: #3399ff;
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+            --panel-bg: #1e293b;
+            --primary: #00f2fe;
+            --btn-active: #2563eb;
         }
-        
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            background: var(--bg-gradient); 
-            color: #f8fafc; 
-            min-height: 100vh; 
+
+        body {
+            background: var(--bg-gradient);
+            color: #f8fafc;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-bottom: 30px;
+            padding: 15px;
+            user-select: none;
         }
-        
-        header { 
-            background: #0f172a; 
+
+        header {
             width: 100%;
-            max-width: 410px;
-            padding: 15px; 
-            display: flex; 
-            align-items: center; 
+            max-width: 420px;
+            display: flex;
+            align-items: center;
             justify-content: space-between;
+            margin-bottom: 20px;
         }
-        
-        .back-btn { 
-            color: #00f2fe; 
-            text-decoration: none; 
-            background: rgba(0, 242, 254, 0.1); 
-            padding: 6px 14px; 
-            border-radius: 30px; 
-            font-size: 13px; 
+
+        .back-btn {
+            color: #00f2fe;
+            text-decoration: none;
+            background: rgba(0, 242, 254, 0.1);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
             font-weight: 700;
-            border: 1px solid rgba(0, 242, 254, 0.3); 
+            border: 1px solid rgba(0, 242, 254, 0.2);
         }
-        
-        header h2 { font-size: 16px; font-weight: 800; color: #00f2fe; }
 
         .main-wrapper {
             width: 100%;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            max-width: 410px;
+            max-width: 420px;
         }
 
-        .case-selector {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 4px;
-            border-radius: 30px;
-            display: flex;
-            border: 1px solid rgba(255,255,255,0.1);
-            width: 100%;
-        }
-        .case-label {
-            flex: 1;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 700;
-            color: #94a3b8;
-            cursor: pointer;
+        .game-title-bar {
+            background: rgba(255, 255, 255, 0.05);
             padding: 10px;
-            border-radius: 25px;
-        }
-        .case-label input { display: none; }
-        .case-label:has(input:checked) {
-            background: linear-gradient(135deg, #00f2fe, #4facfe);
-            color: #050b14;
-        }
-
-        /* 🎯 मुख्य पाटीचा बॉक्स */
-        .four-line-card {
-            background: #ffffff; 
-            border-radius: 20px;
-            width: 100%;
-            height: 240px;
-            position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            cursor: pointer;
-            border: 4px solid #1e293b;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .svg-container {
-            width: 100%;
-            height: 100%;
-        }
-
-        .sound-tag {
-            position: absolute;
-            bottom: 8px;
-            right: 12px;
-            background: #00f2fe;
-            color: #0f172a;
-            padding: 4px 10px;
-            border-radius: 10px;
-            font-size: 11px;
+            border-radius: 12px;
+            text-align: center;
             font-weight: 800;
-            z-index: 5;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* ग्रिड रचना */
-        .alphabet-grid {
+        /* 🔠 खेळ १ चे डिझाईन्स (ABCD) */
+        .mode-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
-            width: 100%;
-        }
-
-        .grid-btn {
-            background: #1e293b;
-            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 15px;
+            background: #0f172a;
+            padding: 4px;
             border-radius: 14px;
-            height: 60px;
-            font-size: 26px;
-            font-weight: 700;
-            color: #f1f5f9;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .grid-btn.active {
-            background: rgba(0, 242, 254, 0.15);
-            border-color: #00f2fe;
-            color: #00f2fe;
         }
 
-        .nav-flex { display: flex; justify-content: space-between; gap: 15px; width: 100%; }
-        .nav-btn {
-            flex: 1; padding: 12px; font-size: 15px; font-weight: 700; border: none; border-radius: 12px; cursor: pointer;
+        .mode-btn {
+            background: transparent; border: none; color: #94a3b8;
+            padding: 10px; font-size: 14px; font-weight: 700; border-radius: 10px; cursor: pointer;
         }
-        .nav-btn.prev { background: #1e293b; color: #f8fafc; border: 1px solid rgba(255,255,255,0.1); }
-        .nav-btn.next { background: linear-gradient(135deg, #00f2fe, #4facfe); color: #050b14; }
+
+        .mode-btn.active { background: #2563eb; color: #fff; }
+
+        .display-card {
+            background: #ffffff; height: 220px; border-radius: 24px; position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; overflow: hidden; border: 4px solid #1e293b; margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .four-lines { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 28px; padding: 0 10px; pointer-events: none; }
+        .line-red { border-top: 2px solid #ff4d4d; width: 100%; }
+        .line-blue { border-top: 2px solid #3399ff; width: 100%; }
+        .content-box { z-index: 2; display: flex; align-items: center; justify-content: center; gap: 25px; width: 100%; }
+        .letter-display { font-size: 90px; font-weight: 800; color: #1e293b; }
+        .object-emoji { font-size: 70px; }
+        .sound-badge { position: absolute; bottom: 12px; right: 12px; background: #00f2fe; color: #0f172a; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; cursor: pointer; }
+
+        .nav-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .nav-btn { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; }
+        .nav-btn.next { background: #00f2fe; color: #0f172a; border: none; }
+        .keyboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 35px; }
+        .key-btn { background: #1e293b; color: #fff; height: 50px; border-radius: 12px; font-size: 20px; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; }
+        .key-btn.active { border: 2px solid #00f2fe; color: #00f2fe; background: transparent; }
+
+        /* 🥦 खेळ २ चे डिझाईन्स (खालील नवीन खेळ) */
+        .category-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 15px; }
+        .cat-btn { background: #0f172a; color: #94a3b8; padding: 10px; font-size: 13px; font-weight: 700; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; text-align: center; }
+        .cat-btn.active { background: #ec4899; color: #fff; border-color: #ec4899; }
+        
+        .display-panel2 { background: #1e293b; border-radius: 24px; padding: 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); }
+        .image-card2 { background: rgba(15, 23, 42, 0.6); border-radius: 20px; height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; overflow: hidden; cursor: pointer; border: 1px dashed rgba(255,255,255,0.1); }
+        .image-card2 img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; }
+        .word-text2 { font-size: 32px; font-weight: 800; color: #38bdf8; text-transform: uppercase; margin-bottom: 5px; }
+        .marathi-meaning2 { font-size: 18px; color: #e2e8f0; margin-bottom: 15px; font-weight: 600; }
+        .audio-hint2 { font-size: 12px; color: #ec4899; background: rgba(236, 72, 153, 0.1); display: inline-block; padding: 4px 12px; border-radius: 20px; margin-bottom: 15px; font-weight: 600; }
+        .nav-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .nav-btn2 { background: #3b82f6; color: #fff; border: none; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; }
+        .nav-btn2:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
-<header>
-    <a href="index.html" class="back-btn">⬅ Home</a>
-    <h2>✨ English Phonics Shala</h2>
-    <div style="width:60px;"></div>
-</header>
+    <header>
+        <a href="index.html" class="back-btn">⬅ Home</a>
+        <div style="font-size: 16px; font-weight: 800; color: #00f2fe;">✨ English Learning Shala</div>
+        <div style="width:50px;"></div>
+    </header>
 
-<div class="main-wrapper">
-    <div class="case-selector">
-        <label class="case-label">
-            <input type="radio" name="letter-case" value="ABC" checked onchange="onCaseChange()">🅰️ Capital
-        </label>
-        <label class="case-label">
-            <input type="radio" name="letter-case" value="abc" onchange="onCaseChange()">️️️a️ Small
-        </label>
+    <div class="main-wrapper">
+
+        <!-- ========================================== -->
+        <!-- 🔠 खेळ १: ABCD PHONICS GAME (वरच्या बाजूला) -->
+        <!-- ========================================== -->
+        <div class="game-title-bar" style="color: #00f2fe;">१️⃣ ABCD Phonics खेळ</div>
+
+        <div class="mode-container">
+            <button class="mode-btn active" id="btn-capital" onclick="setMode('capital')">🅰 Capital</button>
+            <button class="mode-btn" id="btn-small" onclick="setMode('small')">a Small</button>
+        </div>
+
+        <div class="display-card" onclick="playPhonics()">
+            <div class="four-lines">
+                <div class="line-red"></div> <div class="line-blue"></div>
+                <div class="line-blue"></div> <div class="line-red"></div>
+            </div>
+            <div class="content-box">
+                <div class="letter-display" id="letter-view">A</div>
+                <div class="object-emoji" id="emoji-view">🍎</div>
+            </div>
+            <div class="sound-badge">🔊 Sound</div>
+        </div>
+
+        <div class="nav-container">
+            <button class="nav-btn" onclick="navigateLetter(-1)">⬅ Back</button>
+            <button class="nav-btn next" onclick="navigateLetter(1)">Next ➡️</button>
+        </div>
+
+        <div class="keyboard-grid" id="keyboard-box"></div>
+
+
+        <hr style="border: 0; border-top: 2px dashed rgba(255,255,255,0.1); margin-bottom: 25px;">
+
+
+        <!-- ========================================== -->
+        <!-- 🥦 खेळ २: FRUITS & OBJECTS GAME (खालील बाजूला) -->
+        <!-- ========================================== -->
+        <div class="game-title-bar" style="color: #ec4899;">२️⃣ नवीन शब्द खेळ (फळे व वस्तू)</div>
+
+        <div class="category-container">
+            <button class="cat-btn active" id="btn-fruits" onclick="switchCategory('fruits')">🍎 Fruits</button>
+            <button class="cat-btn" id="btn-vegetables" onclick="switchCategory('vegetables')">🥦 Vegetables</button>
+            <button class="cat-btn" id="btn-flowers" onclick="switchCategory('flowers')">🌻 Flowers</button>
+            <button class="cat-btn" id="btn-bodyparts" onclick="switchCategory('bodyparts')">💪 Body Parts</button>
+        </div>
+
+        <div class="display-panel2">
+            <div class="image-card2" onclick="playOnlineVoice()">
+                <img id="item-image" src="" alt="Loading...">
+            </div>
+            <div class="word-text2" id="item-name">APPLE</div>
+            <div class="marathi-meaning2" id="item-marathi">(सफरचंद)</div>
+            <div class="audio-hint2">🔊 चित्रावर क्लिक करून आवाज ऐका</div>
+
+            <div class="nav-row2">
+                <button class="nav-btn2" id="prev-btn" onclick="prevItem()">⬅ मागे</button>
+                <button class="nav-btn2" id="next-btn" onclick="nextItem()">पुढे ➡</button>
+            </div>
+        </div>
+
     </div>
 
-    <div class="four-line-card" onclick="speakLetter()">
-        <div id="board-container" class="svg-container"></div>
-        <div class="sound-tag">🔊 Sound</div>
-    </div>
-
-    <div class="nav-flex">
-        <button class="nav-btn prev" onclick="navigate(-1)">⬅ Back</button>
-        <button class="nav-btn next" onclick="navigate(1)">Next ➡️</button>
-    </div>
-
-    <div class="alphabet-grid" id="buttons-grid"></div>
-</div>
+    <!-- 🔊 ऑडिओ प्लेयर -->
+    <audio id="online-audio-player"></audio>
 
 <script>
+    // ==========================================
+    // 🔠 खेळ १ चे लॉजिक (ABCD Phonics)
+    // ==========================================
     let currentIndex = 0;
-    const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-    
-    const phonicSounds = {
-        'A': 'ah', 'B': 'buh', 'C': 'kuh', 'D': 'duh', 'E': 'eh', 'F': 'fuh', 'G': 'guh', 
-        'H': 'huh', 'I': 'ih', 'J': 'juh', 'K': 'kuh', 'L': 'uhl', 'M': 'muh', 'N': 'nuh', 
-        'O': 'ox', 'P': 'puh', 'Q': 'kwuh', 'R': 'ruh', 'S': 'suh', 'T': 'tuh', 'U': 'uh', 
-        'V': 'vuh', 'W': 'wuh', 'X': 'ks', 'Y': 'yuh', 'Z': 'zuh'
+    let currentMode = 'capital'; 
+    let synth = window.speechSynthesis;
+
+    const alphabetData = [
+        { cap: 'A', sm: 'a', emoji: '🍎', phonic: 'A for Apple... aa aa aa' },
+        { cap: 'B', sm: 'b', emoji: '🎈', phonic: 'B for Balloon... ba ba ba' },
+        { cap: 'C', sm: 'c', emoji: '🐱', phonic: 'C for Cat... ka ka ka' },
+        { cap: 'D', sm: 'd', emoji: '🐕', phonic: 'D for Dog... da da da' },
+        { cap: 'E', sm: 'e', emoji: '🥚', phonic: 'E for Egg... ae ae ae' },
+        { cap: 'F', sm: 'f', emoji: '🐟', phonic: 'F for Fish... fa fa fa' },
+        { cap: 'G', sm: 'g', emoji: '🍇', phonic: 'G for Grapes... ga ga ga' },
+        { cap: 'H', sm: 'h', emoji: '🏠', phonic: 'H for House... ha ha ha' },
+        { cap: 'I', sm: 'i', emoji: '🍦', phonic: 'I for Ice cream... ee ee ee' },
+        { cap: 'J', sm: 'j', emoji: '🃏', phonic: 'J for Joker... ja ja ja' },
+        { cap: 'K', sm: 'k', emoji: '🪁', phonic: 'K for Kite... ka ka ka' },
+        { cap: 'L', sm: 'l', emoji: '🦁', phonic: 'L for Lion... la la la' },
+        { cap: 'M', sm: 'm', emoji: '🐒', phonic: 'M for Monkey... ma ma ma' },
+        { cap: 'N', sm: 'n', emoji: '🪺', phonic: 'N for Nest... na na na' },
+        { cap: 'O', sm: 'o', emoji: '🍊', phonic: 'O for Orange... aw aw aw' },
+        { cap: 'P', sm: 'p', emoji: '🦜', phonic: 'P for Parrot... pa pa pa' },
+        { cap: 'Q', sm: 'q', emoji: '👑', phonic: 'Q for Queen... qua qua qua' },
+        { cap: 'R', sm: 'r', emoji: '🌹', phonic: 'R for Rose... ra ra ra' },
+        { cap: 'S', sm: 's', emoji: '☀️', phonic: 'S for Sun... sa sa sa' },
+        { cap: 'T', sm: 't', emoji: '🐯', phonic: 'T for Tiger... ta ta ta' },
+        { cap: 'U', sm: 'u', emoji: '☂️', phonic: 'U for Umbrella... uh uh uh' },
+        { cap: 'V', sm: 'v', emoji: '🚐', phonic: 'V for Van... va va va' },
+        { cap: 'W', sm: 'w', emoji: '⌚', phonic: 'W for Watch... wa wa wa' },
+        { cap: 'X', sm: 'x', emoji: '🎄', phonic: 'X for Xmas Tree... ks ks ks' },
+        { cap: 'Y', sm: 'y', emoji: '🪵', phonic: 'Y for Yak... ya ya ya' },
+        { cap: 'Z', sm: 'z', emoji: '🦓', phonic: 'Z for Zebra... za za za' }
+    ];
+
+    function renderKeyboard() {
+        let keyboardBox = document.getElementById("keyboard-box");
+        keyboardBox.innerHTML = "";
+        alphabetData.forEach((item, index) => {
+            let btn = document.createElement("button");
+            btn.className = "key-btn";
+            if(index === currentIndex) btn.classList.add("active");
+            btn.innerText = currentMode === 'capital' ? item.cap : item.sm;
+            btn.onclick = () => selectLetter(index);
+            keyboardBox.appendChild(btn);
+        });
+    }
+
+    function setMode(mode) {
+        currentMode = mode;
+        document.getElementById("btn-capital").classList.toggle("active", mode === 'capital');
+        document.getElementById("btn-small").classList.toggle("active", mode === 'small');
+        updateDisplayGame1();
+    }
+
+    function selectLetter(index) { currentIndex = index; updateDisplayGame1(); playPhonics(); }
+    function navigateLetter(step) { currentIndex += step; if(currentIndex < 0) currentIndex = 25; if(currentIndex > 25) currentIndex = 0; updateDisplayGame1(); playPhonics(); }
+
+    function updateDisplayGame1() {
+        let currentItem = alphabetData[currentIndex];
+        document.getElementById("letter-view").innerText = currentMode === 'capital' ? currentItem.cap : currentItem.sm;
+        document.getElementById("emoji-view").innerText = currentItem.emoji;
+        let keys = document.querySelectorAll(".key-btn");
+        keys.forEach((key, idx) => {
+            key.classList.toggle("active", idx === currentIndex);
+            key.innerText = currentMode === 'capital' ? alphabetData[idx].cap : alphabetData[idx].sm;
+        });
+    }
+
+    function playPhonics() {
+        if (!synth) return; synth.cancel();
+        let currentItem = alphabetData[currentIndex];
+        let utter = new SpeechSynthesisUtterance(currentItem.phonic);
+        utter.lang = 'en-US'; utter.rate = 0.75; utter.pitch = 1.1;
+        synth.speak(utter);
+    }
+
+    // ==========================================
+    // 🥦 खेळ २ चे लॉजिक (नवीन शब्द खेळ)
+    // ==========================================
+    const dataset = {
+        fruits: [
+            { en: 'Apple', mr: 'सफरचंद', img: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500&q=80' },
+            { en: 'Mango', mr: 'आंबा', img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=500&q=80' },
+            { en: 'Banana', mr: 'केळी', img: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500&q=80' },
+            { en: 'Orange', mr: 'संत्री', img: 'https://images.unsplash.com/photo-1547514701-42782101795e?w=500&q=80' }
+        ],
+        vegetables: [
+            { en: 'Potato', mr: 'बटाटा', img: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=500&q=80' },
+            { en: 'Tomato', mr: 'टोमॅटो', img: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=500&q=80' },
+            { en: 'Onion', mr: 'कांदा', img: 'https://images.unsplash.com/photo-1508747703725-719ae2c73ee0?w=500&q=80' }
+        ],
+        flowers: [
+            { en: 'Rose', mr: 'गुलाब', img: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80' },
+            { en: 'Lotus', mr: 'कमळ', img: 'https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?w=500&q=80' },
+            { en: 'Sunflower', mr: 'सूर्यफूल', img: 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=500&q=80' }
+        ],
+        bodyparts: [
+            { en: 'Eye', mr: 'डोळा', img: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=500&q=80' },
+            { en: 'Hand', mr: 'हात', img: 'https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=500&q=80' },
+            { en: 'Nose', mr: 'नाक', img: 'https://images.unsplash.com/photo-1615715505717-b7607fc8d8ec?w=500&q=80' },
+            { en: 'Ear', mr: 'कान', img: 'https://images.unsplash.com/photo-1590650154753-1a4e25889704?w=500&q=80' }
+        ]
     };
 
-    // 📏 प्रत्येक अक्षराची रेषेवरील उंची आणि 'Baseline' (alignment-baseline) परफेक्ट सेट केली आहे
-    function getOffsetY(letter, isSmall) {
-        if (!isSmall) return 155; // कॅपिटल अक्षरे (पहिली लाल ते दुसरी निळी रेषा)
+    let currentCategory = 'fruits';
+    let indexGame2 = 0;
+
+    function updateDisplayGame2() {
+        const currentList = dataset[currentCategory];
+        const currentItem = currentList[indexGame2];
+
+        document.getElementById("item-image").src = currentItem.img;
+        document.getElementById("item-name").innerText = currentItem.en;
+        document.getElementById("item-marathi").innerText = "(" + currentItem.mr + ")";
+
+        document.getElementById("prev-btn").disabled = (indexGame2 === 0);
+        document.getElementById("next-btn").disabled = (indexGame2 === currentList.length - 1);
+    }
+
+    function playOnlineVoice() {
+        const currentList = dataset[currentCategory];
+        const currentItem = currentList[indexGame2];
+        let audioPlayer = document.getElementById("online-audio-player");
+        let word = currentItem.en.toLowerCase();
         
-        // शेपटी खाली जाणारी लहान अक्षरे (g, j, p, q, y) थेट खालच्या लाल रेषेपर्यंत (y=207) जातील
-        if (['g', 'j', 'p', 'q', 'y'].includes(letter)) return 155; 
-        
-        // वर जाणारी लहान अक्षरे (b, d, h, k, l, t, f)
-        if (['b', 'd', 'h', 'k', 'l', 't', 'f'].includes(letter)) return 155;
-        
-        // फक्त दोन निळ्या रेषेतील अक्षरे (a, c, e, m, n, o, r, s, u, v, w, x, z)
-        return 155; 
+        audioPlayer.src = "https://dict.leo.org/audio/v2/US/" + word + ".mp3";
+        audioPlayer.load();
+        audioPlayer.play().catch(e => console.log("Tap required for audio."));
     }
 
-    // अक्षराचा अचूक फॉन्ट टाईप (घटोत्कच / वळणदार आणि सुबक अक्षरांसाठी 'dominant-baseline' चा वापर)
-    function getLetterStyle(letter, isSmall) {
-        if (!isSmall) {
-            return `font-size: 130px; dominant-baseline: auto;`;
-        }
-        // लहान अक्षरांसाठी विशेष मापे
-        if (['g', 'j', 'p', 'q', 'y'].includes(letter)) {
-            return `font-size: 105px; dominant-baseline: hanging;`; // टांगते अक्षर - ज्यामुळे शेपटी खाली जाईल
-        }
-        if (['b', 'd', 'h', 'k', 'l', 't', 'f'].includes(letter)) {
-            return `font-size: 130px; dominant-baseline: auto;`;
-        }
-        return `font-size: 105px; dominant-baseline: auto;`;
+    function switchCategory(cat) {
+        currentCategory = cat; indexGame2 = 0;
+        const buttons = document.querySelectorAll(".cat-btn");
+        buttons.forEach(btn => btn.classList.remove("active"));
+        document.getElementById('btn-' + cat).classList.add('active');
+        updateDisplayGame2();
+        playOnlineVoice();
     }
 
-    function getCase() { return document.querySelector('input[name="letter-case"]:checked').value; }
+    function nextItem() { if (indexGame2 < dataset[currentCategory].length - 1) { indexGame2++; updateDisplayGame2(); playOnlineVoice(); } }
+    function prevItem() { if (indexGame2 > 0) { indexGame2--; updateDisplayGame2(); playOnlineVoice(); } }
 
-    function onCaseChange() {
-        updateDisplay();
-        renderGrid();
-    }
-
-    function updateDisplay() {
-        let letter = alphabet[currentIndex];
-        let currentCase = getCase();
-        let isSmall = (currentCase === "abc");
-        let displayLetter = isSmall ? letter.toLowerCase() : letter;
-        
-        let container = document.getElementById("board-container");
-        
-        let yPos = getOffsetY(displayLetter, isSmall);
-        let styleCss = getLetterStyle(displayLetter, isSmall);
-
-        // 📏 ४ रेषांची अचूक गणितीय रचना (y1 = 50, 102, 155, 207)
-        container.innerHTML = `
-            <svg width="100%" height="100%" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
-                <line x1="15" y1="50" x2="385" y2="50" stroke="#ff4d4d" stroke-width="4" stroke-linecap="round"/>
-                <line x1="15" y1="102" x2="385" y2="102" stroke="#3399ff" stroke-width="3" stroke-linecap="round"/>
-                <line x1="15" y1="155" x2="385" y2="155" stroke="#3399ff" stroke-width="3" stroke-linecap="round"/>
-                <line x1="15" y1="207" x2="385" y2="207" stroke="#ff4d4d" stroke-width="4" stroke-linecap="round"/>
-                
-                <text x="200" y="${yPos}" 
-                      text-anchor="middle" 
-                      font-family="'Comic Sans MS', 'Chalkboard SE', 'Fredoka', sans-serif" 
-                      font-weight="bold" 
-                      style="${styleCss}"
-                      fill="#1e293b">${displayLetter}</text>
-            </svg>
-        `;
-
-        document.querySelectorAll(".grid-btn").forEach((b, i) => {
-            if(i === currentIndex) b.classList.add("active");
-            else b.classList.remove("active");
-        });
-    }
-
-    function renderGrid() {
-        let grid = document.getElementById("buttons-grid");
-        grid.innerHTML = "";
-        let currentCase = getCase();
-        
-        alphabet.forEach((letter, i) => {
-            let b = document.createElement("button");
-            b.className = "grid-btn";
-            if(i === currentIndex) b.classList.add("active");
-            b.innerText = (currentCase === "ABC") ? letter : letter.toLowerCase();
-            b.onclick = () => { currentIndex = i; updateDisplay(); speakLetter(); };
-            grid.appendChild(b);
-        });
-    }
-
-    function navigate(step) {
-        currentIndex = (currentIndex + step + 26) % 26;
-        updateDisplay();
-        speakLetter();
-    }
-
-    function speakLetter() {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            let letter = alphabet[currentIndex];
-            let currentCase = getCase();
-            let speakText = (currentCase === "ABC") ? letter : letter.toLowerCase();
-
-            let u1 = new SpeechSynthesisUtterance(speakText);
-            u1.lang = 'en-US';
-            u1.rate = 0.8;
-
-            let u2 = new SpeechSynthesisUtterance(phonicSounds[letter]);
-            u2.lang = 'en-US';
-            u2.rate = 0.7;
-
-            window.speechSynthesis.speak(u1);
-            setTimeout(() => { window.speechSynthesis.speak(u2); }, 400);
-        }
-    }
-
-    window.onload = () => { onCaseChange(); };
+    window.onload = () => {
+        renderKeyboard();
+        updateDisplayGame1();
+        updateDisplayGame2();
+    };
 </script>
 </body>
 </html>
