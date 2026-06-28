@@ -9,7 +9,7 @@
             --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
             --panel-bg: #1e293b;
             --primary: #00f2fe;
-            --btn-active: #2563eb;
+            --secondary: #ec4899;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -43,12 +43,37 @@
             font-size: 13px;
             font-weight: 700;
             border: 1px solid rgba(0, 242, 254, 0.2);
+            cursor: pointer;
         }
 
         .main-wrapper {
             width: 100%;
             max-width: 420px;
         }
+
+        /* 📋 गेम निवड स्क्रीन (Dashboard) Styles */
+        .menu-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 800;
+            margin: 40px 0 25px 0;
+            color: #38bdf8;
+        }
+
+        .menu-card {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 20px;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.2s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .menu-card:active { transform: scale(0.98); }
+        .menu-card h3 { font-size: 18px; margin-bottom: 5px; }
+        .menu-card p { font-size: 13px; color: #94a3b8; }
 
         .game-title-bar {
             background: rgba(255, 255, 255, 0.05);
@@ -61,7 +86,7 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* 🔠 खेळ १ चे डिझाईन्स (ABCD) */
+        /* 🔠 खेळ १: ABCD */
         .mode-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -71,12 +96,10 @@
             padding: 4px;
             border-radius: 14px;
         }
-
         .mode-btn {
             background: transparent; border: none; color: #94a3b8;
             padding: 10px; font-size: 14px; font-weight: 700; border-radius: 10px; cursor: pointer;
         }
-
         .mode-btn.active { background: #2563eb; color: #fff; }
 
         .display-card {
@@ -85,23 +108,22 @@
             justify-content: center; align-items: center; overflow: hidden; border: 4px solid #1e293b; margin-bottom: 15px;
             cursor: pointer;
         }
-
         .four-lines { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 28px; padding: 0 10px; pointer-events: none; }
         .line-red { border-top: 2px solid #ff4d4d; width: 100%; }
         .line-blue { border-top: 2px solid #3399ff; width: 100%; }
         .content-box { z-index: 2; display: flex; align-items: center; justify-content: center; gap: 25px; width: 100%; }
         .letter-display { font-size: 90px; font-weight: 800; color: #1e293b; }
         .object-emoji { font-size: 70px; }
-        .sound-badge { position: absolute; bottom: 12px; right: 12px; background: #00f2fe; color: #0f172a; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; cursor: pointer; }
+        .sound-badge { position: absolute; bottom: 12px; right: 12px; background: #00f2fe; color: #0f172a; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; }
 
         .nav-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .nav-btn { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; }
         .nav-btn.next { background: #00f2fe; color: #0f172a; border: none; }
-        .keyboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 35px; }
+        .keyboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .key-btn { background: #1e293b; color: #fff; height: 50px; border-radius: 12px; font-size: 20px; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; }
         .key-btn.active { border: 2px solid #00f2fe; color: #00f2fe; background: transparent; }
 
-        /* 🥦 खेळ २ चे डिझाईन्स (खालील नवीन खेळ) */
+        /* 🥦 खेळ २: फळे व वस्तू */
         .category-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 15px; }
         .cat-btn { background: #0f172a; color: #94a3b8; padding: 10px; font-size: 13px; font-weight: 700; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; text-align: center; }
         .cat-btn.active { background: #ec4899; color: #fff; border-color: #ec4899; }
@@ -120,78 +142,126 @@
 <body>
 
     <header>
-        <a href="index.html" class="back-btn">⬅ Home</a>
-        <div style="font-size: 16px; font-weight: 800; color: #00f2fe;">✨ English Learning Shala</div>
+        <!-- मुख्य 'Home' बटण आणि 'खेळ बदला' बटण जे फक्त खेळ चालू असताना दिसेल -->
+        <a href="index.html" id="main-back-btn" class="back-btn">⬅ Home</a>
+        <button id="game-back-btn" class="back-btn" style="display: none;" onclick="showMenuScreen()">⬅ खेळ बदला</button>
+        <div style="font-size: 16px; font-weight: 800; color: #00f2fe;">✨ English Shala</div>
         <div style="width:50px;"></div>
     </header>
 
     <div class="main-wrapper">
 
         <!-- ========================================== -->
-        <!-- 🔠 खेळ १: ABCD PHONICS GAME (वरच्या बाजूला) -->
+        <!-- 📋 स्क्रीन १: खेळ निवडण्याचा मुख्य मेनू     -->
         <!-- ========================================== -->
-        <div class="game-title-bar" style="color: #00f2fe;">१️⃣ ABCD Phonics खेळ</div>
-
-        <div class="mode-container">
-            <button class="mode-btn active" id="btn-capital" onclick="setMode('capital')">🅰 Capital</button>
-            <button class="mode-btn" id="btn-small" onclick="setMode('small')">a Small</button>
-        </div>
-
-        <div class="display-card" onclick="playPhonics()">
-            <div class="four-lines">
-                <div class="line-red"></div> <div class="line-blue"></div>
-                <div class="line-blue"></div> <div class="line-red"></div>
+        <div id="menu-screen">
+            <div class="menu-title">👇 खेळण्यासाठी खेळ निवडा 👇</div>
+            
+            <div class="menu-card" style="border-left: 5px solid #00f2fe;" onclick="launchGame(1)">
+                <h3 style="color: #00f2fe;">🔠 ABCD Phonics खेळ</h3>
+                <p>फोर-लाईन पाटी, आवाज आणि अक्षरे ओळख</p>
             </div>
-            <div class="content-box">
-                <div class="letter-display" id="letter-view">A</div>
-                <div class="object-emoji" id="emoji-view">🍎</div>
+
+            <div class="menu-card" style="border-left: 5px solid #ec4899;" onclick="launchGame(2)">
+                <h3 style="color: #ec4899;">🥦 नवीन शब्द खेळ</h3>
+                <p>चित्रे पाहून फळे, भाजीपाला व वस्तूंचे स्पेलिंग शिकणे</p>
             </div>
-            <div class="sound-badge">🔊 Sound</div>
         </div>
-
-        <div class="nav-container">
-            <button class="nav-btn" onclick="navigateLetter(-1)">⬅ Back</button>
-            <button class="nav-btn next" onclick="navigateLetter(1)">Next ➡️</button>
-        </div>
-
-        <div class="keyboard-grid" id="keyboard-box"></div>
-
-
-        <hr style="border: 0; border-top: 2px dashed rgba(255,255,255,0.1); margin-bottom: 25px;">
-
 
         <!-- ========================================== -->
-        <!-- 🥦 खेळ २: FRUITS & OBJECTS GAME (खालील बाजूला) -->
+        <!-- 🔠 स्क्रीन २: खेळ १ (ABCD PHONICS GAME)       -->
         <!-- ========================================== -->
-        <div class="game-title-bar" style="color: #ec4899;">२️⃣ नवीन शब्द खेळ (फळे व वस्तू)</div>
+        <div id="game1-screen" style="display: none;">
+            <div class="game-title-bar" style="color: #00f2fe;">१️⃣ ABCD Phonics खेळ</div>
 
-        <div class="category-container">
-            <button class="cat-btn active" id="btn-fruits" onclick="switchCategory('fruits')">🍎 Fruits</button>
-            <button class="cat-btn" id="btn-vegetables" onclick="switchCategory('vegetables')">🥦 Vegetables</button>
-            <button class="cat-btn" id="btn-flowers" onclick="switchCategory('flowers')">🌻 Flowers</button>
-            <button class="cat-btn" id="btn-bodyparts" onclick="switchCategory('bodyparts')">💪 Body Parts</button>
+            <div class="mode-container">
+                <button class="mode-btn active" id="btn-capital" onclick="setMode('capital')">🅰 Capital</button>
+                <button class="mode-btn" id="btn-small" onclick="setMode('small')">a Small</button>
+            </div>
+
+            <div class="display-card" onclick="playPhonics()">
+                <div class="four-lines">
+                    <div class="line-red"></div> <div class="line-blue"></div>
+                    <div class="line-blue"></div> <div class="line-red"></div>
+                </div>
+                <div class="content-box">
+                    <div class="letter-display" id="letter-view">A</div>
+                    <div class="object-emoji" id="emoji-view">🍎</div>
+                </div>
+                <div class="sound-badge">🔊 Sound</div>
+            </div>
+
+            <div class="nav-container">
+                <button class="nav-btn" onclick="navigateLetter(-1)">⬅ Back</button>
+                <button class="nav-btn next" onclick="navigateLetter(1)">Next ➡️</button>
+            </div>
+
+            <div class="keyboard-grid" id="keyboard-box"></div>
         </div>
 
-        <div class="display-panel2">
-            <div class="image-card2" onclick="playOnlineVoice()">
-                <img id="item-image" src="" alt="Loading...">
-            </div>
-            <div class="word-text2" id="item-name">APPLE</div>
-            <div class="marathi-meaning2" id="item-marathi">(सफरचंद)</div>
-            <div class="audio-hint2">🔊 चित्रावर क्लिक करून आवाज ऐका</div>
+        <!-- ========================================== -->
+        <!-- 🥦 स्क्रीन ३: खेळ २ (FRUITS & OBJECTS GAME) -->
+        <!-- ========================================== -->
+        <div id="game2-screen" style="display: none;">
+            <div class="game-title-bar" style="color: #ec4899;">२️⃣ नवीन शब्द खेळ (फळे व वस्तू)</div>
 
-            <div class="nav-row2">
-                <button class="nav-btn2" id="prev-btn" onclick="prevItem()">⬅ मागे</button>
-                <button class="nav-btn2" id="next-btn" onclick="nextItem()">पुढे ➡</button>
+            <div class="category-container">
+                <button class="cat-btn active" id="btn-fruits" onclick="switchCategory('fruits')">🍎 Fruits</button>
+                <button class="cat-btn" id="btn-vegetables" onclick="switchCategory('vegetables')">🥦 Vegetables</button>
+                <button class="cat-btn" id="btn-flowers" onclick="switchCategory('flowers')">🌻 Flowers</button>
+                <button class="cat-btn" id="btn-bodyparts" onclick="switchCategory('bodyparts')">💪 Body Parts</button>
+            </div>
+
+            <div class="display-panel2">
+                <div class="image-card2" onclick="playOnlineVoice()">
+                    <img id="item-image" src="" alt="Loading...">
+                </div>
+                <div class="word-text2" id="item-name">APPLE</div>
+                <div class="marathi-meaning2" id="item-marathi">(सफरचंद)</div>
+                <div class="audio-hint2">🔊 चित्रावर क्लिक करून आवाज ऐका</div>
+
+                <div class="nav-row2">
+                    <button class="nav-btn2" id="prev-btn" onclick="prevItem()">⬅ मागे</button>
+                    <button class="nav-btn2" id="next-btn" onclick="nextItem()">पुढे ➡</button>
+                </div>
             </div>
         </div>
 
     </div>
 
-    <!-- 🔊 ऑडिओ प्लेयर -->
+    <!-- ऑडिओ प्लेयर -->
     <audio id="online-audio-player"></audio>
 
 <script>
+    // ==========================================
+    // 📋 स्क्रीन कंट्रोलर लॉजिक (Hiding/Showing Panels)
+    // ==========================================
+    function showMenuScreen() {
+        document.getElementById("menu-screen").style.display = "block";
+        document.getElementById("game1-screen").style.display = "none";
+        document.getElementById("game2-screen").style.display = "none";
+        
+        document.getElementById("main-back-btn").style.display = "block";
+        document.getElementById("game-back-btn").style.display = "none";
+        if(window.speechSynthesis) window.speechSynthesis.cancel();
+    }
+
+    function launchGame(gameNumber) {
+        document.getElementById("menu-screen").style.display = "none";
+        document.getElementById("main-back-btn").style.display = "none";
+        document.getElementById("game-back-btn").style.display = "block";
+
+        if(gameNumber === 1) {
+            document.getElementById("game1-screen").style.display = "block";
+            updateDisplayGame1();
+            playPhonics();
+        } else if(gameNumber === 2) {
+            document.getElementById("game2-screen").style.display = "block";
+            updateDisplayGame2();
+            playOnlineVoice();
+        }
+    }
+
     // ==========================================
     // 🔠 खेळ १ चे लॉजिक (ABCD Phonics)
     // ==========================================
@@ -321,26 +391,8 @@
         
         audioPlayer.src = "https://dict.leo.org/audio/v2/US/" + word + ".mp3";
         audioPlayer.load();
-        audioPlayer.play().catch(e => console.log("Tap required for audio."));
+        audioPlayer.play().catch(e => console.log("Audio play deferred."));
     }
 
     function switchCategory(cat) {
-        currentCategory = cat; indexGame2 = 0;
-        const buttons = document.querySelectorAll(".cat-btn");
-        buttons.forEach(btn => btn.classList.remove("active"));
-        document.getElementById('btn-' + cat).classList.add('active');
-        updateDisplayGame2();
-        playOnlineVoice();
-    }
-
-    function nextItem() { if (indexGame2 < dataset[currentCategory].length - 1) { indexGame2++; updateDisplayGame2(); playOnlineVoice(); } }
-    function prevItem() { if (indexGame2 > 0) { indexGame2--; updateDisplayGame2(); playOnlineVoice(); } }
-
-    window.onload = () => {
-        renderKeyboard();
-        updateDisplayGame1();
-        updateDisplayGame2();
-    };
-</script>
-</body>
-</html>
+        currentCategor
