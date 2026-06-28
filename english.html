@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>English Learning Shala</title>
+    <title>English Phonics Shala</title>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
             --panel-bg: #1e293b;
             --primary: #00f2fe;
-            --accent: #ec4899;
             --btn-active: #2563eb;
         }
 
@@ -28,7 +27,7 @@
 
         header {
             width: 100%;
-            max-width: 450px;
+            max-width: 420px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -46,58 +45,20 @@
             border: 1px solid rgba(0, 242, 254, 0.2);
         }
 
-        /* 🎮 खेळ निवडण्यासाठी मुख्य मेनू ग्रिड */
-        .game-select-menu {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+        .main-wrapper {
             width: 100%;
-            max-width: 450px;
-            margin-bottom: 20px;
+            max-width: 420px;
         }
 
-        .menu-choice-btn {
-            border: none;
-            padding: 15px 10px;
-            font-size: 15px;
-            font-weight: 800;
-            border-radius: 16px;
-            cursor: pointer;
-            color: white;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        .game-title-bar {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 12px;
             text-align: center;
-        }
-
-        .menu-choice-btn.game1 {
-            background: linear-gradient(135deg, #00f2fe, #4f46e5);
-        }
-
-        .menu-choice-btn.game2 {
-            background: linear-gradient(135deg, #ec4899, #f43f5e);
-        }
-
-        .menu-choice-btn.active {
-            transform: scale(1.05);
-            outline: 3px solid #fff;
-            box-shadow: 0 0 15px rgba(255,255,255,0.4);
-        }
-
-        /* 📦 खेळांचे मुख्य कंटेनर्स */
-        .game-section {
-            display: none;
-            width: 100%;
-            max-width: 450px;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .game-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            font-weight: 800;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         /* 🔠 खेळ १ चे डिझाईन्स (ABCD) */
@@ -122,6 +83,7 @@
             background: #ffffff; height: 220px; border-radius: 24px; position: relative;
             box-shadow: 0 15px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column;
             justify-content: center; align-items: center; overflow: hidden; border: 4px solid #1e293b; margin-bottom: 15px;
+            cursor: pointer;
         }
 
         .four-lines { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 28px; padding: 0 10px; pointer-events: none; }
@@ -135,16 +97,16 @@
         .nav-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .nav-btn { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; }
         .nav-btn.next { background: #00f2fe; color: #0f172a; border: none; }
-        .keyboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .keyboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 35px; }
         .key-btn { background: #1e293b; color: #fff; height: 50px; border-radius: 12px; font-size: 20px; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.06); }
         .key-btn.active { border: 2px solid #00f2fe; color: #00f2fe; background: transparent; }
 
-        /* 🥦 खेळ २ चे डिझाईन्स (नवीन शब्द खेळ) */
+        /* 🥦 खेळ २ चे डिझाईन्स (खालील नवीन खेळ) */
         .category-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 15px; }
         .cat-btn { background: #0f172a; color: #94a3b8; padding: 10px; font-size: 13px; font-weight: 700; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
         .cat-btn.active { background: #ec4899; color: #fff; border-color: #ec4899; }
         
-        .display-panel2 { background: #1e293b; border-radius: 24px; padding: 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+        .display-panel2 { background: #1e293b; border-radius: 24px; padding: 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); }
         .image-card2 { background: rgba(15, 23, 42, 0.6); border-radius: 20px; height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; overflow: hidden; cursor: pointer; border: 1px dashed rgba(255,255,255,0.1); }
         .image-card2 img { width: 100%; height: 100%; object-fit: cover; }
         .word-text2 { font-size: 32px; font-weight: 800; color: #38bdf8; text-transform: uppercase; margin-bottom: 5px; }
@@ -159,24 +121,14 @@
 
     <header>
         <a href="index.html" class="back-btn">⬅ Home</a>
-        <div style="font-size: 16px; font-weight: 800; color: #00f2fe;">✨ English Digital Shala</div>
+        <div style="font-size: 16px; font-weight: 800; color: #00f2fe;">✨ English Learning Shala</div>
         <div style="width:50px;"></div>
     </header>
 
-    <!-- 🔘 खेळ निवडण्याचा मुख्य टॅब मेनू -->
-    <div class="game-select-menu">
-        <button class="menu-choice-btn game1 active" id="tab-game1" onclick="switchGame(1)">
-            १️⃣ ABCD खेळ <br><span style="font-size:11px; font-weight:normal;">(Phonics Sound)</span>
-        </button>
-        <button class="menu-choice-btn game2" id="tab-game2" onclick="switchGame(2)">
-            २️⃣ नवीन खेळ <br><span style="font-size:11px; font-weight:normal;">(Fruits & Objects)</span>
-        </button>
-    </div>
+    <div class="main-wrapper">
 
-    <!-- ========================================== -->
-    <!-- 🔠 खेळ १: ABCD PHONICS GAME SECTION -->
-    <!-- ========================================== -->
-    <div id="section-game1" class="game-section active">
+        <div class="game-title-bar" style="color: #00f2fe;">१️⃣ ABCD Phonics खेळ</div>
+
         <div class="mode-container">
             <button class="mode-btn active" id="btn-capital" onclick="setMode('capital')">🅰 Capital</button>
             <button class="mode-btn" id="btn-small" onclick="setMode('small')">a Small</button>
@@ -200,13 +152,13 @@
         </div>
 
         <div class="keyboard-grid" id="keyboard-box"></div>
-    </div>
 
 
-    <!-- ========================================== -->
-    <!-- 🥦 खेळ २: FRUITS, VEGETABLES, FLOWERS SECTION -->
-    <!-- ========================================== -->
-    <div id="section-game2" class="game-section">
+        <hr style="border: 0; border-top: 2px dashed rgba(255,255,255,0.1); margin-bottom: 25px;">
+
+
+        <div class="game-title-bar" style="color: #ec4899;">२️⃣ नवीन शब्द खेळ (फळे व वस्तू)</div>
+
         <div class="category-container">
             <button class="cat-btn active" id="btn-fruits" onclick="switchCategory('fruits')">🍎 Fruits</button>
             <button class="cat-btn" id="btn-vegetables" onclick="switchCategory('vegetables')">🥦 Vegetables</button>
@@ -227,26 +179,12 @@
                 <button class="nav-btn2" id="next-btn" onclick="nextItem()">पुढे ➡</button>
             </div>
         </div>
+
     </div>
 
     <audio id="online-audio-player"></audio>
 
 <script>
-    // --- सामायिक गेम स्विचिंग सिस्टम ---
-    function switchGame(gameNum) {
-        document.getElementById("section-game1").classList.toggle("active", gameNum === 1);
-        document.getElementById("section-game2").classList.toggle("active", gameNum === 2);
-        
-        document.getElementById("tab-game1").classList.toggle("active", gameNum === 1);
-        document.getElementById("tab-game2").classList.toggle("active", gameNum === 2);
-        
-        if(gameNum === 2) {
-            updateDisplayGame2();
-        } else {
-            playPhonics();
-        }
-    }
-
     // ==========================================
     // 🔠 खेळ १ चे लॉजिक (ABCD Phonics)
     // ==========================================
@@ -366,8 +304,6 @@
 
         document.getElementById("prev-btn").disabled = (indexGame2 === 0);
         document.getElementById("next-btn").disabled = (indexGame2 === currentList.length - 1);
-
-        setTimeout(playOnlineVoice, 300);
     }
 
     function playOnlineVoice() {
@@ -387,14 +323,16 @@
         buttons.forEach(btn => btn.classList.remove("active"));
         document.getElementById('btn-' + cat).classList.add('active');
         updateDisplayGame2();
+        playOnlineVoice();
     }
 
-    function nextItem() { if (indexGame2 < dataset[currentCategory].length - 1) { indexGame2++; updateDisplayGame2(); } }
-    function prevItem() { if (indexGame2 > 0) { indexGame2--; updateDisplayGame2(); } }
+    function nextItem() { if (indexGame2 < dataset[currentCategory].length - 1) { indexGame2++; updateDisplayGame2(); playOnlineVoice(); } }
+    function prevItem() { if (indexGame2 > 0) { indexGame2--; updateDisplayGame2(); playOnlineVoice(); } }
 
     window.onload = () => {
         renderKeyboard();
         updateDisplayGame1();
+        updateDisplayGame2();
     };
 </script>
 </body>
