@@ -385,6 +385,14 @@
         });
     }
 
+    function playSoundFile(num) {
+        let audioEl = document.getElementById("game-audio");
+        if(audioEl) {
+            audioEl.src = currentLang === 'mr' ? numberSounds[num].mrUrl : numberSounds[num].enUrl;
+            audioEl.play().catch(e => console.log("Audio play blocked"));
+        }
+    }
+
     function checkAnswer(chosenNum) {
         playSoundFile(chosenNum);
 
@@ -394,8 +402,4 @@
             document.getElementById("slot-view").innerText = currentLang === 'mr' ? numberSounds[targetNumber].mrChar : numberSounds[targetNumber].enChar;
             
             document.getElementById("feedback-view").style.color = "#10b981";
-            document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✓ बरोबर उत्तर आहे! 🎉" : "✓ Correct Answer! 🎉";
-            document.getElementById("next-question-btn").style.display = "block";
-        } else {
-            document.getElementById("feedback-view").style.color = "#ef4444";
-            document.getElementBy
+            document.getElementById("fee
