@@ -61,11 +61,19 @@
         <div class="feedback-text" id="feedback-view"></div>
     </div>
     <audio id="game-audio"></audio>
-    
-    <!-- या खाली भाग २ चा कोड जोडायचा आहे -->
-    <script>
+   <script>
     let score = 0; let targetNumber = 0; let currentLang = 'mr'; 
-    const fruits = ['🍎', '🥭', '🍇', '🍓', '🍊', '🍉', '🍌', '🍍', '🔔', '⭐'];
+    
+    // 🌟 ५० पेक्षा जास्त नवीन आणि विविध प्रकारची चित्रे (फळे, प्राणी, वाहने, खेळणी, फुले):
+    const gameItems = [
+        '🍎', '🥭', '🍇', '🍓', '🍊', '🍉', '🍌', ' Pineapple 🍍', '🍒', '🥝',
+        '🐱', '🐶', '🦁', '🐯', '🐰', '🦊', '🐻', '🐼', '🐨', '🐸',
+        '🐵', '🐔', '🐧', '🦆', '🦉', '🦋', '🐝', '🐢', '🐟', '🐬',
+        '🚗', '🚑', '🚀', '✈️', '🚂', '🚲', '🚁', '🚜', '⛵', '🛹',
+        '⚽', '🎈', '🧸', '🎁', '👑', '🎸', '🍦', '🍩', '🍪', '🧁',
+        '⭐', '🔔', '🌸', '🌻', '🌈', '💎', '🎨', '🧩', '🍭', '🍿'
+    ];
+
     const numberSounds = {
         1: { mrChar: '१', enChar: '1', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Mr-एक.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/10/En-us-one.ogg' },
         2: { mrChar: '२', enChar: '2', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Mr-दोन.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/En-us-two.ogg' },
@@ -140,8 +148,6 @@
             document.getElementById("opt-4").innerText = "🔢 Group: 31 to 40";
             document.getElementById("opt-5").innerText = "🔢 Group: 41 to 50";
         }
-        
-        // भाषा बदलताच नवीन फ्रेश प्रश्न तयार करण्यासाठी:
         initGame();
     }
 
@@ -151,7 +157,11 @@
         let minRange = parseInt(parts[0]); let maxRange = parseInt(parts[1]);
         targetNumber = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
         document.getElementById("slot-view").innerText = "?"; document.getElementById("feedback-view").innerText = ""; document.getElementById("next-question-btn").style.display = "none";
-        let emojiBox = document.getElementById("emoji-box"); emojiBox.innerHTML = ""; let randomEmoji = fruits[Math.floor(Math.random() * fruits.length)];
+        
+        let emojiBox = document.getElementById("emoji-box"); emojiBox.innerHTML = ""; 
+        // 🌟 ५०+ चित्रांमधून कोणतेही एक चित्र रँडमली निवडले जाईल:
+        let randomEmoji = gameItems[Math.floor(Math.random() * gameItems.length)];
+        
         for(let i=0; i<targetNumber; i++) {
             let span = document.createElement("span"); span.className = "animated-emoji"; span.innerText = randomEmoji; emojiBox.appendChild(span);
         }
@@ -196,26 +206,22 @@
     function speakFeedback(isCorrect) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel(); 
-            
             let message = "";
             if(isCorrect) {
                 message = currentLang === 'mr' ? "खूप छान! बरोबर उत्तर आहे." : "Very good! Correct answer.";
             } else {
                 message = currentLang === 'mr' ? "चुकीचे उत्तर, पुन्हा प्रयत्न करा." : "Wrong answer, try again.";
             }
-            
             let speech = new SpeechSynthesisUtterance(message);
             speech.lang = currentLang === 'mr' ? 'mr-IN' : 'en-US';
             speech.pitch = 1.2; 
             speech.rate = 1.0;
-            
             window.speechSynthesis.speak(speech);
         }
     }
 
     function checkAnswer(chosenNum) {
         playSoundFile(chosenNum); 
-        
         setTimeout(() => {
             if(chosenNum === targetNumber) {
                 score++; 
@@ -224,12 +230,10 @@
                 document.getElementById("feedback-view").style.color = "#10b981";
                 document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✓ बरोबर उत्तर आहे! 🎉" : "✓ Correct Answer! 🎉";
                 document.getElementById("next-question-btn").style.display = "block";
-                
                 speakFeedback(true); 
             } else {
                 document.getElementById("feedback-view").style.color = "#ef4444";
                 document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✗ चुकीचे उत्तर, पुन्हा प्रयत्न करा! 🙁" : "✗ Wrong answer, try again! 🙁";
-                
                 speakFeedback(false); 
             }
         }, 800);
