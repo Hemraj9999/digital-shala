@@ -41,10 +41,10 @@
     </header>
     <div class="controls-row">
         <select class="range-select" id="range-picker" onchange="initGame()">
-            <option id="opt-1" value="1-10">🔢 गट: १ ते १० (1 to 10)</option>
-            <option id="opt-2" value="11-20">🔢 गट: ११ ते २० (11 to 20)</option>
-            <option id="opt-3" value="21-30">🔢 गट: २१ ते ३० (21 to 30)</option>
-            <option id="opt-4" value="31-40">🔢 गट: ३१ ते ४० (31 to 40)</option>
+            <option id="opt-1" value="1-10">🔢 गट: १ ते १०</option>
+            <option id="opt-2" value="11-20">🔢 गट: ११ ते २०</option>
+            <option id="opt-3" value="21-30">🔢 गट: २१ ते ३०</option>
+            <option id="opt-4" value="31-40">🔢 गट: ३१ ते ४०</option>
         </select>
         <div class="lang-container">
             <button class="lang-btn active" id="lang-mr" onclick="setLanguage('mr')">मराठी</button>
@@ -63,7 +63,7 @@
 <script>
     let score = 0; let targetNumber = 0; let currentLang = 'mr'; 
     const fruits = ['🍎', '🥭', '🍇', '🍓', '🍊', '🍉', '🍌', '🍍', '🔔', '⭐'];
-       const numberSounds = {
+        const numberSounds = {
         1: { mrChar: '१', enChar: '1', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Mr-एक.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/10/En-us-one.ogg' },
         2: { mrChar: '२', enChar: '2', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Mr-दोन.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/En-us-two.ogg' },
         3: { mrChar: '३', enChar: '3', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Mr-तीन.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/En-us-three.ogg' },
@@ -112,14 +112,20 @@
         document.getElementById("lang-en").classList.toggle("active", lang === 'en');
         document.getElementById("instruct-text").innerText = lang === 'mr' ? "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!" : "Count the pictures and select correct number!";
         document.getElementById("next-question-btn").innerText = lang === 'mr' ? "पुढचे उदाहरण ➡️" : "Next Question ➡️";
+        
+        // शुद्ध मराठी आणि इंग्रजी भाषा बदल
         if(lang === 'mr') {
-            document.getElementById("opt-1").innerText = "🔢 गट: १ ते १० (1 to 10)";
-            document.getElementById("opt-2").innerText = "🔢 गट: ११ ते २० (11 to 20)";
-            document.getElementById("opt-3").innerText = "🔢 गट: २१ ते ३० (21 to 30)";
-            document.getElementById("opt-4").innerText = "🔢 गट: ३१ ते ४० (31 to 40)";
+            document.getElementById("opt-1").innerText = "🔢 गट: १ ते १०";
+            document.getElementById("opt-2").innerText = "🔢 गट: ११ ते २०";
+            document.getElementById("opt-3").innerText = "🔢 गट: २१ ते ३०";
+            document.getElementById("opt-4").innerText = "🔢 गट: ३१ ते ४०";
         } else {
-            document.getElementById("opt-1").innerText = "🔢 Group: 1 to 10"; document.getElementById("opt-2").innerText = "🔢 Group: 11 to 20"; document.getElementById("opt-3").innerText = "🔢 Group: 21 to 30"; document.getElementById("opt-4").innerText = "🔢 Group: 31 to 40";
+            document.getElementById("opt-1").innerText = "🔢 Group: 1 to 10"; 
+            document.getElementById("opt-2").innerText = "🔢 Group: 11 to 20"; 
+            document.getElementById("opt-3").innerText = "🔢 Group: 21 to 30"; 
+            document.getElementById("opt-4").innerText = "🔢 Group: 31 to 40";
         }
+        
         updateElementsLang();
         let fb = document.getElementById("feedback-view");
         if(fb && fb.innerText !== "") {
@@ -146,8 +152,6 @@
 
     function generateOptions(min, max) {
         let optionsSet = new Set(); optionsSet.add(targetNumber);
-        
-        // नवीन आणि अचूक लॉजिक: उत्तराच्या आजूबाजूचे सलग पर्याय तयार करणे
         let startStart = targetNumber - Math.floor(Math.random() * 4);
         if (startStart < min) startStart = min;
         if (startStart + 3 > max) startStart = max - 3;
@@ -160,7 +164,6 @@
             }
         }
 
-        // सुरक्षा म्हणून जर अजूनही ४ पर्याय झाले नसतील तर रँडम नंबर भरणे
         while(optionsSet.size < 4) {
             let fake = Math.floor(Math.random() * (max - min + 1)) + min; optionsSet.add(fake);
         }
