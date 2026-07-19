@@ -165,6 +165,7 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             margin-bottom: 25px;
+            min-height: 55px;
         }
 
         .option-btn {
@@ -210,7 +211,6 @@
     </header>
 
     <div class="controls-row">
-        <!-- 🛠️ फिक्स: आयडी देऊन पर्याय डायनॅमिक बदलण्यासाठी तयार केले -->
         <select class="range-select" id="range-picker" onchange="initGame()">
             <option id="opt-1" value="1-10">🔢 गट: १ ते १० (1 to 10)</option>
             <option id="opt-2" value="11-20">🔢 गट: ११ ते २० (11 to 20)</option>
@@ -296,12 +296,11 @@
         document.getElementById("instruct-text").innerText = lang === 'mr' ? "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!" : "Count the pictures and select correct number!";
         document.getElementById("next-question-btn").innerText = lang === 'mr' ? "पुढचे उदाहरण ➡️" : "Next Question ➡️";
         
-        // 🛠️ फिक्स: भाषा बदलताच ड्रॉपडाउन मधील मजकूर सुद्धा त्या त्या भाषेनुसार बदलेल
         if(lang === 'mr') {
-            document.getElementById("opt-1").innerText = "🔢 गट: १ ते १०";
-            document.getElementById("opt-2").innerText = "🔢 गट: ११ ते २०";
-            document.getElementById("opt-3").innerText = "🔢 गट: २१ ते ३०";
-            document.getElementById("opt-4").innerText = "🔢 गट: ३१ ते ४०";
+            document.getElementById("opt-1").innerText = "🔢 गट: १ ते १० (1 to 10)";
+            document.getElementById("opt-2").innerText = "🔢 गट: ११ ते २० (11 to 20)";
+            document.getElementById("opt-3").innerText = "🔢 गट: २१ ते ३० (21 to 30)";
+            document.getElementById("opt-4").innerText = "🔢 गट: ३१ ते ४० (31 to 40)";
         } else {
             document.getElementById("opt-1").innerText = "🔢 Group: 1 to 10";
             document.getElementById("opt-2").innerText = "🔢 Group: 11 to 20";
@@ -311,7 +310,6 @@
         
         updateElementsLang();
         
-        // 🛠️ फिक्स: भाषा बदलल्यावर फीडबॅक मजकूर चालू भाषेनुसार अपडेट करणे
         let fb = document.getElementById("feedback-view");
         if(fb.innerText !== "") {
             if(fb.innerText.includes("बरोबर") || fb.innerText.includes("Correct")) {
@@ -323,7 +321,10 @@
     }
 
     function initGame() {
-        let rangeValue = document.getElementById("range-picker").value;
+        let rangePicker = document.getElementById("range-picker");
+        if (!rangePicker) return;
+        
+        let rangeValue = rangePicker.value;
         let parts = rangeValue.split("-");
         let minRange = parseInt(parts[0]);
         let maxRange = parseInt(parts[1]);
@@ -352,6 +353,7 @@
         let optionsSet = new Set();
         optionsSet.add(targetNumber);
         
+        // सुरक्षित लूप: ४ वेगळे पर्याय तयार होईपर्यंत चालतो
         while(optionsSet.size < 4) {
             let fake = Math.floor(Math.random() * (max - min + 1)) + min;
             optionsSet.add(fake);
@@ -396,4 +398,4 @@
             document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✓ बरोबर उत्तर आहे! 🎉" : "✓ Correct Answer! 🎉";
             document.getElementById("next-question-btn").style.display = "block";
         } else {
-            document.getElementByI
+            document.getElementById("feedback-view").style
