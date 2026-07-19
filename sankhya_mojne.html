@@ -62,8 +62,8 @@
     </div>
     <audio id="game-audio"></audio>
     
-    <!-- या खाली भाग २ चा स्क्रिप्ट कोड जोडायचा आहे -->
-   <script>
+    <!-- या खाली भाग २ चा कोड जोडायचा आहे -->
+    <script>
     let score = 0; let targetNumber = 0; let currentLang = 'mr'; 
     const fruits = ['🍎', '🥭', '🍇', '🍓', '🍊', '🍉', '🍌', '🍍', '🔔', '⭐'];
     const numberSounds = {
@@ -141,15 +141,8 @@
             document.getElementById("opt-5").innerText = "🔢 Group: 41 to 50";
         }
         
-        updateElementsLang();
-        let fb = document.getElementById("feedback-view");
-        if(fb && fb.innerText !== "") {
-            if(fb.innerText.includes("बरोबर") || fb.innerText.includes("Correct")) {
-                fb.innerText = lang === 'mr' ? "✓ बरोबर उत्तर आहे! 🎉" : "✓ Correct Answer! 🎉";
-            } else {
-                fb.innerText = lang === 'mr' ? "✗ चुकीचे उत्तर, पुन्हा प्रयत्न करा! 🙁" : "✗ Wrong answer, try again! 🙁";
-            }
-        }
+        // भाषा बदलताच नवीन फ्रेश प्रश्न तयार करण्यासाठी:
+        initGame();
     }
 
     function initGame() {
@@ -192,18 +185,6 @@
         });
     }
 
-    function updateElementsLang() {
-        let currentSlot = document.getElementById("slot-view").innerText;
-        if(currentSlot !== "?" && currentSlot !== "") {
-            document.getElementById("slot-view").innerText = currentLang === 'mr' ? numberSounds[targetNumber].mrChar : numberSounds[targetNumber].enChar;
-        }
-        let buttons = document.querySelectorAll(".option-btn");
-        buttons.forEach(btn => {
-            let val = parseInt(btn.getAttribute("data-value"));
-            btn.innerText = currentLang === 'mr' ? numberSounds[val].mrChar : numberSounds[val].enChar;
-        });
-    }
-
     function playSoundFile(num) {
         let audioEl = document.getElementById("game-audio");
         if(audioEl) {
@@ -212,10 +193,9 @@
         }
     }
 
-    // मानवी आवाजात बरोबर/चुकीचे प्रतिसाद देण्यासाठी (Text to Speech)
     function speakFeedback(isCorrect) {
         if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel(); // जुने बोलणे थांबवा
+            window.speechSynthesis.cancel(); 
             
             let message = "";
             if(isCorrect) {
@@ -226,7 +206,7 @@
             
             let speech = new SpeechSynthesisUtterance(message);
             speech.lang = currentLang === 'mr' ? 'mr-IN' : 'en-US';
-            speech.pitch = 1.2; // लहान मुलांसाठी गोड आवाज
+            speech.pitch = 1.2; 
             speech.rate = 1.0;
             
             window.speechSynthesis.speak(speech);
@@ -234,9 +214,8 @@
     }
 
     function checkAnswer(chosenNum) {
-        playSoundFile(chosenNum); // आधी अंकाचा आवाज येईल
+        playSoundFile(chosenNum); 
         
-        // निकाल दर्शवण्यासाठी आणि बोलण्यासाठी ०.८ सेकंदाचा वेळ दिला आहे
         setTimeout(() => {
             if(chosenNum === targetNumber) {
                 score++; 
@@ -246,12 +225,12 @@
                 document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✓ बरोबर उत्तर आहे! 🎉" : "✓ Correct Answer! 🎉";
                 document.getElementById("next-question-btn").style.display = "block";
                 
-                speakFeedback(true); // बरोबरचा आवाज
+                speakFeedback(true); 
             } else {
                 document.getElementById("feedback-view").style.color = "#ef4444";
                 document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✗ चुकीचे उत्तर, पुन्हा प्रयत्न करा! 🙁" : "✗ Wrong answer, try again! 🙁";
                 
-                speakFeedback(false); // चुकीचा आवाज
+                speakFeedback(false); 
             }
         }, 800);
     }
