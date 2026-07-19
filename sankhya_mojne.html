@@ -2,215 +2,268 @@
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>संख्या मोजणे खेळ (Pro)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>अंक ओळख खेळ / Number Recognition Game</title>
     <style>
-        :root {
-            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
-            --panel-bg: #1e293b;
-            --primary: #10b981;
-            --accent: #3b82f6;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #333;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-gradient); color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 15px; user-select: none; }
-        header { width: 100%; max-width: 450px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-        .back-btn { color: #10b981; text-decoration: none; background: rgba(16, 185, 129, 0.1); padding: 6px 14px; border-radius: 30px; font-size: 13px; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.2); }
-        .score-badge { background: #0ea5e9; color: #fff; padding: 5px 15px; border-radius: 20px; font-weight: 800; font-size: 14px; }
-        .controls-row { width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
-        .lang-container { display: grid; grid-template-columns: 1fr 1fr; background: #0f172a; padding: 3px; border-radius: 10px; }
-        .lang-btn { background: transparent; border: none; color: #94a3b8; padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 7px; cursor: pointer; }
-        .lang-btn.active { background: #10b981; color: #fff; }
-        .range-select { background: #1e293b; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 10px; font-size: 14px; font-weight: 700; outline: none; flex: 1; }
-        .game-panel { background: #1e293b; border: 2px solid rgba(255,255,255,0.05); width: 100%; max-width: 450px; border-radius: 24px; padding: 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); margin-bottom: 15px; }
-        .instruction { color: #38bdf8; font-size: 15px; font-weight: 700; margin-bottom: 20px; }
-        .emoji-display-area { background: rgba(15, 23, 42, 0.6); border-radius: 16px; min-height: 140px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; padding: 20px; margin-bottom: 20px; border: 1px dashed rgba(255,255,255,0.1); max-height: 250px; overflow-y: auto; }
-        .animated-emoji { font-size: 32px; animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .answer-slot { width: 65px; height: 65px; background: rgba(16, 185, 129, 0.1); border: 2px dashed #10b981; border-radius: 16px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: #10b981; }
-        .options-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px; min-height: 55px; }
-        .option-btn { background: #0f172a; border: 1px solid rgba(255,255,255,0.08); color: #fff; height: 55px; border-radius: 14px; font-size: 24px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-        .option-btn:active { transform: scale(0.95); }
-        .next-btn { width: 100%; background: #10b981; color: #0f172a; border: none; padding: 14px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; display: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
-        .feedback-text { font-size: 15px; font-weight: 700; margin-top: 12px; }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .lang-switch {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+        .lang-btn {
+            background-color: #e2e8f0;
+            border: none;
+            padding: 8px 16px;
+            margin-left: 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .lang-btn.active {
+            background-color: #ff7e5f;
+            color: white;
+        }
+        .score-board {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+        .instruction-box {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2d3748;
+            min-height: 40px;
+        }
+        .speaker-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+            margin-bottom: 25px;
+            transition: transform 0.2s;
+        }
+        .speaker-btn:active {
+            transform: scale(0.95);
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .option-btn {
+            background-color: #f8fafc;
+            border: 3px solid #cbd5e1;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #1e293b;
+        }
+        .option-btn:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+        }
+        .feedback {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            min-height: 30px;
+        }
+        .next-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            display: none;
+            margin: 0 auto;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        }
     </style>
 </head>
 <body>
-    <header>
-        <a href="ganit.html" class="back-btn">⬅ मागे</a>
-        <div class="score-badge" id="score-view">SCORE: 0</div>
-    </header>
-    <div class="controls-row">
-        <select class="range-select" id="range-picker" onchange="initGame()">
-            <option id="opt-1" value="1-10">🔢 गट: १ ते १०</option>
-            <option id="opt-2" value="11-20">🔢 गट: ११ ते २०</option>
-            <option id="opt-3" value="21-30">🔢 गट: २१ ते ३०</option>
-            <option id="opt-4" value="31-40">🔢 गट: ३१ ते ४०</option>
-        </select>
-        <div class="lang-container">
-            <button class="lang-btn active" id="lang-mr" onclick="setLanguage('mr')">मराठी</button>
-            <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
-        </div>
+
+<div class="game-container">
+    <div class="lang-switch">
+        <button id="btn-mr" class="lang-btn active" onclick="switchLanguage('mr')">मराठी</button>
+        <button id="btn-en" class="lang-btn" onclick="switchLanguage('en')">English</button>
     </div>
-    <div class="game-panel">
-        <div class="instruction" id="instruct-text">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
-        <div class="emoji-display-area" id="emoji-box"></div>
-        <div class="answer-slot" id="slot-view">?</div>
-        <div class="options-grid" id="options-box"></div>
-        <button class="next-btn" id="next-question-btn" onclick="initGame()">पुढचे उदाहरण ➡️</button>
-        <div class="feedback-text" id="feedback-view"></div>
+
+    <div id="score-view" class="score-board">SCORE: 0</div>
+    <div id="instruction-text" class="instruction-box">अंक ऐकण्यासाठी खालील बटनावर क्लिक करा:</div>
+    <div id="slot-view" style="font-size: 24px; font-weight: bold; margin-bottom: 15px; color: #4f46e5;"></div>
+
+    <button class="speaker-btn" onclick="playTargetSound()">🔊</button>
+
+    <div class="options-grid">
+        <button class="option-btn" onclick="checkAnswer(this.innerText)"></button>
+        <button class="option-btn" onclick="checkAnswer(this.innerText)"></button>
+        <button class="option-btn" onclick="checkAnswer(this.innerText)"></button>
+        <button class="option-btn" onclick="checkAnswer(this.innerText)"></button>
     </div>
-    <audio id="game-audio"></audio>
+
+    <div id="feedback-view" class="feedback"></div>
+    <button id="next-question-btn" class="next-btn" onclick="nextQuestion()">पुढील प्रश्न ➔</button>
+</div>
+
+<audio id="game-audio" style="display:none;"></audio>
 <script>
-    let score = 0; let targetNumber = 0; let currentLang = 'mr'; 
-    const fruits = ['🍎', '🥭', '🍇', '🍓', '🍊', '🍉', '🍌', '🍍', '🔔', '⭐'];
-        const numberSounds = {
-        1: { mrChar: '१', enChar: '1', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Mr-एक.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/10/En-us-one.ogg' },
-        2: { mrChar: '२', enChar: '2', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Mr-दोन.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/En-us-two.ogg' },
-        3: { mrChar: '३', enChar: '3', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Mr-तीन.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/En-us-three.ogg' },
-        4: { mrChar: '४', enChar: '4', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/8c/Mr-char.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/75/En-us-four.ogg' },
-        5: { mrChar: '५', enChar: '5', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Mr-पाच.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a2/En-us-five.ogg' },
-        6: { mrChar: '६', enChar: '6', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fc/Mr-सहा.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/En-us-six.ogg' },
-        7: { mrChar: '७', enChar: '7', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/46/Mr-सात.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/En-us-seven.ogg' },
-        8: { mrChar: '८', enChar: '8', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/20/Mr-आठ.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/59/En-us-eight.ogg' },
-        9: { mrChar: '९', enChar: '9', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/41/Mr-नऊ.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/30/En-us-nine.ogg' },
-        10: { mrChar: '१०', enChar: '10', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d4/Mr-दहा.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/64/En-us-ten.ogg' },
-        11: { mrChar: '११', enChar: '11', mrUrl: 'https://dict.leo.org/audio/v2/LALq3_o7_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/2c/En-us-eleven.ogg' },
-        12: { mrChar: '१२', enChar: '12', mrUrl: 'https://dict.leo.org/audio/v2/M3pBnt8Yp-2Zbe10M5h1Bg.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4c/En-us-twelve.ogg' },
-        13: { mrChar: '१३', enChar: '13', mrUrl: 'https://dict.leo.org/audio/v2/O6p6k6p0fP8Sg3M1bUoRRA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/En-us-thirteen.ogg' },
-        14: { mrChar: '१४', enChar: '14', mrUrl: 'https://dict.leo.org/audio/v2/fQG49wM8b8K9v-l5-fU-eQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/95/En-us-fourteen.ogg' },
-        15: { mrChar: '१५', enChar: '15', mrUrl: 'https://dict.leo.org/audio/v2/w_V_H_wz_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/19/En-us-fifteen.ogg' },
-        16: { mrChar: '१६', enChar: '16', mrUrl: 'https://dict.leo.org/audio/v2/Q7-2j_y_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/52/En-us-sixteen.ogg' },
-        17: { mrChar: '१७', enChar: '17', mrUrl: 'https://dict.leo.org/audio/v2/b1T46wV-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/En-us-seventeen.ogg' },
-        18: { mrChar: '१८', enChar: '18', mrUrl: 'https://dict.leo.org/audio/v2/rL4r1_z_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/53/En-us-eighteen.ogg' },
-        19: { mrChar: '१९', enChar: '19', mrUrl: 'https://dict.leo.org/audio/v2/xX_Yv_wz_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/53/En-us-nineteen.ogg' },
-        20: { mrChar: '२०', enChar: '20', mrUrl: 'https://dict.leo.org/audio/v2/gIK7h_Xz_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/En-us-twenty.ogg' },
-        21: { mrChar: '२१', enChar: '21', mrUrl: 'https://dict.leo.org/audio/v2/r4u28vdvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4b/En-us-twenty-one.ogg' },
-        22: { mrChar: '२२', enChar: '22', mrUrl: 'https://dict.leo.org/audio/v2/50kZkwf-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/85/En-us-twenty-two.ogg' },
-        23: { mrChar: '२३', enChar: '23', mrUrl: 'https://dict.leo.org/audio/v2/Q524g_f-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/64/En-us-twenty-three.ogg' },
-        24: { mrChar: '२४', enChar: '24', mrUrl: 'https://dict.leo.org/audio/v2/34aZnwf-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/07/En-us-twenty-four.ogg' },
-        25: { mrChar: '२५', enChar: '25', mrUrl: 'https://dict.leo.org/audio/v2/-X_In_z_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f9/En-us-twenty-five.ogg' },
-        26: { mrChar: '२६', enChar: '26', mrUrl: 'https://dict.leo.org/audio/v2/v5ubk_f-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/En-us-twenty-six.ogg' },
-        27: { mrChar: '२७', enChar: '27', mrUrl: 'https://dict.leo.org/audio/v2/wYuY8wf-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b3/En-us-twenty-seven.ogg' },
-        28: { mrChar: '२८', enChar: '28', mrUrl: 'https://dict.leo.org/audio/v2/cIK5k_z_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e9/En-us-twenty-eight.ogg' },
-        29: { mrChar: '२९', enChar: '29', mrUrl: 'https://dict.leo.org/audio/v2/5YuYnvdvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/69/En-us-twenty-nine.ogg' },
-        30: { mrChar: '३०', enChar: '30', mrUrl: 'https://dict.leo.org/audio/v2/6omVnvdvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/En-us-thirty.ogg' },
-        31: { mrChar: '३१', enChar: '31', mrUrl: 'https://dict.leo.org/audio/v2/-YK7nvdvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/db/En-us-thirty-one.ogg' },
-        32: { mrChar: '३२', enChar: '32', mrUrl: 'https://dict.leo.org/audio/v2/nYK5nvdvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/cd/En-us-thirty-two.ogg' },
-        33: { mrChar: '३३', enChar: '33', mrUrl: 'https://dict.leo.org/audio/v2/fQmpnvdvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/En-us-thirty-three.ogg' },
-        34: { mrChar: '३४', enChar: '34', mrUrl: 'https://dict.leo.org/audio/v2/b4qbkvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e3/En-us-thirty-four.ogg' },
-        35: { mrChar: '३५', enChar: '35', mrUrl: 'https://dict.leo.org/audio/v2/rLqbkvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/En-us-thirty-five.ogg' },
-        36: { mrChar: '३६', enChar: '36', mrUrl: 'https://dict.leo.org/audio/v2/vYuWkvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/83/En-us-thirty-six.ogg' },
-        37: { mrChar: '३७', enChar: '37', mrUrl: 'https://dict.leo.org/audio/v2/-omWkvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/22/En-us-thirty-seven.ogg' },
-        38: { mrChar: '३८', enChar: '38', mrUrl: 'https://dict.leo.org/audio/v2/cYK7kvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/En-us-thirty-eight.ogg' },
-        39: { mrChar: '३९', enChar: '39', mrUrl: 'https://dict.leo.org/audio/v2/goa4kvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/07/En-us-thirty-nine.ogg' },
-        40: { mrChar: '४०', enChar: '40', mrUrl: 'https://dict.leo.org/audio/v2/woa2kvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/En-us-forty.ogg' }
+    // १ ते १० अंकांचे ऑडिओ ट्रॅक आणि अक्षरी रूप
+    const numberSounds = {
+        1: { mr: "https://dict.leo.org/audio/v2/Tz49nvdvW9fW69m4OU0WfQ.mp3", en: "https://upload.wikimedia.org/wikipedia/commons/2/25/En-us-one.ogg", mrChar: "एक", enChar: "One" },
+        2: { mr: "https://dict.leo.org/audio/v2/LkgknvdvW9fW69m4OU0WfQ.mp3", en: "https://upload.wikimedia.org/wikipedia/commons/f/f3/En-us-two.ogg", mrChar: "दोन", enChar: "Two" },
+        3: { mr: "https://dict.leo.org/audio/v2/T2P9nvdvW9fW69m4OU0WfQ.mp3", en: "https://upload.wikimedia.org/wikipedia/commons/e/e0/En-us-three.ogg", mrChar: "तीन", enChar: "Three" },
+        4: { mr: "https://dict.leo.org/audio/v2/n5ygnvdvW9fW69m4OU0WfQ.mp3", en: "https://upload.wikimedia.org/wikipedia/commons/7/75/En-us-four.ogg", mrChar: "चार", enChar: "Four" },
+        5: { mr: "https://dict.leo.org/audio/v2/9qHdnvdvW9fW69m4OU0WfQ.mp3", en: "https://upload.wikimedia.org/wikipedia/commons/0/02/En-us-five.ogg", mrChar: "पाच", enChar: "Five" },
+        6: { mr: "https://dict.leo.org/audio/v2/vAednvdvW9fW69m4OU0WfQ.mp3", en: "https://upload.wikimedia.org/wikipedia/commons/2/28/En-us-six.ogg", mrChar: "सहा", enChar: "Six" },
+        7: { mr: "https://dict.leo.org/audio/v2/g56dnvdvW9fW69m4OU0WfQ.mp3", en: "https://upload.wikimedia.org/wikipedia/commons/6/66/En-us-seven.ogg", mrChar: "सात", enChar: "Seven" },
+        8: { mr: "https://dict.leo.org/audio/v2/yACdnvdvW9fW69m4OU0WfQ.mp3", en: "https://upload.wikimedia.org/wikipedia/commons/d/df/En-us-eight.ogg", mrChar: "आठ", enChar: "Eight" },
+        9: { mr: "https://dict.leo.org/audio/v2/mDOgnvdvW9fW69m4OU0WfQ.mp3", en: "https://upload.wikimedia.org/wikipedia/commons/6/6f/En-us-nine.ogg", mrChar: "नऊ", enChar: "Nine" },
+        10: { mr: "https://dict.leo.org/audio/v2/mDognvdvW9fW69m4OU0WfQ.mp3", en: "https://upload.wikimedia.org/wikipedia/commons/a/a9/En-us-ten.ogg", mrChar: "दहा", enChar: "Ten" }
     };
 
-    function setLanguage(lang) {
+    let currentLang = 'mr'; 
+    let score = 0;
+    let targetNumber = null;
+
+    // खेळ सुरू करणे
+    nextQuestion();
+
+    // भाषा बदलणे
+    function switchLanguage(lang) {
         currentLang = lang;
-        document.getElementById("lang-mr").classList.toggle("active", lang === 'mr');
-        document.getElementById("lang-en").classList.toggle("active", lang === 'en');
-        document.getElementById("instruct-text").innerText = lang === 'mr' ? "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!" : "Count the pictures and select correct number!";
-        document.getElementById("next-question-btn").innerText = lang === 'mr' ? "पुढचे उदाहरण ➡️" : "Next Question ➡️";
+        document.getElementById("btn-mr").classList.toggle("active", lang === 'mr');
+        document.getElementById("btn-en").classList.toggle("active", lang === 'en');
         
-        // शुद्ध मराठी आणि इंग्रजी भाषा बदल
         if(lang === 'mr') {
-            document.getElementById("opt-1").innerText = "🔢 गट: १ ते १०";
-            document.getElementById("opt-2").innerText = "🔢 गट: ११ ते २०";
-            document.getElementById("opt-3").innerText = "🔢 गट: २१ ते ३०";
-            document.getElementById("opt-4").innerText = "🔢 गट: ३१ ते ४०";
+            document.getElementById("instruction-text").innerText = "अंक ऐकण्यासाठी खालील बटनावर क्लिक करा:";
+            document.getElementById("next-question-btn").innerText = "पुढील प्रश्न ➔";
         } else {
-            document.getElementById("opt-1").innerText = "🔢 Group: 1 to 10"; 
-            document.getElementById("opt-2").innerText = "🔢 Group: 11 to 20"; 
-            document.getElementById("opt-3").innerText = "🔢 Group: 21 to 30"; 
-            document.getElementById("opt-4").innerText = "🔢 Group: 31 to 40";
+            document.getElementById("instruction-text").innerText = "Click the button below to listen to the number:";
+            document.getElementById("next-question-btn").innerText = "Next Question ➔";
+        }
+        nextQuestion();
+    }
+
+    // नवीन प्रश्न तयार करणे
+    function nextQuestion() {
+        document.getElementById("feedback-view").innerText = "";
+        document.getElementById("slot-view").innerText = "";
+        document.getElementById("next-question-btn").style.display = "none";
+        
+        targetNumber = Math.floor(Math.random() * 10) + 1;
+        
+        let choices = [targetNumber];
+        while(choices.length < 4) {
+            let rand = Math.floor(Math.random() * 10) + 1;
+            if(!choices.includes(rand)) choices.push(rand);
         }
         
-        updateElementsLang();
-        let fb = document.getElementById("feedback-view");
-        if(fb && fb.innerText !== "") {
-            if(fb.innerText.includes("बरोबर") || fb.innerText.includes("Correct")) {
-                fb.innerText = lang === 'mr' ? "✓ बरोबर उत्तर आहे! 🎉" : "✓ Correct Answer! 🎉";
-            } else {
-                fb.innerText = lang === 'mr' ? "✗ चुकीचे उत्तर, पुन्हा प्रयत्न करा! 🙁" : "✗ Wrong answer, try again! 🙁";
-            }
-        }
-    }
-
-    function initGame() {
-        let rangePicker = document.getElementById("range-picker"); if (!rangePicker) return;
-        let rangeValue = rangePicker.value; let parts = rangeValue.split("-");
-        let minRange = parseInt(parts[0]); let maxRange = parseInt(parts[1]);
-        targetNumber = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
-        document.getElementById("slot-view").innerText = "?"; document.getElementById("feedback-view").innerText = ""; document.getElementById("next-question-btn").style.display = "none";
-        let emojiBox = document.getElementById("emoji-box"); emojiBox.innerHTML = ""; let randomEmoji = fruits[Math.floor(Math.random() * fruits.length)];
-        for(let i=0; i<targetNumber; i++) {
-            let span = document.createElement("span"); span.className = "animated-emoji"; span.innerText = randomEmoji; emojiBox.appendChild(span);
-        }
-        generateOptions(minRange, maxRange);
-    }
-
-    function generateOptions(min, max) {
-        let optionsSet = new Set(); optionsSet.add(targetNumber);
-        let startStart = targetNumber - Math.floor(Math.random() * 4);
-        if (startStart < min) startStart = min;
-        if (startStart + 3 > max) startStart = max - 3;
-        if (startStart < min) startStart = min; 
-
-        for (let i = 0; i < 4; i++) {
-            let currentNum = startStart + i;
-            if (currentNum >= min && currentNum <= max) {
-                optionsSet.add(currentNum);
-            }
-        }
-
-        while(optionsSet.size < 4) {
-            let fake = Math.floor(Math.random() * (max - min + 1)) + min; optionsSet.add(fake);
-        }
+        choices.sort(() => Math.random() - 0.5);
         
-        let optionsArray = Array.from(optionsSet).sort((a,b) => a - b);
-        let optionsBox = document.getElementById("options-box"); optionsBox.innerHTML = "";
-        optionsArray.forEach(num => {
-            let btn = document.createElement("button"); btn.className = "option-btn"; btn.setAttribute("data-value", num);
-            btn.innerText = currentLang === 'mr' ? numberSounds[num].mrChar : numberSounds[num].enChar;
-            btn.onclick = () => checkAnswer(num); optionsBox.appendChild(btn);
+        let btns = document.querySelectorAll(".option-btn");
+        btns.forEach((btn, idx) => {
+            btn.innerText = choices[idx];
+            btn.disabled = false;
         });
+
+        setTimeout(() => { playTargetSound(); }, 400);
     }
 
-    function updateElementsLang() {
-        let currentSlot = document.getElementById("slot-view").innerText;
-        if(currentSlot !== "?" && currentSlot !== "") {
-            document.getElementById("slot-view").innerText = currentLang === 'mr' ? numberSounds[targetNumber].mrChar : numberSounds[targetNumber].enChar;
-        }
-        let buttons = document.querySelectorAll(".option-btn");
-        buttons.forEach(btn => {
-            let val = parseInt(btn.getAttribute("data-value"));
-            btn.innerText = currentLang === 'mr' ? numberSounds[val].mrChar : numberSounds[val].enChar;
-        });
-    }
-
-    function playSoundFile(num) {
+    // मुख्य प्रश्न अंक वाजवणे
+    function playTargetSound() {
         let audioEl = document.getElementById("game-audio");
-        if(audioEl) {
-            audioEl.src = currentLang === 'mr' ? numberSounds[num].mrUrl : numberSounds[num].enUrl;
+        if(audioEl && targetNumber) {
+            audioEl.src = numberSounds[targetNumber][currentLang];
             audioEl.play().catch(e => console.log("Audio play blocked"));
         }
     }
 
-    function checkAnswer(chosenNum) {
-        playSoundFile(chosenNum);
-        if(chosenNum === targetNumber) {
-            score++; document.getElementById("score-view").innerText = "SCORE: " + score;
-            document.getElementById("slot-view").innerText = currentLang === 'mr' ? numberSounds[targetNumber].mrChar : numberSounds[targetNumber].enChar;
-            document.getElementById("feedback-view").style.color = "#10b981";
-            document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✓ बरोबर उत्तर आहे! 🎉" : "✓ Correct Answer! 🎉";
-            document.getElementById("next-question-btn").style.display = "block";
-        } else {
-            document.getElementById("feedback-view").style.color = "#ef4444";
-            document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✗ चुकीचे उत्तर, पुन्हा प्रयत्न करा! 🙁" : "✗ Wrong answer, try again! 🙁";
+    // क्लिक केलेल्या अंकाचा आवाज
+    function playSoundFile(num) {
+        let audioEl = document.getElementById("game-audio");
+        if(audioEl && numberSounds[num]) {
+            audioEl.src = numberSounds[num][currentLang];
+            audioEl.play().catch(e => console.log("Audio play blocked"));
         }
     }
-    window.onload = function() { initGame(); };
+
+    // उत्तर तपासणे आणि स्वतंत्र आवाज देणे
+    function checkAnswer(chosenNum) {
+        let numericChosen = parseInt(chosenNum);
+        playSoundFile(numericChosen);
+        
+        setTimeout(() => {
+            let audioEl = document.getElementById("game-audio");
+            let btns = document.querySelectorAll(".option-btn");
+            btns.forEach(btn => btn.disabled = true);
+            
+            if(numericChosen === targetNumber) {
+                score++; 
+                document.getElementById("score-view").innerText = "SCORE: " + score;
+                document.getElementById("slot-view").innerText = currentLang === 'mr' ? numberSounds[targetNumber].mrChar : numberSounds[targetNumber].enChar;
+                document.getElementById("feedback-view").style.color = "#10b981";
+                document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✓ बरोबर उत्तर आहे! 🎉" : "✓ Correct Answer! 🎉";
+                document.getElementById("next-question-btn").style.display = "block";
+                
+                // --- बरोबर उत्तराचा भाषेनुसार वेगळा आवाज ---
+                if(audioEl) {
+                    audioEl.src = currentLang === 'mr' 
+                        ? "https://dict.leo.org/audio/v2/r4mZ8vdvW9fW69m4OU0WfQ.mp3" // मराठीसाठी "बरोबर" ट्यून
+                        : "https://upload.wikimedia.org/wikipedia/commons/b/bc/En-us-correct.ogg"; // इंग्रजीसाठी "Correct" उच्चार
+                    audioEl.play().catch(e => console.log("Audio play blocked"));
+                }
+            } else {
+                document.getElementById("feedback-view").style.color = "#ef4444";
+                document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✗ चुकीचे उत्तर, पुन्हा प्रयत्न करा! 🙁" : "✗ Wrong answer, try again! 🙁";
+                
+                btns.forEach(btn => btn.disabled = false);
+
+                // --- चुकीच्या उत्तराचा भाषेनुसार वेगळा आवाज ---
+                if(audioEl) {
+                    audioEl.src = currentLang === 'mr' 
+                        ? "https://dict.leo.org/audio/v2/dYK5nvdvW9fW69m4OU0WfQ.mp3" // मराठीसाठी चुकीचा ट्यून
+                        : "https://upload.wikimedia.org/wikipedia/commons/e/ec/En-us-wrong.ogg"; // इंग्रजीसाठी "Wrong" उच्चार
+                    audioEl.play().catch(e => console.log("Audio play blocked"));
+                }
+            }
+        }, 800);
+    }
 </script>
 </body>
 </html>
