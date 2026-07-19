@@ -11,205 +11,34 @@
             --primary: #10b981;
             --accent: #3b82f6;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            background: var(--bg-gradient);
-            color: #f8fafc;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
-            user-select: none;
-        }
-
-        header {
-            width: 100%;
-            max-width: 450px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-
-        .back-btn {
-            color: #10b981;
-            text-decoration: none;
-            background: rgba(16, 185, 129, 0.1);
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 700;
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-
-        .score-badge {
-            background: #0ea5e9;
-            color: #fff;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 14px;
-        }
-
-        .controls-row {
-            width: 100%;
-            max-width: 450px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            gap: 10px;
-        }
-
-        .lang-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            background: #0f172a;
-            padding: 3px;
-            border-radius: 10px;
-        }
-
-        .lang-btn {
-            background: transparent;
-            border: none;
-            color: #94a3b8;
-            padding: 6px 12px;
-            font-size: 12px;
-            font-weight: 700;
-            border-radius: 7px;
-            cursor: pointer;
-        }
-
-        .lang-btn.active {
-            background: #10b981;
-            color: #fff;
-        }
-
-        .range-select {
-            background: #1e293b;
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 700;
-            outline: none;
-            flex: 1;
-        }
-
-        .game-panel {
-            background: #1e293b;
-            border: 2px solid rgba(255,255,255,0.05);
-            width: 100%;
-            max-width: 450px;
-            border-radius: 24px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            margin-bottom: 15px;
-        }
-
-        .instruction {
-            color: #38bdf8;
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .emoji-display-area {
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 16px;
-            min-height: 140px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px dashed rgba(255,255,255,0.1);
-            max-height: 250px;
-            overflow-y: auto;
-        }
-
-        .animated-emoji {
-            font-size: 32px;
-            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .answer-slot {
-            width: 65px;
-            height: 65px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 2px dashed #10b981;
-            border-radius: 16px;
-            margin: 0 auto 20px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: 800;
-            color: #10b981;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 25px;
-            min-height: 55px;
-        }
-
-        .option-btn {
-            background: #0f172a;
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #fff;
-            height: 55px;
-            border-radius: 14px;
-            font-size: 24px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
+        body { background: var(--bg-gradient); color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 15px; user-select: none; }
+        header { width: 100%; max-width: 450px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+        .back-btn { color: #10b981; text-decoration: none; background: rgba(16, 185, 129, 0.1); padding: 6px 14px; border-radius: 30px; font-size: 13px; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .score-badge { background: #0ea5e9; color: #fff; padding: 5px 15px; border-radius: 20px; font-weight: 800; font-size: 14px; }
+        .controls-row { width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
+        .lang-container { display: grid; grid-template-columns: 1fr 1fr; background: #0f172a; padding: 3px; border-radius: 10px; }
+        .lang-btn { background: transparent; border: none; color: #94a3b8; padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 7px; cursor: pointer; }
+        .lang-btn.active { background: #10b981; color: #fff; }
+        .range-select { background: #1e293b; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 10px; font-size: 14px; font-weight: 700; outline: none; flex: 1; }
+        .game-panel { background: #1e293b; border: 2px solid rgba(255,255,255,0.05); width: 100%; max-width: 450px; border-radius: 24px; padding: 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); margin-bottom: 15px; }
+        .instruction { color: #38bdf8; font-size: 15px; font-weight: 700; margin-bottom: 20px; }
+        .emoji-display-area { background: rgba(15, 23, 42, 0.6); border-radius: 16px; min-height: 140px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; padding: 20px; margin-bottom: 20px; border: 1px dashed rgba(255,255,255,0.1); max-height: 250px; overflow-y: auto; }
+        .animated-emoji { font-size: 32px; animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .answer-slot { width: 65px; height: 65px; background: rgba(16, 185, 129, 0.1); border: 2px dashed #10b981; border-radius: 16px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: #10b981; }
+        .options-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px; min-height: 55px; }
+        .option-btn { background: #0f172a; border: 1px solid rgba(255,255,255,0.08); color: #fff; height: 55px; border-radius: 14px; font-size: 24px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
         .option-btn:active { transform: scale(0.95); }
-
-        .next-btn {
-            width: 100%;
-            background: #10b981;
-            color: #0f172a;
-            border: none;
-            padding: 14px;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            display: none;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-
-        .feedback-text {
-            font-size: 15px;
-            font-weight: 700;
-            margin-top: 12px;
-        }
+        .next-btn { width: 100%; background: #10b981; color: #0f172a; border: none; padding: 14px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; display: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+        .feedback-text { font-size: 15px; font-weight: 700; margin-top: 12px; }
     </style>
 </head>
 <body>
-
     <header>
         <a href="ganit.html" class="back-btn">⬅ मागे</a>
         <div class="score-badge" id="score-view">SCORE: 0</div>
     </header>
-
     <div class="controls-row">
         <select class="range-select" id="range-picker" onchange="initGame()">
             <option id="opt-1" value="1-10">🔢 गट: १ ते १० (1 to 10)</option>
@@ -217,35 +46,24 @@
             <option id="opt-3" value="21-30">🔢 गट: २१ ते ३० (21 to 30)</option>
             <option id="opt-4" value="31-40">🔢 गट: ३१ ते ४० (31 to 40)</option>
         </select>
-
         <div class="lang-container">
             <button class="lang-btn active" id="lang-mr" onclick="setLanguage('mr')">मराठी</button>
             <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
         </div>
     </div>
-
     <div class="game-panel">
         <div class="instruction" id="instruct-text">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
-        
         <div class="emoji-display-area" id="emoji-box"></div>
-
         <div class="answer-slot" id="slot-view">?</div>
-
         <div class="options-grid" id="options-box"></div>
-
         <button class="next-btn" id="next-question-btn" onclick="initGame()">पुढचे उदाहरण ➡️</button>
         <div class="feedback-text" id="feedback-view"></div>
     </div>
-
     <audio id="game-audio"></audio>
-
 <script>
-    let score = 0;
-    let targetNumber = 0;
-    let currentLang = 'mr'; 
+    let score = 0; let targetNumber = 0; let currentLang = 'mr'; 
     const fruits = ['🍎', '🥭', '🍇', '🍓', '🍊', '🍉', '🍌', '🍍', '🔔', '⭐'];
-
-    const numberSounds = {
+        const numberSounds = {
         1: { mrChar: '१', enChar: '1', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Mr-एक.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/10/En-us-one.ogg' },
         2: { mrChar: '२', enChar: '2', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Mr-दोन.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/En-us-two.ogg' },
         3: { mrChar: '३', enChar: '3', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Mr-तीन.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/En-us-three.ogg' },
@@ -292,24 +110,17 @@
         currentLang = lang;
         document.getElementById("lang-mr").classList.toggle("active", lang === 'mr');
         document.getElementById("lang-en").classList.toggle("active", lang === 'en');
-        
         document.getElementById("instruct-text").innerText = lang === 'mr' ? "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!" : "Count the pictures and select correct number!";
         document.getElementById("next-question-btn").innerText = lang === 'mr' ? "पुढचे उदाहरण ➡️" : "Next Question ➡️";
-        
         if(lang === 'mr') {
             document.getElementById("opt-1").innerText = "🔢 गट: १ ते १० (1 to 10)";
             document.getElementById("opt-2").innerText = "🔢 गट: ११ ते २० (11 to 20)";
             document.getElementById("opt-3").innerText = "🔢 गट: २१ ते ३० (21 to 30)";
             document.getElementById("opt-4").innerText = "🔢 गट: ३१ ते ४० (31 to 40)";
         } else {
-            document.getElementById("opt-1").innerText = "🔢 Group: 1 to 10";
-            document.getElementById("opt-2").innerText = "🔢 Group: 11 to 20";
-            document.getElementById("opt-3").innerText = "🔢 Group: 21 to 30";
-            document.getElementById("opt-4").innerText = "🔢 Group: 31 to 40";
+            document.getElementById("opt-1").innerText = "🔢 Group: 1 to 10"; document.getElementById("opt-2").innerText = "🔢 Group: 11 to 20"; document.getElementById("opt-3").innerText = "🔢 Group: 21 to 30"; document.getElementById("opt-4").innerText = "🔢 Group: 31 to 40";
         }
-        
         updateElementsLang();
-        
         let fb = document.getElementById("feedback-view");
         if(fb && fb.innerText !== "") {
             if(fb.innerText.includes("बरोबर") || fb.innerText.includes("Correct")) {
@@ -321,54 +132,29 @@
     }
 
     function initGame() {
-        let rangePicker = document.getElementById("range-picker");
-        if (!rangePicker) return;
-        
-        let rangeValue = rangePicker.value;
-        let parts = rangeValue.split("-");
-        let minRange = parseInt(parts[0]);
-        let maxRange = parseInt(parts[1]);
-        
+        let rangePicker = document.getElementById("range-picker"); if (!rangePicker) return;
+        let rangeValue = rangePicker.value; let parts = rangeValue.split("-");
+        let minRange = parseInt(parts[0]); let maxRange = parseInt(parts[1]);
         targetNumber = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
-        
-        document.getElementById("slot-view").innerText = "?";
-        document.getElementById("feedback-view").innerText = "";
-        document.getElementById("next-question-btn").style.display = "none";
-        
-        let emojiBox = document.getElementById("emoji-box");
-        emojiBox.innerHTML = "";
-        let randomEmoji = fruits[Math.floor(Math.random() * fruits.length)];
-        
+        document.getElementById("slot-view").innerText = "?"; document.getElementById("feedback-view").innerText = ""; document.getElementById("next-question-btn").style.display = "none";
+        let emojiBox = document.getElementById("emoji-box"); emojiBox.innerHTML = ""; let randomEmoji = fruits[Math.floor(Math.random() * fruits.length)];
         for(let i=0; i<targetNumber; i++) {
-            let span = document.createElement("span");
-            span.className = "animated-emoji";
-            span.innerText = randomEmoji;
-            emojiBox.appendChild(span);
+            let span = document.createElement("span"); span.className = "animated-emoji"; span.innerText = randomEmoji; emojiBox.appendChild(span);
         }
-
         generateOptions(minRange, maxRange);
     }
 
     function generateOptions(min, max) {
-        let optionsSet = new Set();
-        optionsSet.add(targetNumber);
-        
+        let optionsSet = new Set(); optionsSet.add(targetNumber);
         while(optionsSet.size < 4) {
-            let fake = Math.floor(Math.random() * (max - min + 1)) + min;
-            optionsSet.add(fake);
+            let fake = Math.floor(Math.random() * (max - min + 1)) + min; optionsSet.add(fake);
         }
-        
         let optionsArray = Array.from(optionsSet).sort((a,b) => a - b);
-        let optionsBox = document.getElementById("options-box");
-        optionsBox.innerHTML = "";
-        
+        let optionsBox = document.getElementById("options-box"); optionsBox.innerHTML = "";
         optionsArray.forEach(num => {
-            let btn = document.createElement("button");
-            btn.className = "option-btn";
-            btn.setAttribute("data-value", num);
+            let btn = document.createElement("button"); btn.className = "option-btn"; btn.setAttribute("data-value", num);
             btn.innerText = currentLang === 'mr' ? numberSounds[num].mrChar : numberSounds[num].enChar;
-            btn.onclick = () => checkAnswer(num);
-            optionsBox.appendChild(btn);
+            btn.onclick = () => checkAnswer(num); optionsBox.appendChild(btn);
         });
     }
 
@@ -377,7 +163,6 @@
         if(currentSlot !== "?" && currentSlot !== "") {
             document.getElementById("slot-view").innerText = currentLang === 'mr' ? numberSounds[targetNumber].mrChar : numberSounds[targetNumber].enChar;
         }
-
         let buttons = document.querySelectorAll(".option-btn");
         buttons.forEach(btn => {
             let val = parseInt(btn.getAttribute("data-value"));
@@ -395,11 +180,18 @@
 
     function checkAnswer(chosenNum) {
         playSoundFile(chosenNum);
-
         if(chosenNum === targetNumber) {
-            score++;
-            document.getElementById("score-view").innerText = "SCORE: " + score;
+            score++; document.getElementById("score-view").innerText = "SCORE: " + score;
             document.getElementById("slot-view").innerText = currentLang === 'mr' ? numberSounds[targetNumber].mrChar : numberSounds[targetNumber].enChar;
-            
             document.getElementById("feedback-view").style.color = "#10b981";
-            document.getElementById("fee
+            document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✓ बरोबर उत्तर आहे! 🎉" : "✓ Correct Answer! 🎉";
+            document.getElementById("next-question-btn").style.display = "block";
+        } else {
+            document.getElementById("feedback-view").style.color = "#ef4444";
+            document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✗ चुकीचे उत्तर, पुन्हा प्रयत्न करा! 🙁" : "✗ Wrong answer, try again! 🙁";
+        }
+    }
+    window.onload = function() { initGame(); };
+</script>
+</body>
+</html>
