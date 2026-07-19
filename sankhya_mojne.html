@@ -127,14 +127,16 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 12px;
-            padding: 20px;
+            gap: 8px;
+            padding: 15px;
             margin-bottom: 20px;
             border: 1px dashed rgba(255,255,255,0.1);
+            max-height: 250px;
+            overflow-y: auto;
         }
 
         .animated-emoji {
-            font-size: 36px;
+            font-size: 26px;
             animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
@@ -171,7 +173,7 @@
             color: #fff;
             height: 55px;
             border-radius: 14px;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
@@ -208,9 +210,12 @@
     </header>
 
     <div class="controls-row">
+        <!-- 🛠️ फिक्स: आयडी देऊन पर्याय डायनॅमिक बदलण्यासाठी तयार केले -->
         <select class="range-select" id="range-picker" onchange="initGame()">
-            <option value="10">🔢 गट: १ ते १० (1 to 10)</option>
-            <option value="20">🔢 गट: ११ ते २० (11 to 20)</option>
+            <option id="opt-1" value="1-10">🔢 गट: १ ते १० (1 to 10)</option>
+            <option id="opt-2" value="11-20">🔢 गट: ११ ते २० (11 to 20)</option>
+            <option id="opt-3" value="21-30">🔢 गट: २१ ते ३० (21 to 30)</option>
+            <option id="opt-4" value="31-40">🔢 गट: ३१ ते ४० (31 to 40)</option>
         </select>
 
         <div class="lang-container">
@@ -220,7 +225,7 @@
     </div>
 
     <div class="game-panel">
-        <div class="instruction" id="instruct-text">चितrze मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
+        <div class="instruction" id="instruct-text">चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!</div>
         
         <div class="emoji-display-area" id="emoji-box"></div>
 
@@ -240,7 +245,6 @@
     let currentLang = 'mr'; 
     const fruits = ['🍎', '🥭', '🍇', '🍓', '🍊', '🍉', '🍌', '🍍', '🔔', '⭐'];
 
-    // 🌐 १ ते २० अंकांचे थेट मराठी आणि इंग्रजी ऑडिओ लिंक्स डेटाबेस (विकिपीडिया व विश्वसनीय सर्व्हरवरून)
     const numberSounds = {
         1: { mrChar: '१', enChar: '1', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Mr-एक.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/10/En-us-one.ogg' },
         2: { mrChar: '२', enChar: '2', mrUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Mr-दोन.ogg', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/En-us-two.ogg' },
@@ -261,7 +265,27 @@
         17: { mrChar: '१७', enChar: '17', mrUrl: 'https://dict.leo.org/audio/v2/b1T46wV-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/En-us-seventeen.ogg' },
         18: { mrChar: '१८', enChar: '18', mrUrl: 'https://dict.leo.org/audio/v2/rL4r1_z_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/53/En-us-eighteen.ogg' },
         19: { mrChar: '१९', enChar: '19', mrUrl: 'https://dict.leo.org/audio/v2/xX_Yv_wz_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/53/En-us-nineteen.ogg' },
-        20: { mrChar: '२०', enChar: '20', mrUrl: 'https://dict.leo.org/audio/v2/gIK7h_Xz_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/En-us-twenty.ogg' }
+        20: { mrChar: '२०', enChar: '20', mrUrl: 'https://dict.leo.org/audio/v2/gIK7h_Xz_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/En-us-twenty.ogg' },
+        21: { mrChar: '२१', enChar: '21', mrUrl: 'https://dict.leo.org/audio/v2/r4u28vdvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4b/En-us-twenty-one.ogg' },
+        22: { mrChar: '२२', enChar: '22', mrUrl: 'https://dict.leo.org/audio/v2/50kZkwf-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/85/En-us-twenty-two.ogg' },
+        23: { mrChar: '२३', enChar: '23', mrUrl: 'https://dict.leo.org/audio/v2/Q524g_f-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/64/En-us-twenty-three.ogg' },
+        24: { mrChar: '२४', enChar: '24', mrUrl: 'https://dict.leo.org/audio/v2/34aZnwf-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/07/En-us-twenty-four.ogg' },
+        25: { mrChar: '२५', enChar: '25', mrUrl: 'https://dict.leo.org/audio/v2/-X_In_z_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f9/En-us-twenty-five.ogg' },
+        26: { mrChar: '२६', enChar: '26', mrUrl: 'https://dict.leo.org/audio/v2/v5ubk_f-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/En-us-twenty-six.ogg' },
+        27: { mrChar: '२७', enChar: '27', mrUrl: 'https://dict.leo.org/audio/v2/wYuY8wf-B9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b3/En-us-twenty-seven.ogg' },
+        28: { mrChar: '२८', enChar: '28', mrUrl: 'https://dict.leo.org/audio/v2/cIK5k_z_Oa7O8rG_9qHWA.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e9/En-us-twenty-eight.ogg' },
+        29: { mrChar: '२९', enChar: '29', mrUrl: 'https://dict.leo.org/audio/v2/5YuYnvdvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/69/En-us-twenty-nine.ogg' },
+        30: { mrChar: '३०', enChar: '30', mrUrl: 'https://dict.leo.org/audio/v2/6omVnvdvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/En-us-thirty.ogg' },
+        31: { mrChar: '३१', enChar: '31', mrUrl: 'https://dict.leo.org/audio/v2/-YK7nvdvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/db/En-us-thirty-one.ogg' },
+        32: { mrChar: '३२', enChar: '32', mrUrl: 'https://dict.leo.org/audio/v2/nYK5nvdvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/cd/En-us-thirty-two.ogg' },
+        33: { mrChar: '३३', enChar: '33', mrUrl: 'https://dict.leo.org/audio/v2/fQmpnvdvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/En-us-thirty-three.ogg' },
+        34: { mrChar: '३४', enChar: '34', mrUrl: 'https://dict.leo.org/audio/v2/b4qbkvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e3/En-us-thirty-four.ogg' },
+        35: { mrChar: '३५', enChar: '35', mrUrl: 'https://dict.leo.org/audio/v2/rLqbkvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/En-us-thirty-five.ogg' },
+        36: { mrChar: '३६', enChar: '36', mrUrl: 'https://dict.leo.org/audio/v2/vYuWkvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/83/En-us-thirty-six.ogg' },
+        37: { mrChar: '३७', enChar: '37', mrUrl: 'https://dict.leo.org/audio/v2/-omWkvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/22/En-us-thirty-seven.ogg' },
+        38: { mrChar: '३८', enChar: '38', mrUrl: 'https://dict.leo.org/audio/v2/cYK7kvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/En-us-thirty-eight.ogg' },
+        39: { mrChar: '३९', enChar: '39', mrUrl: 'https://dict.leo.org/audio/v2/goa4kvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/07/En-us-thirty-nine.ogg' },
+        40: { mrChar: '४०', enChar: '40', mrUrl: 'https://dict.leo.org/audio/v2/woa2kvzvW9fW69m4OU0WfQ.mp3', enUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/En-us-forty.ogg' }
     };
 
     function setLanguage(lang) {
@@ -272,12 +296,37 @@
         document.getElementById("instruct-text").innerText = lang === 'mr' ? "चित्रे मोजा आणि योग्य अंक निवडून बॉक्स भरा!" : "Count the pictures and select correct number!";
         document.getElementById("next-question-btn").innerText = lang === 'mr' ? "पुढचे उदाहरण ➡️" : "Next Question ➡️";
         
+        // 🛠️ फिक्स: भाषा बदलताच ड्रॉपडाउन मधील मजकूर सुद्धा त्या त्या भाषेनुसार बदलेल
+        if(lang === 'mr') {
+            document.getElementById("opt-1").innerText = "🔢 गट: १ ते १०";
+            document.getElementById("opt-2").innerText = "🔢 गट: ११ ते २०";
+            document.getElementById("opt-3").innerText = "🔢 गट: २१ ते ३०";
+            document.getElementById("opt-4").innerText = "🔢 गट: ३१ ते ४०";
+        } else {
+            document.getElementById("opt-1").innerText = "🔢 Group: 1 to 10";
+            document.getElementById("opt-2").innerText = "🔢 Group: 11 to 20";
+            document.getElementById("opt-3").innerText = "🔢 Group: 21 to 30";
+            document.getElementById("opt-4").innerText = "🔢 Group: 31 to 40";
+        }
+        
         updateElementsLang();
+        
+        // 🛠️ फिक्स: भाषा बदलल्यावर फीडबॅक मजकूर चालू भाषेनुसार अपडेट करणे
+        let fb = document.getElementById("feedback-view");
+        if(fb.innerText !== "") {
+            if(fb.innerText.includes("बरोबर") || fb.innerText.includes("Correct")) {
+                fb.innerText = lang === 'mr' ? "✓ बरोबर उत्तर आहे! 🎉" : "✓ Correct Answer! 🎉";
+            } else {
+                fb.innerText = lang === 'mr' ? "✗ चुकीचे उत्तर, पुन्हा प्रयत्न करा! 🙁" : "✗ Wrong answer, try again! 🙁";
+            }
+        }
     }
 
     function initGame() {
-        let maxRange = parseInt(document.getElementById("range-picker").value);
-        let minRange = maxRange === 10 ? 1 : 11;
+        let rangeValue = document.getElementById("range-picker").value;
+        let parts = rangeValue.split("-");
+        let minRange = parseInt(parts[0]);
+        let maxRange = parseInt(parts[1]);
         
         targetNumber = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
         
@@ -336,7 +385,6 @@
     }
 
     function checkAnswer(chosenNum) {
-        // थेट ऑडिओ फाईल वाजवणे
         playSoundFile(chosenNum);
 
         if(chosenNum === targetNumber) {
@@ -348,30 +396,4 @@
             document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✓ बरोबर उत्तर आहे! 🎉" : "✓ Correct Answer! 🎉";
             document.getElementById("next-question-btn").style.display = "block";
         } else {
-            document.getElementById("feedback-view").style.color = "#ef4444";
-            document.getElementById("feedback-view").innerText = currentLang === 'mr' ? "✗ चुकीचे उत्तर, पुन्हा प्रयत्न करा! 🙁" : "✗ Wrong answer, try again! 🙁";
-        }
-    }
-
-    // 🎵 पूर्व-निर्धारित मानवी ऑडिओ फाईल प्ले करणारे इंजिन
-    function playSoundFile(num) {
-        let audioPlayer = document.getElementById("game-audio");
-        let audioUrl = currentLang === 'mr' ? numberSounds[num].mrUrl : numberSounds[num].enUrl;
-        
-        audioPlayer.src = audioUrl;
-        audioPlayer.load();
-        
-        let playPromise = audioPlayer.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(error => {
-                console.log("Audio playback interrupted");
-            });
-        }
-    }
-
-    window.onload = () => {
-        initGame();
-    };
-</script>
-</body>
-</html>
+            document.getElementByI
