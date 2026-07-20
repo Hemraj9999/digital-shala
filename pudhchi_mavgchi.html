@@ -276,9 +276,10 @@
     <!-- Top Bar -->
     <div class="top-navbar">
         <div class="lang-switch-box">
-            <input type="radio" id="lang-mr" name="lang-select" value="mr" checked onchange="updateLanguageUI()">
+            <!-- बदल: updateLanguageUI() ला true पॅरामीटर दिला जेणेकरून भाषा बदलताच नवीन प्रश्न येईल -->
+            <input type="radio" id="lang-mr" name="lang-select" value="mr" checked onchange="updateLanguageUI(true)">
             <label for="lang-mr">मराठी</label>
-            <input type="radio" id="lang-en" name="lang-select" value="en" onchange="updateLanguageUI()">
+            <input type="radio" id="lang-en" name="lang-select" value="en" onchange="updateLanguageUI(true)">
             <label for="lang-en">English</label>
         </div>
         <div class="score-board" id="score-board-count">SCORE: ०</div>
@@ -325,335 +326,372 @@
     <div class="action-control-area">
         <button class="primary-action-btn" id="action-btn" onclick="checkAnswer()">उत्तर तपासा</button>
     </div>
-    </div>
-    <script>
-    let score = 0, correctAns = 0, selectedAns = null;
-    let lastCorrectAns = 0;
-    let isReviewState = false;
-    let generatedOptions = [];
-    
-    let minRange = 1;
-    let maxRange = 10;
-    let gameType = "before"; 
-    let n1=1, n2=2, n3=3;
-    
-    const marathiDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
+</div>
 
-    // 🔊 बरोबर उत्तरासाठी आवाज (Success Audio Synth)
-    function playCorrectSound() {
-        let ctx = new (window.AudioContext || window.webkitAudioContext)();
-        let osc = ctx.createOscillator();
-        let gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        
-        // पहिली गोड नोट (D5)
-        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-        gain.gain.setValueAtTime(0.1, ctx.currentTime);
-        osc.start();
-        
-        // दुसरी उच्च नोट (A5) गेमिंग फीलसाठी
-        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1);
-        gain.gain.setValueAtTime(0.1, ctx.currentTime + 0.1);
-        
-        gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.4);
-        osc.stop(ctx.currentTime + 0.4);
-    }
-
-    // 🔊 चुकीच्या उत्तरासाठी बझर आवाज (Wrong Audio Synth)
-    function playWrongSound() {
-        let ctx = new (window.AudioContext || window.webkitAudioContext)();
-        let osc = ctx.createOscillator();
-        let gain = ctx.createGain();
-        osc.type = 'sawtooth'; // बझर इफेक्टसाठी सॉ-टूथ वेव्ह
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        
-        osc.frequency.setValueAtTime(130.81, ctx.currentTime); // C3 लो-टोन बेस
-        gain.gain.setValueAtTime(0.15, ctx.currentTime);
-        osc.start();
-        
-        gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.3);
-        osc.stop(ctx.currentTime + 0.3);
-    }
-
-    function convertToMarathi(number) {
-        if(number === "?") return "?";
-        return number.toString().split('').map(digit => marathiDigits[digit] || digit).join('');
-    }
-
-    function currentLanguage() {
-        let selected = document.querySelector('input[name="lang-select"]:checked');
-        return selected ? selected.value : "mr";
-    }
-
-    function onRangeDropdownChange() {
-        let dropdown = document.getElementById("range-select-dropdown");
-        let val = dropdown.value;
-        let parts = val.split("-");
-        minRange = parseInt(parts[0]);
-        maxRange = parseInt(parts[1]);
-        
-        score = 0;
-        lastCorrectAns = 0;
-        generateQuestion();
-    }
-
-    function updateLanguageUI() {
-        let lang = currentLanguage();
-        let btn = document.getElementById("action-btn");
-        let dropdown = document.getElementById("range-select-dropdown");
-        
-        if(lang === 'mr') {
-            document.getElementById("select-range-label").innerText = "🎯 अभ्यासासाठी संख्या गट निवडा:";
-            document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(score);
-            
-            dropdown.options[0].text = "🔢 गट: १ ते १०";
-            dropdown.options[1].text = "🔢 गट: ११ ते २०";
-            dropdown.options[2].text = "🔢 गट: २१ ते ३०";
-            dropdown.options[3].text = "🔢 गट: ३१ ते ४०";
-            dropdown.options[4].text = "🔢 गट: ४१ ते ५०";
-            dropdown.options[5].text = "🔢 गट: ५१ ते ६०";
-            dropdown.options[6].text = "🔢 गट: ६१ ते ७०";
-            dropdown.options[7].text = "🔢 गट: ७१ ते ८०";
-            dropdown.options[8].text = "🔢 गट: ८१ ते ९०";
-            dropdown.options[9].text = "🔢 गट: ९१ ते १००";
-        } else {
-            document.getElementById("select-range-label").innerText = "🎯 Select Number Group:";
-            document.getElementById("score-board-count").innerText = "SCORE: " + score;
-            
-            dropdown.options[0].text = "🔢 Group: 1 to 10";
-            dropdown.options[1].text = "🔢 Group: 11 to 20";
-            dropdown.options[2].text = "🔢 Group: 21 to 30";
-            dropdown.options[3].text = "🔢 Group: 31 to 40";
-            dropdown.options[4].text = "🔢 Group: 41 to 50";
-            dropdown.options[5].text = "🔢 Group: 51 to 60";
-            dropdown.options[6].text = "🔢 Group: 61 to 70";
-            dropdown.options[7].text = "🔢 Group: 71 to 80";
-            dropdown.options[8].text = "🔢 Group: 81 to 90";
-            dropdown.options[9].text = "🔢 Group: 91 to 100";
-        }
-
-        setInstructionText();
-        
-        let state = btn.getAttribute("data-state") || "check";
-        if(state === "next") {
-            btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
-        } else if(state === "retry") {
-            btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
-        } else {
-            btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
-        }
-
-        renderCurrentNumbersInBoxes();
-        renderOptions();
-    }
-
-    function setInstructionText() {
-        let lang = currentLanguage();
-        let inst = document.getElementById("instruction-text");
-        if(!inst) return;
-        if(gameType === "before") {
-            inst.innerText = (lang === 'mr') ? "🤔 आधीची संख्या ओळखा! (Before)" : "🤔 Find the Before Number!";
-        } else if(gameType === "after") {
-            inst.innerText = (lang === 'mr') ? "🤔 नंतरची संख्या ओळखा! (After)" : "🤔 Find the After Number!";
-        } else {
-            inst.innerText = (lang === 'mr') ? "🤔 मधली संख्या ओळखा! (Between)" : "🤔 Find the Middle Number!";
-        }
-    }
-
-    function setButtonState(state) {
-        let btn = document.getElementById("action-btn");
-        let lang = currentLanguage();
-        btn.setAttribute("data-state", state);
-        
-        if(state === "next") {
-            btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
-            btn.onclick = generateQuestion;
-        } else if(state === "retry") {
-            btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
-            btn.onclick = retryCurrentQuestion;
-        } else {
-            btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
-            btn.onclick = checkAnswer;
-        }
-    }
-
-    function generateQuestion() {
-        selectedAns = null;
-        isReviewState = false;
-        
-        const types = ["before", "after", "middle"];
-        gameType = types[Math.floor(Math.random() * types.length)];
-        
-        let rangeDiff = maxRange - minRange + 1;
-        let baseNum;
-        
-        do {
-            baseNum = Math.floor(Math.random() * (rangeDiff - 2)) + minRange; 
-        } while (baseNum === lastCorrectAns && rangeDiff > 3);
-        
-        lastCorrectAns = baseNum;
-
-        n1 = baseNum;
-        n2 = baseNum + 1;
-        n3 = baseNum + 2;
-
-        if (gameType === "before") correctAns = n1;
-        else if (gameType === "middle") correctAns = n2;
-        else correctAns = n3;
-
-        let res = document.getElementById("result-message");
-        if(res) res.innerText = "";
-        
-        let optionsSet = new Set();
-        optionsSet.add(correctAns);
-        
-        while(optionsSet.size < Math.min(4, rangeDiff)) {
-            let randOpt = Math.floor(Math.random() * rangeDiff) + minRange;
-            optionsSet.add(randOpt);
-        }
-        
-        if(optionsSet.size < 4) {
-            for(let i=minRange; i<=maxRange; i++) {
-                optionsSet.add(i);
-                if(optionsSet.size === 4) break;
-            }
-        }
-        
-        generatedOptions = Array.from(optionsSet).sort(() => Math.random() - 0.5);
-        
-        updateLanguageUI();
-        setButtonState("check");
-    }
-
-    function renderCurrentNumbersInBoxes() {
-        let lang = currentLanguage();
-        let b1 = document.getElementById("box-1");
-        let b2 = document.getElementById("box-2");
-        let b3 = document.getElementById("box-3");
-        
-        if(!b1 || !b2 || !b3) return;
-
-        b1.className = "num-box";
-        b2.className = "num-box";
-        b3.className = "num-box";
-
-        b1.innerText = (lang === 'mr') ? convertToMarathi(n1) : n1;
-        b2.innerText = (lang === 'mr') ? convertToMarathi(n2) : n2;
-        b3.innerText = (lang === 'mr') ? convertToMarathi(n3) : n3;
-
-        if(gameType === "before") {
-            b1.className = "num-box missing";
-            b1.innerText = (selectedAns !== null) ? ((lang === 'mr') ? convertToMarathi(selectedAns) : selectedAns) : "?";
-            if(selectedAns !== null) b1.classList.add("filled");
-        } else if(gameType === "middle") {
-            b2.className = "num-box missing";
-            b2.innerText = (selectedAns !== null) ? ((lang === 'mr') ? convertToMarathi(selectedAns) : selectedAns) : "?";
-            if(selectedAns !== null) b2.classList.add("filled");
-        } else if(gameType === "after") {
-            b3.className = "num-box missing";
-            b3.innerText = (selectedAns !== null) ? ((lang === 'mr') ? convertToMarathi(selectedAns) : selectedAns) : "?";
-            if(selectedAns !== null) b3.classList.add("filled");
-        }
-    }
-
-    function renderOptions() {
-        let lang = currentLanguage();
-        let optContainer = document.getElementById("options-container");
-        if(!optContainer) return;
-        
-        optContainer.innerHTML = "";
-        
-        generatedOptions.forEach(val => {
-            let displayVal = (lang === 'mr') ? convertToMarathi(val) : val;
-            let btn = document.createElement("button");
-            btn.className = "opt-btn";
-            btn.id = "opt-" + val;
-            btn.innerText = displayVal;
-            btn.onclick = function() { selectNumber(val); };
-            
-            if(isReviewState && val === selectedAns) {
-                btn.disabled = true;
-            }
-            
-            optContainer.appendChild(btn);
-        });
-    }
-
-    function selectNumber(val) {
-        selectedAns = val;
-        renderCurrentNumbersInBoxes();
-        
-        let btns = document.querySelectorAll(".opt-btn");
-        btns.forEach(b => b.style.borderColor = "rgba(0, 242, 254, 0.5)");
-        
-        let selectedBtn = document.getElementById("opt-" + val);
-        if(selectedBtn) {
-            selectedBtn.style.borderColor = "#00e676";
-        }
-    }
-
-    function checkAnswer() {
-        let lang = currentLanguage();
-        if(selectedAns === null) {
-            alert((lang === 'mr') ? "कृपया आधी एक अंक निवडा!" : "Please select a number first!");
-            return;
-        }
-        
-        let res = document.getElementById("result-message");
-        let activeMissingBox = document.querySelector(".num-box.missing");
-        
-        if(selectedAns === correctAns) {
-            playCorrectSound(); // 🔊 बरोबर उत्तराचा आवाज
-            res.innerText = (lang === 'mr') ? "✓ वा! अगदी बरोबर उत्तर आहे. 🎉" : "✓ Wow! Correct Answer. 🎉";
-            res.className = "result correct";
-            if(activeMissingBox) activeMissingBox.className = "num-box missing filled success-state";
-            
-            if(!isReviewState) {
-                score++;
-                document.getElementById("score-board-count").innerText = "SCORE: " + ((lang === 'mr') ? convertToMarathi(score) : score);
-            }
-            disableAllOptions();
-            setButtonState("next");
-        } else {
-            playWrongSound(); // 🔊 चुकीच्या उत्तराचा आवाज
-            res.innerText = (lang === 'mr') ? "✗ चुकीचे उत्तर! पुन्हा प्रयत्न करा." : "✗ Wrong Answer! Try again.";
-            res.className = "result wrong";
-            if(activeMissingBox) activeMissingBox.className = "num-box missing filled error-state";
-            
-            let badBtn = document.getElementById(`opt-${selectedAns}`);
-            if(badBtn) badBtn.disabled = true;
-            isReviewState = true; 
-            setButtonState("retry");
-        }
-    }
-
-    function disableAllOptions() {
-        let btns = document.querySelectorAll(".opt-btn");
-        btns.forEach(b => b.disabled = true);
-    }
-
-    function retryCurrentQuestion() {
-        selectedAns = null;
-        isReviewState = false;
-        renderCurrentNumbersInBoxes();
-        document.getElementById("result-message").innerText = "";
-        
-        generatedOptions.forEach(val => {
-            let btn = document.getElementById(`opt-${val}`);
-            if(btn) {
-                btn.disabled = false;
-                btn.style.borderColor = "rgba(0, 242, 254, 0.5)";
-            }
-        });
-        setButtonState("check");
-    }
-
-    window.onload = function() {
-        generateQuestion();
-    };
-</script>
+<script src="script.js"></script>
 </body>
 </html>
+let score = 0, correctAns = 0, selectedAns = null;
+let lastCorrectAns = 0;
+let isReviewState = false;
+let generatedOptions = [];
+
+let minRange = 1;
+let maxRange = 10;
+let gameType = "before"; 
+let n1=1, n2=2, n3=3;
+
+let audioCtx = null; // ग्लोबल ऑडिओ कॉन्टेक्स्ट
+
+const marathiDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
+
+// 🔊 ऑडिओ परवानगी सुरू करणे (GitHub/Browser सुरक्षेसाठी अत्यंत आवश्यक)
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+// युझरने स्क्रीनवर कुठेही पहिली क्लिक किंवा टच करताच ऑडिओ सिस्टीम ॲक्टिव्हेट होईल
+window.addEventListener('click', initAudio, { once: true });
+window.addEventListener('touchstart', initAudio, { once: true });
+
+// 🔊 बरोबर उत्तरासाठी आवाज (Updated for GitHub/Browsers)
+function playCorrectSound() {
+    try {
+        initAudio();
+        if (!audioCtx) return;
+
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        // पहिली गोड नोट (D5)
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        osc.start();
+        
+        // दुसरी उच्च नोट (A5)
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime + 0.1);
+        
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.4);
+        osc.stop(audioCtx.currentTime + 0.4);
+    } catch (e) {
+        console.log("Audio play blocked by browser:", e);
+    }
+}
+
+// 🔊 चुकीच्या उत्तरासाठी बझर आवाज (Updated for GitHub/Browsers)
+function playWrongSound() {
+    try {
+        initAudio();
+        if (!audioCtx) return;
+
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.type = 'sawtooth'; 
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.frequency.setValueAtTime(130.81, audioCtx.currentTime); 
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        osc.start();
+        
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+        osc.stop(audioCtx.currentTime + 0.3);
+    } catch (e) {
+        console.log("Audio play blocked by browser:", e);
+    }
+}
+
+function convertToMarathi(number) {
+    if(number === "?") return "?";
+    return number.toString().split('').map(digit => marathiDigits[digit] || digit).join('');
+}
+
+function currentLanguage() {
+    let selected = document.querySelector('input[name="lang-select"]:checked');
+    return selected ? selected.value : "mr";
+}
+
+function onRangeDropdownChange() {
+    let dropdown = document.getElementById("range-select-dropdown");
+    let val = dropdown.value;
+    let parts = val.split("-");
+    minRange = parseInt(parts[0]);
+    maxRange = parseInt(parts[1]);
+    
+    score = 0;
+    lastCorrectAns = 0;
+    generateQuestion();
+}
+
+// बदल: changeQuestion पॅरामीटर जोडला, जेणेकरून भाषा बदलल्यास उदाहरण देखील बदलेल
+function updateLanguageUI(changeQuestion = false) {
+    let lang = currentLanguage();
+    let btn = document.getElementById("action-btn");
+    let dropdown = document.getElementById("range-select-dropdown");
+    
+    if(lang === 'mr') {
+        document.getElementById("select-range-label").innerText = "🎯 अभ्यासासाठी संख्या गट निवडा:";
+        document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(score);
+        
+        dropdown.options[0].text = "🔢 गट: १ ते १०";
+        dropdown.options[1].text = "🔢 गट: ११ ते २०";
+        dropdown.options[2].text = "🔢 गट: २१ ते ३०";
+        dropdown.options[3].text = "🔢 गट: ३१ ते ४०";
+        dropdown.options[4].text = "🔢 गट: ४१ ते ५०";
+        dropdown.options[5].text = "🔢 गट: ५१ ते ६०";
+        dropdown.options[6].text = "🔢 गट: ६१ ते ७०";
+        dropdown.options[7].text = "🔢 गट: ७१ ते ८०";
+        dropdown.options[8].text = "🔢 गट: ८१ ते ९०";
+        dropdown.options[9].text = "🔢 गट: ९१ ते १००";
+    } else {
+        document.getElementById("select-range-label").innerText = "🎯 Select Number Group:";
+        document.getElementById("score-board-count").innerText = "SCORE: " + score;
+        
+        dropdown.options[0].text = "🔢 Group: 1 to 10";
+        dropdown.options[1].text = "🔢 Group: 11 to 20";
+        dropdown.options[2].text = "🔢 Group: 21 to 30";
+        dropdown.options[3].text = "🔢 Group: 31 to 40";
+        dropdown.options[4].text = "🔢 Group: 41 to 50";
+        dropdown.options[5].text = "🔢 Group: 51 to 60";
+        dropdown.options[6].text = "🔢 Group: 61 to 70";
+        dropdown.options[7].text = "🔢 Group: 71 to 80";
+        dropdown.options[8].text = "🔢 Group: 81 to 90";
+        dropdown.options[9].text = "🔢 Group: 91 to 100";
+    }
+
+    // जर युझरने भाषा बदलली असेल, तर नवीन उदाहरण तयार करा
+    if (changeQuestion) {
+        generateQuestion();
+        return; 
+    }
+
+    setInstructionText();
+    
+    let state = btn.getAttribute("data-state") || "check";
+    if(state === "next") {
+        btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
+    } else if(state === "retry") {
+        btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
+    } else {
+        btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
+    }
+
+    renderCurrentNumbersInBoxes();
+    renderOptions();
+}
+
+function setInstructionText() {
+    let lang = currentLanguage();
+    let inst = document.getElementById("instruction-text");
+    if(!inst) return;
+    if(gameType === "before") {
+        inst.innerText = (lang === 'mr') ? "🤔 आधीची संख्या ओळखा! (Before)" : "🤔 Find the Before Number!";
+    } else if(gameType === "after") {
+        inst.innerText = (lang === 'mr') ? "🤔 नंतरची संख्या ओळखा! (After)" : "🤔 Find the After Number!";
+    } else {
+        inst.innerText = (lang === 'mr') ? "🤔 मधली संख्या ओळखा! (Between)" : "🤔 Find the Middle Number!";
+    }
+}
+
+function setButtonState(state) {
+    let btn = document.getElementById("action-btn");
+    let lang = currentLanguage();
+    btn.setAttribute("data-state", state);
+    
+    if(state === "next") {
+        btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
+        btn.onclick = generateQuestion;
+    } else if(state === "retry") {
+        btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
+        btn.onclick = retryCurrentQuestion;
+    } else {
+        btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
+        btn.onclick = checkAnswer;
+    }
+}
+
+function generateQuestion() {
+    selectedAns = null;
+    isReviewState = false;
+    
+    const types = ["before", "after", "middle"];
+    gameType = types[Math.floor(Math.random() * types.length)];
+    
+    let rangeDiff = maxRange - minRange + 1;
+    let baseNum;
+    
+    do {
+        baseNum = Math.floor(Math.random() * (rangeDiff - 2)) + minRange; 
+    } while (baseNum === lastCorrectAns && rangeDiff > 3);
+    
+    lastCorrectAns = baseNum;
+
+    n1 = baseNum;
+    n2 = baseNum + 1;
+    n3 = baseNum + 2;
+
+    if (gameType === "before") correctAns = n1;
+    else if (gameType === "middle") correctAns = n2;
+    else correctAns = n3;
+
+    let res = document.getElementById("result-message");
+    if(res) res.innerText = "";
+    
+    let optionsSet = new Set();
+    optionsSet.add(correctAns);
+    
+    while(optionsSet.size < Math.min(4, rangeDiff)) {
+        let randOpt = Math.floor(Math.random() * rangeDiff) + minRange;
+        optionsSet.add(randOpt);
+    }
+    
+    if(optionsSet.size < 4) {
+        for(let i=minRange; i<=maxRange; i++) {
+            optionsSet.add(i);
+            if(optionsSet.size === 4) break;
+        }
+    }
+    
+    generatedOptions = Array.from(optionsSet).sort(() => Math.random() - 0.5);
+    
+    updateLanguageUI(false); // रिकर्सिव्ह लूप टाळण्यासाठी इथे false ठेवले आहे
+    setButtonState("check");
+}
+
+function renderCurrentNumbersInBoxes() {
+    let lang = currentLanguage();
+    let b1 = document.getElementById("box-1");
+    let b2 = document.getElementById("box-2");
+    let b3 = document.getElementById("box-3");
+    
+    if(!b1 || !b2 || !b3) return;
+
+    b1.className = "num-box";
+    b2.className = "num-box";
+    b3.className = "num-box";
+
+    b1.innerText = (lang === 'mr') ? convertToMarathi(n1) : n1;
+    b2.innerText = (lang === 'mr') ? convertToMarathi(n2) : n2;
+    b3.innerText = (lang === 'mr') ? convertToMarathi(n3) : n3;
+
+    if(gameType === "before") {
+        b1.className = "num-box missing";
+        b1.innerText = (selectedAns !== null) ? ((lang === 'mr') ? convertToMarathi(selectedAns) : selectedAns) : "?";
+        if(selectedAns !== null) b1.classList.add("filled");
+    } else if(gameType === "middle") {
+        b2.className = "num-box missing";
+        b2.innerText = (selectedAns !== null) ? ((lang === 'mr') ? convertToMarathi(selectedAns) : selectedAns) : "?";
+        if(selectedAns !== null) b2.classList.add("filled");
+    } else if(gameType === "after") {
+        b3.className = "num-box missing";
+        b3.innerText = (selectedAns !== null) ? ((lang === 'mr') ? convertToMarathi(selectedAns) : selectedAns) : "?";
+        if(selectedAns !== null) b3.classList.add("filled");
+    }
+}
+
+function renderOptions() {
+    let lang = currentLanguage();
+    let optContainer = document.getElementById("options-container");
+    if(!optContainer) return;
+    
+    optContainer.innerHTML = "";
+    
+    generatedOptions.forEach(val => {
+        let displayVal = (lang === 'mr') ? convertToMarathi(val) : val;
+        let btn = document.createElement("button");
+        btn.className = "opt-btn";
+        btn.id = "opt-" + val;
+        btn.innerText = displayVal;
+        btn.onclick = function() { selectNumber(val); };
+        
+        if(isReviewState && val === selectedAns) {
+            btn.disabled = true;
+        }
+        
+        optContainer.appendChild(btn);
+    });
+}
+
+function selectNumber(val) {
+    initAudio(); // सुरक्षिततेसाठी क्लिकवर ऑडिओ सिस्टीम ट्रिगर करणे
+    selectedAns = val;
+    renderCurrentNumbersInBoxes();
+    
+    let btns = document.querySelectorAll(".opt-btn");
+    btns.forEach(b => b.style.borderColor = "rgba(0, 242, 254, 0.5)");
+    
+    let selectedBtn = document.getElementById("opt-" + val);
+    if(selectedBtn) {
+        selectedBtn.style.borderColor = "#00e676";
+    }
+}
+
+function checkAnswer() {
+    initAudio();
+    let lang = currentLanguage();
+    if(selectedAns === null) {
+        alert((lang === 'mr') ? "कृपया आधी एक अंक निवडा!" : "Please select a number first!");
+        return;
+    }
+    
+    let res = document.getElementById("result-message");
+    let activeMissingBox = document.querySelector(".num-box.missing");
+    
+    if(selectedAns === correctAns) {
+        playCorrectSound(); // 🔊 बरोबर उत्तराचा परफेक्ट आवाज
+        res.innerText = (lang === 'mr') ? "✓ वा! अगदी बरोबर उत्तर आहे. 🎉" : "✓ Wow! Correct Answer. 🎉";
+        res.className = "result correct";
+        if(activeMissingBox) activeMissingBox.className = "num-box missing filled success-state";
+        
+        if(!isReviewState) {
+            score++;
+            document.getElementById("score-board-count").innerText = "SCORE: " + ((lang === 'mr') ? convertToMarathi(score) : score);
+        }
+        disableAllOptions();
+        setButtonState("next");
+    } else {
+        playWrongSound(); // 🔊 चुकीच्या उत्तराचा परफेक्ट बझर आवाज
+        res.innerText = (lang === 'mr') ? "✗ चुकीचे उत्तर! पुन्हा प्रयत्न करा." : "✗ Wrong Answer! Try again.";
+        res.className = "result wrong";
+        if(activeMissingBox) activeMissingBox.className = "num-box missing filled error-state";
+        
+        let badBtn = document.getElementById(`opt-${selectedAns}`);
+        if(badBtn) badBtn.disabled = true;
+        isReviewState = true; 
+        setButtonState("retry");
+    }
+}
+
+function disableAllOptions() {
+    let btns = document.querySelectorAll(".opt-btn");
+    btns.forEach(b => b.disabled = true);
+}
+
+function retryCurrentQuestion() {
+    selectedAns = null;
+    isReviewState = false;
+    renderCurrentNumbersInBoxes();
+    document.getElementById("result-message").innerText = "";
+    
+    generatedOptions.forEach(val => {
+        let btn = document.getElementById(`opt-${val}`);
+        if(btn) {
+            btn.disabled = false;
+            btn.style.borderColor = "rgba(0, 242, 254, 0.5)";
+        }
+    });
+    setButtonState("check");
+}
+
+window.onload = function() {
+    generateQuestion();
+};
