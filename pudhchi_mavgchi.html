@@ -136,7 +136,7 @@
         </p>
         
         <select id="group-select" class="select-box">
-            <!-- ऑप्शन्स खालील JavaScript द्वारे आपोआप येतील -->
+            <!-- ऑप्शन्स खालील JavaScript द्वारे आपोाप येतील -->
         </select>
 
         <h3>🤔 <span id="text-question">Tell the next (following) number:</span></h3>
@@ -146,68 +146,67 @@
         <button class="action-btn" id="btn-check">Check Answer</button>
     </div>
 
-    <!-- ३. JavaScript विभाग (योग्य टॅगसह) -->
-    <script>
-        // भाषेचा डेटाबेस
-        const langData = {
-            marathi: {
-                scoreLabel: "SCORE:",
-                selectGroup: "संख्या गट निवडा:",
-                question: "या संख्येच्या नंतरची (पुढची) संख्या सांगा:",
-                checkBtn: "उत्तर तपासा",
-                options: [
-                    { value: "1-10", text: "🔢 गट: १ ते १०" },
-                    { value: "11-20", text: "🔢 गट: ११ ते २०" }
-                ]
-            },
-            english: {
-                scoreLabel: "SCORE:",
-                selectGroup: "Select Number Group:",
-                question: "Tell the next (following) number:",
-                checkBtn: "Check Answer",
-                options: [
-                    { value: "1-10", text: "🔢 Group: 1 to 10" },
-                    { value: "11-20", text: "🔢 Group: 11 to 20" }
-                ]
-            }
-        };
-
-        // सुरुवातीची भाषा
-        let currentLang = 'english'; 
-
-        // भाषा बदलणारे फंक्शन
-        function changeLanguage(lang) {
-            currentLang = lang;
-            
-            // बटण हायलाईट बदलणे
-            document.getElementById('btn-marathi').classList.toggle('active', lang === 'marathi');
-            document.getElementById('btn-english').classList.toggle('active', lang === 'english');
-            
-            // स्क्रीनवरील मजकूर बदलणे
-            document.getElementById('text-score-label').innerText = langData[lang].scoreLabel;
-            document.getElementById('text-select-group').innerText = langData[lang].selectGroup;
-            document.getElementById('text-question').innerText = langData[lang].question;
-            document.getElementById('btn-check').innerText = langData[lang].checkBtn;
-            
-            // ड्रॉपडाउन ऑप्शन्स बदलणे
-            const selectBox = document.getElementById('group-select');
-            const currentSelection = selectBox.value;
-            
-            selectBox.innerHTML = "";
-            langData[lang].options.forEach(opt => {
-                let optionEl = document.createElement('option');
-                optionEl.value = opt.value;
-                optionEl.text = opt.text;
-                if(opt.value === currentSelection) optionEl.selected = true;
-                selectBox.appendChild(optionEl);
-            });
-        }
-
-        // पेज लोड झाल्यावर रन होणारे कोड
-        window.onload = function() {
-            changeLanguage(currentLang);
-        };
-    </script>
+    <!-- भाग २ मधील JavaScript फाईल इथे लिंक केली आहे -->
+    <script src="script.js"></script>
 
 </body>
-</html>
+                                                          </html>
+// १. भाषेचा डेटाबेस (मराठी आणि इंग्रजी शब्द)
+const langData = {
+    marathi: {
+        scoreLabel: "SCORE:",
+        selectGroup: "संख्या गट निवडा:",
+        question: "या संख्येच्या नंतरची (पुढची) संख्या सांगा:",
+        checkBtn: "उत्तर तपासा",
+        options: [
+            { value: "1-10", text: "🔢 गट: १ ते १०" },
+            { value: "11-20", text: "🔢 गट: ११ ते २०" }
+        ]
+    },
+    english: {
+        scoreLabel: "SCORE:",
+        selectGroup: "Select Number Group:",
+        question: "Tell the next (following) number:",
+        checkBtn: "Check Answer",
+        options: [
+            { value: "1-10", text: "🔢 Group: 1 to 10" },
+            { value: "11-20", text: "🔢 Group: 11 to 20" }
+        ]
+    }
+};
+
+// सुरुवातीची डिफॉल्ट भाषा
+let currentLang = 'english'; 
+
+// २. भाषा बदलणारे मुख्य फंक्शन
+function changeLanguage(lang) {
+    currentLang = lang;
+    
+    // बटणांचे ॲक्टिव्ह स्टेटस बदलणे (हायलाईट करणे)
+    document.getElementById('btn-marathi').classList.toggle('active', lang === 'marathi');
+    document.getElementById('btn-english').classList.toggle('active', lang === 'english');
+    
+    // स्क्रीनवरील सर्व मजकूर निवडलेल्या भाषेनुसार बदलणे
+    document.getElementById('text-score-label').innerText = langData[lang].scoreLabel;
+    document.getElementById('text-select-group').innerText = langData[lang].selectGroup;
+    document.getElementById('text-question').innerText = langData[lang].question;
+    document.getElementById('btn-check').innerText = langData[lang].checkBtn;
+    
+    // ड्रॉपडाउन (Select Box) मधील ऑप्शन्स बदलणे
+    const selectBox = document.getElementById('group-select');
+    const currentSelection = selectBox.value; // सध्या सिलेक्ट केलेला ग्रुप लक्षात ठेवण्यासाठी
+    
+    selectBox.innerHTML = "";
+    langData[lang].options.forEach(opt => {
+        let optionEl = document.createElement('option');
+        optionEl.value = opt.value;
+        optionEl.text = opt.text;
+        if(opt.value === currentSelection) optionEl.selected = true;
+        selectBox.appendChild(optionEl);
+    });
+}
+
+// ३. पेज पूर्ण लोड झाल्यावर पहिली भाषा सेट करणे
+window.onload = function() {
+    changeLanguage(currentLang);
+};
