@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Number Game</title>
     <style>
-        /* --- मुख्य डिझाईन आणि पार्श्वभूमी (CSS) --- */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Arial', sans-serif;
-            background-color: #0d2347; /* गडद निळा रंग */
+            background-color: #0d2347;
             color: white;
             display: flex;
             flex-direction: column;
@@ -18,7 +17,6 @@
             min-height: 100vh;
         }
 
-        /* --- भाषा बटण विभाग --- */
         .lang-container {
             margin-top: 20px;
             background-color: #09172e;
@@ -46,7 +44,6 @@
             box-shadow: 0 0 10px #00bcd4;
         }
 
-        /* --- मुख्य गेम कार्ड --- */
         .game-screen {
             width: 90%;
             max-width: 400px;
@@ -125,7 +122,7 @@
         <button id="btn-english" class="lang-btn active" onclick="changeLanguage('english')">English</button>
     </div>
 
-    <!-- २. मुख्य गेम स्क्रीन (एकच स्क्रीन) -->
+    <!-- २. मुख्य गेम स्क्रीन -->
     <div class="game-screen">
         <div class="score-box">
             <span id="text-score-label">SCORE:</span> <span id="score-val">0</span>
@@ -136,7 +133,7 @@
         </p>
         
         <select id="group-select" class="select-box">
-            <!-- ऑप्शन्स खालील JavaScript द्वारे आपोाप येतील -->
+            <!-- ऑप्शन्स JavaScript द्वारे येतील -->
         </select>
 
         <h3>🤔 <span id="text-question">Tell the next (following) number:</span></h3>
@@ -146,12 +143,12 @@
         <button class="action-btn" id="btn-check">Check Answer</button>
     </div>
 
-    <!-- भाग २ मधील JavaScript फाईल इथे लिंक केली आहे -->
+    <!-- JavaScript फाईलची लिंक (या फाईलच्या खाली कोणताही मजकूर नसावा) -->
     <script src="script.js"></script>
 
 </body>
-                                                          </html>
-// १. भाषेचा डेटाबेस (मराठी आणि इंग्रजी शब्द)
+</html>
+// १. भाषेचा डेटाबेस
 const langData = {
     marathi: {
         scoreLabel: "SCORE:",
@@ -178,15 +175,20 @@ const langData = {
 // सुरुवातीची डिफॉल्ट भाषा
 let currentLang = 'english'; 
 
-// २. भाषा बदलणारे मुख्य फंक्शन
+// २. भाषा बदलणारे फंक्शन
 function changeLanguage(lang) {
     currentLang = lang;
     
-    // बटणांचे ॲक्टिव्ह स्टेटस बदलणे (हायलाईट करणे)
-    document.getElementById('btn-marathi').classList.toggle('active', lang === 'marathi');
-    document.getElementById('btn-english').classList.toggle('active', lang === 'english');
+    // बटणांचे हायलाईट स्टेटस बदलणे
+    const btnMarathi = document.getElementById('btn-marathi');
+    const btnEnglish = document.getElementById('btn-english');
     
-    // स्क्रीनवरील सर्व मजकूर निवडलेल्या भाषेनुसार बदलणे
+    if (btnMarathi && btnEnglish) {
+        btnMarathi.classList.toggle('active', lang === 'marathi');
+        btnEnglish.classList.toggle('active', lang === 'english');
+    }
+    
+    // स्क्रीनवरील मजकूर बदलणे
     document.getElementById('text-score-label').innerText = langData[lang].scoreLabel;
     document.getElementById('text-select-group').innerText = langData[lang].selectGroup;
     document.getElementById('text-question').innerText = langData[lang].question;
@@ -194,19 +196,21 @@ function changeLanguage(lang) {
     
     // ड्रॉपडाउन (Select Box) मधील ऑप्शन्स बदलणे
     const selectBox = document.getElementById('group-select');
-    const currentSelection = selectBox.value; // सध्या सिलेक्ट केलेला ग्रुप लक्षात ठेवण्यासाठी
-    
-    selectBox.innerHTML = "";
-    langData[lang].options.forEach(opt => {
-        let optionEl = document.createElement('option');
-        optionEl.value = opt.value;
-        optionEl.text = opt.text;
-        if(opt.value === currentSelection) optionEl.selected = true;
-        selectBox.appendChild(optionEl);
-    });
+    if (selectBox) {
+        const currentSelection = selectBox.value;
+        selectBox.innerHTML = "";
+        
+        langData[lang].options.forEach(opt => {
+            let optionEl = document.createElement('option');
+            optionEl.value = opt.value;
+            optionEl.text = opt.text;
+            if (opt.value === currentSelection) optionEl.selected = true;
+            selectBox.appendChild(optionEl);
+        });
+    }
 }
 
-// ३. पेज पूर्ण लोड झाल्यावर पहिली भाषा सेट करणे
+// ३. पेज लोड झाल्यावर पहिली भाषा लोड करणे
 window.onload = function() {
     changeLanguage(currentLang);
 };
