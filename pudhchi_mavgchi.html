@@ -1,86 +1,213 @@
-<!-- १. भाषा निवडण्याचा विभाग (Language Toggle) -->
-<div class="lang-container">
-    <button id="btn-marathi" class="lang-btn" onclick="changeLanguage('marathi')">मराठी</button>
-    <button id="btn-english" class="lang-btn active" onclick="changeLanguage('english')">English</button>
-</div>
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Game</title>
+    <style>
+        /* --- मुख्य डिझाईन आणि पार्श्वभूमी (CSS) --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #0d2347; /* गडद निळा रंग */
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-<!-- २. मुख्य गेम स्क्रीन (फक्त एकच स्क्रीन राहील) -->
-<div class="game-screen">
-    <!-- स्कोर बॉक्स -->
-    <div class="score-box"><span id="text-score-label">SCORE:</span> <span id="score-val">0</span></div>
-    
-    <!-- संख्या गट निवड -->
-    <p>🎯 <span id="text-select-group">Select Number Group:</span></p>
-    <select id="group-select" class="select-box" onchange="onGroupChange()">
-        <!-- ऑप्शन्स JavaScript द्वारे डायनॅमिकली अपडेट होतील -->
-    </select>
+        /* --- भाषा बटण विभाग --- */
+        .lang-container {
+            margin-top: 20px;
+            background-color: #09172e;
+            padding: 5px;
+            border-radius: 25px;
+            display: flex;
+            border: 1px solid #1e3d6b;
+        }
 
-    <!-- प्रश्न -->
-    <h3>🤔 <span id="text-question">Tell the next (following) number:</span></h3>
-    
-    <!-- प्रश्न दाखवणारा मुख्य बॉक्स -->
-    <div class="question-card" id="display-number">?</div>
-    
-    <!-- उत्तर तपासण्याचे बटण -->
-    <button class="action-btn" id="btn-check" onclick="checkUserAnswer()">Check Answer</button>
-</div>
-// १. भाषेचा डेटाबेस (मराठी आणि इंग्रजी शब्द)
-const langData = {
-    marathi: {
-        scoreLabel: "SCORE:",
-        selectGroup: "संख्या गट निवडा:",
-        question: "या संख्येच्या नंतरची (पुढची) संख्या सांगा:",
-        checkBtn: "उत्तर तपासा",
-        options: [
-            { value: "1-10", text: "🔢 गट: १ ते १०" },
-            { value: "11-20", text: "🔢 गट: ११ ते २०" }
-        ]
-    },
-    english: {
-        scoreLabel: "SCORE:",
-        selectGroup: "Select Number Group:",
-        question: "Tell the next (following) number:",
-        checkBtn: "Check Answer",
-        options: [
-            { value: "1-10", text: "🔢 Group: 1 to 10" },
-            { value: "11-20", text: "🔢 Group: 11 to 20" }
-        ]
-    }
-};
+        .lang-btn {
+            background: transparent;
+            color: #a0aec0;
+            border: none;
+            padding: 8px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
 
-// सध्याची भाषा (बाय डिफॉल्ट इंग्लिश किंवा मराठी सेट करा)
-let currentLang = 'english'; 
+        .lang-btn.active {
+            background-color: #00bcd4;
+            color: black;
+            box-shadow: 0 0 10px #00bcd4;
+        }
 
-// २. भाषा बदलण्याचे मुख्य फंक्शन
-function changeLanguage(lang) {
-    currentLang = lang;
-    
-    // बटणांचे ॲक्टिव्ह स्टेटस बदलणे
-    document.getElementById('btn-marathi').classList.toggle('active', lang === 'marathi');
-    document.getElementById('btn-english').classList.toggle('active', lang === 'english');
-    
-    // स्क्रीनवरील मजकूर बदलणे
-    document.getElementById('text-score-label').innerText = langData[lang].scoreLabel;
-    document.getElementById('text-select-group').innerText = langData[lang].selectGroup;
-    document.getElementById('text-question').innerText = langData[lang].question;
-    document.getElementById('btn-check').innerText = langData[lang].checkBtn;
-    
-    // ड्रॉपडाउन (Select Box) मधील ऑप्शन्स भाषेनुसार बदलणे
-    const selectBox = document.getElementById('group-select');
-    const currentSelection = selectBox.value; // सध्या निवडलेला गट लक्षात ठेवण्यासाठी
-    
-    selectBox.innerHTML = "";
-    langData[lang].options.forEach(opt => {
-        let optionEl = document.createElement('option');
-        optionEl.value = opt.value;
-        optionEl.text = opt.text;
-        if(opt.value === currentSelection) optionEl.selected = true;
-        selectBox.appendChild(optionEl);
-    });
-}
+        /* --- मुख्य गेम कार्ड --- */
+        .game-screen {
+            width: 90%;
+            max-width: 400px;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #091936;
+            border-radius: 20px;
+            border: 1px solid #16325c;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
 
-// ॲप सुरू झाल्यावर सुरुवातीला सिलेक्ट केलेली भाषा लोड करणे
-window.onload = function() {
-    changeLanguage(currentLang);
-    // इथून पुढे तुमचे गेमचे इतर फंक्शन (उदा. generateQuestion()) कॉल करू शकता.
-};
+        .score-box {
+            background-color: #ff5722;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            display: inline-block;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .select-box {
+            width: 100%;
+            padding: 12px;
+            background-color: #050f24;
+            color: white;
+            border: 2px solid #00bcd4;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .question-card {
+            background-color: #0e2954;
+            border: 2px solid #00bcd4;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto;
+            font-size: 64px;
+            font-weight: bold;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 15px rgba(0,188,212,0.3);
+        }
+
+        .action-btn {
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0,198,255,0.4);
+            transition: transform 0.1s ease;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- १. भाषा निवडण्याचा विभाग -->
+    <div class="lang-container">
+        <button id="btn-marathi" class="lang-btn" onclick="changeLanguage('marathi')">मराठी</button>
+        <button id="btn-english" class="lang-btn active" onclick="changeLanguage('english')">English</button>
+    </div>
+
+    <!-- २. मुख्य गेम स्क्रीन (एकच स्क्रीन) -->
+    <div class="game-screen">
+        <div class="score-box">
+            <span id="text-score-label">SCORE:</span> <span id="score-val">0</span>
+        </div>
+        
+        <p style="margin-top: 20px; font-weight: bold;">
+            🎯 <span id="text-select-group">Select Number Group:</span>
+        </p>
+        
+        <select id="group-select" class="select-box">
+            <!-- ऑप्शन्स खालील JavaScript द्वारे आपोआप येतील -->
+        </select>
+
+        <h3>🤔 <span id="text-question">Tell the next (following) number:</span></h3>
+        
+        <div class="question-card" id="display-number">?</div>
+        
+        <button class="action-btn" id="btn-check">Check Answer</button>
+    </div>
+
+    <!-- ३. JavaScript विभाग (योग्य टॅगसह) -->
+    <script>
+        // भाषेचा डेटाबेस
+        const langData = {
+            marathi: {
+                scoreLabel: "SCORE:",
+                selectGroup: "संख्या गट निवडा:",
+                question: "या संख्येच्या नंतरची (पुढची) संख्या सांगा:",
+                checkBtn: "उत्तर तपासा",
+                options: [
+                    { value: "1-10", text: "🔢 गट: १ ते १०" },
+                    { value: "11-20", text: "🔢 गट: ११ ते २०" }
+                ]
+            },
+            english: {
+                scoreLabel: "SCORE:",
+                selectGroup: "Select Number Group:",
+                question: "Tell the next (following) number:",
+                checkBtn: "Check Answer",
+                options: [
+                    { value: "1-10", text: "🔢 Group: 1 to 10" },
+                    { value: "11-20", text: "🔢 Group: 11 to 20" }
+                ]
+            }
+        };
+
+        // सुरुवातीची भाषा
+        let currentLang = 'english'; 
+
+        // भाषा बदलणारे फंक्शन
+        function changeLanguage(lang) {
+            currentLang = lang;
+            
+            // बटण हायलाईट बदलणे
+            document.getElementById('btn-marathi').classList.toggle('active', lang === 'marathi');
+            document.getElementById('btn-english').classList.toggle('active', lang === 'english');
+            
+            // स्क्रीनवरील मजकूर बदलणे
+            document.getElementById('text-score-label').innerText = langData[lang].scoreLabel;
+            document.getElementById('text-select-group').innerText = langData[lang].selectGroup;
+            document.getElementById('text-question').innerText = langData[lang].question;
+            document.getElementById('btn-check').innerText = langData[lang].checkBtn;
+            
+            // ड्रॉपडाउन ऑप्शन्स बदलणे
+            const selectBox = document.getElementById('group-select');
+            const currentSelection = selectBox.value;
+            
+            selectBox.innerHTML = "";
+            langData[lang].options.forEach(opt => {
+                let optionEl = document.createElement('option');
+                optionEl.value = opt.value;
+                optionEl.text = opt.text;
+                if(opt.value === currentSelection) optionEl.selected = true;
+                selectBox.appendChild(optionEl);
+            });
+        }
+
+        // पेज लोड झाल्यावर रन होणारे कोड
+        window.onload = function() {
+            changeLanguage(currentLang);
+        };
+    </script>
+
+</body>
+</html>
