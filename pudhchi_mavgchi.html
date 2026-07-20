@@ -3,988 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>आधीची (मागची) संख्या ओळखा</title>
+    <title>Number Game</title>
     <style>
-        :root {
-            --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            --card-bg: rgba(255, 255, 255, 0.08);
-            --neon-blue: #00f2fe;
-            --neon-green: #00e676;
-            --neon-red: #ff1744;
-            --text-light: #ffffff;
-        }
-
+        /* --- मुख्य डिझाईन आणि पार्श्वभूमी (Styling) --- */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-gradient);
-            color: var(--text-light);
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #0d2347; /* तुमच्या स्क्रीनशॉट सारखा गडद निळा रंग */
+            color: white;
             display: flex;
-            justify-content: center;
-            align-content: center;
-            min-height: 95vh;
             flex-direction: column;
-        }
-
-        .game-wrapper {
-            background: rgba(15, 32, 67, 0.7);
-            border: 2px solid rgba(0, 242, 254, 0.2);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 242, 254, 0.1);
-            border-radius: 24px;
-            padding: 30px;
-            max-width: 500px;
-            width: 100%;
-            margin: 0 auto;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .top-navbar {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            min-height: 100vh;
         }
 
-        .lang-switch-box {
+        /* --- भाषा निवडक बटण विभाग --- */
+        .lang-container {
+            margin-top: 20px;
+            background-color: #09172e;
+            padding: 5px;
+            border-radius: 25px;
             display: flex;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 4px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid #1e3d6b;
         }
 
-        .lang-switch-box label {
-            padding: 8px 16px;
+        .lang-btn {
+            background: transparent;
+            color: #a0aec0;
+            border: none;
+            padding: 8px 20px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
             border-radius: 20px;
-            font-weight: 600;
-            transition: 0.3s;
-            font-size: 14px;
-        }
-
-        .lang-switch-box input[type="radio"] {
-            display: none;
-        }
-
-        .lang-switch-box input[type="radio"]:checked + label {
-            background: var(--neon-blue);
-            color: #0f2043;
-            box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
-        }
-
-        .score-board {
-            background: linear-gradient(90deg, #ff8c00, #e52d27);
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 18px;
-            box-shadow: 0 0 15px rgba(229, 45, 39, 0.4);
-        }
-
-        .range-box-area {
-            margin-bottom: 25px;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .range-box-area label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 16px;
-            color: #bdc3c7;
-        }
-
-        .styled-dropdown {
-            background: #0f2043;
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            border: 2px solid var(--neon-blue);
-            border-radius: 10px;
-            outline: none;
-            cursor: pointer;
-            width: 100%;
-            max-width: 250px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .instruction-box {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 20px 0;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
-        }
-
-        .main-number-display {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 35px 0;
-        }
-
-        .num-showcase {
-            width: 130px;
-            height: 130px;
-            background: linear-gradient(135deg, #1f4068, #162447);
-            border: 3px solid var(--neon-blue);
-            border-radius: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 54px;
-            font-weight: bold;
-            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.3);
-        }
-
-        .num-showcase.success-state {
-            border-color: var(--neon-green);
-            box-shadow: 0 0 25px rgba(0, 230, 118, 0.5);
-        }
-
-        .num-showcase.error-state {
-            border-color: var(--neon-red);
-            box-shadow: 0 0 25px rgba(255, 23, 68, 0.5);
-        }
-
-        .options-outer-container {
-            margin: 25px 0;
-        }
-
-        .options-flex {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .opt-btn {
-            background: #0f2043;
-            border: 2px solid rgba(0, 242, 254, 0.5);
-            color: white;
-            padding: 15px 30px;
-            font-size: 26px;
-            font-weight: bold;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 90px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        .opt-btn:hover:not(:disabled) {
-            background: var(--neon-blue);
-            color: #0f2043;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 242, 254, 0.4);
-        }
-
-        .opt-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            border-color: rgba(255,255,255,0.1);
-        }
-
-        .action-control-area {
-            margin-top: 30px;
-        }
-
-        .primary-action-btn {
-            background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
-            border: none;
-            color: #0f2043;
-            padding: 14px 40px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(79, 172, 254, 0.4);
             transition: all 0.3s ease;
         }
 
-        .primary-action-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.6);
+        /* ॲक्टिव्ह (सिलेक्टेड) भाषेचे बटण */
+        .lang-btn.active {
+            background-color: #00bcd4; /* मराठीसाठी निळा किंवा हायलाईट रंग */
+            color: black;
+            box-shadow: 0 0 10px #00bcd4;
         }
 
-        .result {
-            font-size: 22px;
+        /* --- मुख्य स्क्रीन कंटेनर --- */
+        .game-screen {
+            width: 90%;
+            max-width: 400px;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #091936;
+            border-radius: 20px;
+            border: 1px solid #16325c;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        /* --- भाषेनुसार स्क्रीन दाखवणे/लपवणे --- */
+        #screen-english {
+            display: none; /* सुरुवातीला इंग्रजी स्क्रीन पूर्णपणे लपलेली राहील */
+        }
+
+        /* --- इतर डिझाईन घटक (बटण व इतर) --- */
+        .score-box {
+            background-color: #ff5722;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            display: inline-block;
             font-weight: bold;
-            margin-top: 20px;
-            min-height: 32px;
+            margin-top: 10px;
         }
 
-        .result.correct { color: var(--neon-green); }
-        .result.wrong { color: var(--neon-red); }
+        .select-box {
+            width: 100%;
+            padding: 10px;
+            background-color: #050f24;
+            color: white;
+            border: 2px solid #00bcd4;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 16px;
+        }
+
+        .question-card {
+            background-color: #0e2954;
+            border: 2px solid #00bcd4;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px auto;
+            font-size: 48px;
+            font-weight: bold;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn {
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,198,255,0.4);
+        }
     </style>
 </head>
 <body>
 
-<div class="game-wrapper">
-    <div class="top-navbar">
-        <div class="lang-switch-box">
-            <input type="radio" id="lang-mr" name="lang-select" value="mr" checked onchange="updateLanguageUI(false)">
-            <label for="lang-mr">मराठी</label>
-            <input type="radio" id="lang-en" name="lang-select" value="en" onchange="updateLanguageUI(false)">
-            <label for="lang-en">English</label>
-        </div>
-        <div class="score-board" id="score-board-count">SCORE: ०</div>
+    <!-- १. भाषा निवडण्याचा विभाग (दोन्ही स्क्रीनवर एकच सामायिक राहील) -->
+    <div class="lang-container">
+        <button id="btn-marathi" class="lang-btn active" onclick="toggleLanguage('marathi')">मराठी</button>
+        <button id="btn-english" class="lang-btn" onclick="toggleLanguage('english')">English</button>
     </div>
 
-    <div class="range-box-area">
-        <label id="select-range-label" for="range-select-dropdown">🎯 संख्या गट निवडा:</label>
-        <select id="range-select-dropdown" class="styled-dropdown" onchange="onRangeDropdownChange()">
-            <option value="1-10">🔢 गट: १ ते १०</option>
-            <option value="11-20">🔢 गट: ११ ते २०</option>
-            <option value="21-30">🔢 गट: २१ ते ३०</option>
-            <option value="31-40">🔢 गट: ३१ ते ४०</option>
-            <option value="41-50">🔢 गट: ४१ ते ५०</option>
-            <option value="51-60">🔢 गट: ५१ ते ६०</option>
-            <option value="61-70">🔢 गट: ६१ ते ७०</option>
-            <option value="71-80">🔢 गट: ७१ ते ८०</option>
-            <option value="81-90">🔢 गट: ८१ ते ९०</option>
-            <option value="91-100">🔢 गट: ९१ ते १००</option>
+    <!-- २. मराठी भाषेची स्क्रीन -->
+    <div id="screen-marathi" class="game-screen">
+        <div class="score-box">SCORE: ०</div>
+        
+        <p>🎯 संख्या गट निवडा:</p>
+        <select class="select-box">
+            <option>🔢 गट: १ ते १०</option>
+            <option>🔢 गट: ११ ते २०</option>
         </select>
-    </div>
 
-    <div class="instruction-box" id="instruction-text">🤔 या संख्येच्या आधीची (मागची) संख्या सांगा:</div>
-
-    <div class="main-number-display">
-        <div class="num-showcase" id="main-num-box">?</div>
-    </div>
-
-    <div class="options-outer-container">
-        <div class="options-flex" id="options-container"></div>
-    </div>
-
-    <div class="result" id="result-message"></div>
-
-    <div class="action-control-area">
-        <button class="primary-action-btn" id="action-btn" onclick="checkAnswer()">उत्तर तपासा</button>
-    </div>
-</div>
-
-<script>
-let score = 0, correctAns = 0, selectedAns = null;
-let currentMainNumber = 0;
-let isReviewState = false;
-let generatedOptions = [];
-let minRange = 1, maxRange = 10;
-let audioCtx = null; 
-const marathiDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
-
-function initAudio() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-}
-window.addEventListener('click', initAudio, { once: true });
-window.addEventListener('touchstart', initAudio, { once: true });
-
-function playCorrectSound() {
-    try {
-        initAudio(); if (!audioCtx) return;
-        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
-        osc.type = 'sine'; osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        osc.start(); osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1);
-        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.4); osc.stop(audioCtx.currentTime + 0.4);
-    } catch (e) {}
-}
-
-function playWrongSound() {
-    try {
-        initAudio(); if (!audioCtx) return;
-        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
-        osc.type = 'sawtooth'; osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.frequency.setValueAtTime(130.81, audioCtx.currentTime); gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        osc.start(); gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3); osc.stop(audioCtx.currentTime + 0.3);
-    } catch (e) {}
-}
-
-function convertToMarathi(number) {
-    return number.toString().split('').map(digit => marathiDigits[digit] || digit).join('');
-}
-
-function currentLanguage() {
-    let selected = document.querySelector('input[name="lang-select"]:checked');
-    return selected ? selected.value : "mr";
-}
-
-function onRangeDropdownChange() {
-    let dropdown = document.getElementById("range-select-dropdown");
-    let parts = dropdown.value.split("-");
-    minRange = parseInt(parts[0]);
-    maxRange = parseInt(parts[1]);
-    score = 0;
-    generateQuestion();
-}
-
-function updateLanguageUI(changeQuestion = false) {
-    let lang = currentLanguage();
-    let btn = document.getElementById("action-btn");
-    let dropdown = document.getElementById("range-select-dropdown");
-    
-    if(lang === 'mr') {
-        document.getElementById("select-range-label").innerText = "🎯 संख्या गट निवडा:";
-        document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(score);
-        document.getElementById("instruction-text").innerText = "🤔 या संख्येच्या आधीची (मागची) संख्या सांगा:";
-        const grpTexts = ["१ ते १०","११ ते २०","२१ ते ३०","३१ ते ४०","४१ ते ५०","५१ ते ६०","६१ ते ७०","७१ ते ७०","८१ ते ९०","९१ ते १००"];
-        for(let i=0; i<10; i++) dropdown.options[i].text = "🔢 गट: " + grpTexts[i];
-    } else {
-        document.getElementById("select-range-label").innerText = "🎯 Select Number Group:";
-        document.getElementById("score-board-count").innerText = "SCORE: " + score;
-        document.getElementById("instruction-text").innerText = "🤔 What is the BEFORE number of:";
-        const grpTexts = ["1 to 10","11 to 20","21 to 30","31 to 40","41 to 50","51 to 60","61 to 70","71 to 80","81 to 90","91 to 100"];
-        for(let i=0; i<10; i++) dropdown.options[i].text = "🔢 Group: " + grpTexts[i];
-    }
-
-    if (changeQuestion) { generateQuestion(); return; }
-    
-    let state = btn.getAttribute("data-state") || "check";
-    if(state === "next") {
-        btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
-    } else if(state === "retry") {
-        btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
-    } else {
-        btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
-    }
-
-    renderMainNumber();
-    renderOptions();
-}
-
-function setButtonState(state) {
-    let btn = document.getElementById("action-btn");
-    let lang = currentLanguage();
-    btn.setAttribute("data-state", state);
-    
-    if(state === "next") {
-        btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
-        btn.onclick = generateQuestion;
-    } else if(state === "retry") {
-        btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
-        btn.onclick = retryCurrentQuestion;
-    } else {
-        btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
-        btn.onclick = checkAnswer;
-    }
-}
-
-function generateQuestion() {
-    selectedAns = null;
-    isReviewState = false;
-    let rangeDiff = maxRange - minRange + 1;
-    
-    // मागची संख्या विचारण्यासाठी मुख्य संख्या (minRange + 1) पासून सुरू होईल
-    currentMainNumber = Math.floor(Math.random() * (rangeDiff - 1)) + (minRange + 1);
-    correctAns = currentMainNumber - 1;
-
-    document.getElementById("result-message").innerText = "";
-    document.getElementById("main-num-box").className = "num-showcase";
-    
-    let optionsSet = new Set();
-    optionsSet.add(correctAns);
-    
-    while(optionsSet.size < 4) {
-        let randOpt = Math.floor(Math.random() * rangeDiff) + minRange;
-        if(randOpt !== currentMainNumber) optionsSet.add(randOpt);
-    }
-    
-    generatedOptions = Array.from(optionsSet).sort(() => Math.random() - 0.5);
-    updateLanguageUI(false); 
-    setButtonState("check");
-}
-
-function renderMainNumber() {
-    let lang = currentLanguage();
-    let mBox = document.getElementById("main-num-box");
-    mBox.innerText = (lang === 'mr') ? convertToMarathi(currentMainNumber) : currentMainNumber;
-}
-
-function renderOptions() {
-    let lang = currentLanguage();
-    let optContainer = document.getElementById("options-container");
-    if(!optContainer) return;
-    optContainer.innerHTML = "";
-    
-    generatedOptions.forEach(val => {
-        let displayVal = (lang === 'mr') ? convertToMarathi(val) : val;
-        let btn = document.createElement("button");
-        btn.className = "opt-btn";
-        btn.id = "opt-" + val;
-        btn.innerText = displayVal;
-        btn.onclick = function() { selectNumber(val); };
-        if(isReviewState && val === selectedAns) btn.disabled = true;
-        optContainer.appendChild(btn);
-    });
-}
-
-function selectNumber(val) {
-    selectedAns = val;
-    let btns = document.querySelectorAll(".opt-btn");
-    btns.forEach(b => b.style.borderColor = "rgba(0, 242, 254, 0.5)");
-    let selectedBtn = document.getElementById("opt-" + val);
-    if(selectedBtn) selectedBtn.style.borderColor = "#00e676";
-}
-
-function checkAnswer() {
-    let lang = currentLanguage();
-    if(selectedAns === null) {
-        alert((lang === 'mr') ? "कृपया एक पर्याय निवडा!" : "Please select an option!");
-        return;
-    }
-    
-    let res = document.getElementById("result-message");
-    let mBox = document.getElementById("main-num-box");
-    
-    if(selectedAns === correctAns) {
-        playCorrectSound(); 
-        res.innerText = (lang === 'mr') ? "✓ अगदी बरोबर! खूप छान. 🎉" : "✓ Correct Answer! Well done. 🎉";
-        res.className = "result correct";
-        mBox.className = "num-showcase success-state";
+        <h3>🤔 या संख्येच्या नंतरची (पुढची) संख्या सांगा:</h3>
         
-        if(!isReviewState) {
-            score++;
-            document.getElementById("score-board-count").innerText = "SCORE: " + ((lang === 'mr') ? convertToMarathi(score) : score);
-        }
-        disableAllOptions();
-        setButtonState("next");
-    } else {
-        playWrongSound(); 
-        res.innerText = (lang === 'mr') ? "✗ चुकीचे उत्तर! पुन्हा प्रयत्न करा." : "✗ Wrong Answer! Try again.";
-        res.className = "result wrong";
-        mBox.className = "num-showcase error-state";
+        <div class="question-card">?</div>
         
-        let badBtn = document.getElementById(`opt-${selectedAns}`);
-        if(badBtn) badBtn.disabled = true;
-        isReviewState = true; 
-        setButtonState("retry");
-    }
-}
-
-function disableAllOptions() {
-    let btns = document.querySelectorAll(".opt-btn");
-    btns.forEach(b => b.disabled = true);
-}
-
-function retryCurrentQuestion() {
-    selectedAns = null;
-    isReviewState = false;
-    document.getElementById("result-message").innerText = "";
-    document.getElementById("main-num-box").className = "num-showcase";
-    generatedOptions.forEach(val => {
-        let btn = document.getElementById(`opt-${val}`);
-        if(btn) {
-            btn.disabled = false;
-            btn.style.borderColor = "rgba(0, 242, 254, 0.5)";
-        }
-    });
-    setButtonState("check");
-}
-
-window.onload = function() { generateQuestion(); };
-</script>
-</body>
-    </html>
-    <!DOCTYPE html>
-<html lang="mr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>नंतरची (पुढची) संख्या ओळखा</title>
-    <style>
-        :root {
-            --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            --card-bg: rgba(255, 255, 255, 0.08);
-            --neon-blue: #00f2fe;
-            --neon-green: #00e676;
-            --neon-red: #ff1744;
-            --text-light: #ffffff;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-gradient);
-            color: var(--text-light);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-content: center;
-            min-height: 95vh;
-            flex-direction: column;
-        }
-
-        .game-wrapper {
-            background: rgba(15, 32, 67, 0.7);
-            border: 2px solid rgba(0, 242, 254, 0.2);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 242, 254, 0.1);
-            border-radius: 24px;
-            padding: 30px;
-            max-width: 500px;
-            width: 100%;
-            margin: 0 auto;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .top-navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .lang-switch-box {
-            display: flex;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 4px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .lang-switch-box label {
-            padding: 8px 16px;
-            cursor: pointer;
-            border-radius: 20px;
-            font-weight: 600;
-            transition: 0.3s;
-            font-size: 14px;
-        }
-
-        .lang-switch-box input[type="radio"] {
-            display: none;
-        }
-
-        .lang-switch-box input[type="radio"]:checked + label {
-            background: var(--neon-blue);
-            color: #0f2043;
-            box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
-        }
-
-        .score-board {
-            background: linear-gradient(90deg, #ff8c00, #e52d27);
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 18px;
-            box-shadow: 0 0 15px rgba(229, 45, 39, 0.4);
-        }
-
-        .range-box-area {
-            margin-bottom: 25px;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .range-box-area label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 16px;
-            color: #bdc3c7;
-        }
-
-        .styled-dropdown {
-            background: #0f2043;
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            border: 2px solid var(--neon-blue);
-            border-radius: 10px;
-            outline: none;
-            cursor: pointer;
-            width: 100%;
-            max-width: 250px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .instruction-box {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 20px 0;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
-        }
-
-        .main-number-display {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 35px 0;
-        }
-
-        .num-showcase {
-            width: 130px;
-            height: 130px;
-            background: linear-gradient(135deg, #1f4068, #162447);
-            border: 3px solid var(--neon-blue);
-            border-radius: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 54px;
-            font-weight: bold;
-            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.3);
-        }
-
-        .num-showcase.success-state {
-            border-color: var(--neon-green);
-            box-shadow: 0 0 25px rgba(0, 230, 118, 0.5);
-        }
-
-        .num-showcase.error-state {
-            border-color: var(--neon-red);
-            box-shadow: 0 0 25px rgba(255, 23, 68, 0.5);
-        }
-
-        .options-outer-container {
-            margin: 25px 0;
-        }
-
-        .options-flex {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .opt-btn {
-            background: #0f2043;
-            border: 2px solid rgba(0, 242, 254, 0.5);
-            color: white;
-            padding: 15px 30px;
-            font-size: 26px;
-            font-weight: bold;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 90px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        .opt-btn:hover:not(:disabled) {
-            background: var(--neon-blue);
-            color: #0f2043;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 242, 254, 0.4);
-        }
-
-        .opt-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            border-color: rgba(255,255,255,0.1);
-        }
-
-        .action-control-area {
-            margin-top: 30px;
-        }
-
-        .primary-action-btn {
-            background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
-            border: none;
-            color: #0f2043;
-            padding: 14px 40px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(79, 172, 254, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .primary-action-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.6);
-        }
-
-        .result {
-            font-size: 22px;
-            font-weight: bold;
-            margin-top: 20px;
-            min-height: 32px;
-        }
-
-        .result.correct { color: var(--neon-green); }
-        .result.wrong { color: var(--neon-red); }
-    </style>
-</head>
-<body>
-
-<div class="game-wrapper">
-    <div class="top-navbar">
-        <div class="lang-switch-box">
-            <input type="radio" id="lang-mr" name="lang-select" value="mr" checked onchange="updateLanguageUI(false)">
-            <label for="lang-mr">मराठी</label>
-            <input type="radio" id="lang-en" name="lang-select" value="en" onchange="updateLanguageUI(false)">
-            <label for="lang-en">English</label>
-        </div>
-        <div class="score-board" id="score-board-count">SCORE: ०</div>
+        <button class="action-btn">उत्तर तपासा</button>
     </div>
 
-    <div class="range-box-area">
-        <label id="select-range-label" for="range-select-dropdown">🎯 संख्या गट निवडा:</label>
-        <select id="range-select-dropdown" class="styled-dropdown" onchange="onRangeDropdownChange()">
-            <option value="1-10">🔢 गट: १ ते १०</option>
-            <option value="11-20">🔢 गट: ११ ते २०</option>
-            <option value="21-30">🔢 गट: २१ ते ३०</option>
-            <option value="31-40">🔢 गट: ३१ ते ४०</option>
-            <option value="41-50">🔢 गट: ४१ ते ५०</option>
-            <option value="51-60">🔢 गट: ५१ ते ६०</option>
-            <option value="61-70">🔢 गट: ६१ ते ७०</option>
-            <option value="71-80">🔢 गट: ७१ ते ८०</option>
-            <option value="81-90">🔢 गट: ८१ ते ९०</option>
-            <option value="91-100">🔢 गट: ९१ ते १००</option>
+    <!-- ३. इंग्रजी भाषेची स्क्रीन -->
+    <div id="screen-english" class="game-screen">
+        <div class="score-box">SCORE: 0</div>
+        
+        <p>🎯 Select Number Group:</p>
+        <select class="select-box">
+            <option>🔢 Group: 1 to 10</option>
+            <option>🔢 Group: 11 to 20</option>
         </select>
-    </div>
 
-    <div class="instruction-box" id="instruction-text">🤔 या संख्येच्या नंतरची (पुढची) संख्या सांगा:</div>
-
-    <div class="main-number-display">
-        <div class="num-showcase" id="main-num-box">?</div>
-    </div>
-
-    <div class="options-outer-container">
-        <div class="options-flex" id="options-container"></div>
-    </div>
-
-    <div class="result" id="result-message"></div>
-
-    <div class="action-control-area">
-        <button class="primary-action-btn" id="action-btn" onclick="checkAnswer()">उत्तर तपासा</button>
-    </div>
-</div>
-
-<script>
-let score = 0, correctAns = 0, selectedAns = null;
-let currentMainNumber = 0;
-let isReviewState = false;
-let generatedOptions = [];
-let minRange = 1, maxRange = 10;
-let audioCtx = null; 
-const marathiDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
-
-function initAudio() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-}
-window.addEventListener('click', initAudio, { once: true });
-window.addEventListener('touchstart', initAudio, { once: true });
-
-function playCorrectSound() {
-    try {
-        initAudio(); if (!audioCtx) return;
-        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
-        osc.type = 'sine'; osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        osc.start(); osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1);
-        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.4); osc.stop(audioCtx.currentTime + 0.4);
-    } catch (e) {}
-}
-
-function playWrongSound() {
-    try {
-        initAudio(); if (!audioCtx) return;
-        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
-        osc.type = 'sawtooth'; osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.frequency.setValueAtTime(130.81, audioCtx.currentTime); gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        osc.start(); gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3); osc.stop(audioCtx.currentTime + 0.3);
-    } catch (e) {}
-}
-
-function convertToMarathi(number) {
-    return number.toString().split('').map(digit => marathiDigits[digit] || digit).join('');
-}
-
-function currentLanguage() {
-    let selected = document.querySelector('input[name="lang-select"]:checked');
-    return selected ? selected.value : "mr";
-}
-
-function onRangeDropdownChange() {
-    let dropdown = document.getElementById("range-select-dropdown");
-    let parts = dropdown.value.split("-");
-    minRange = parseInt(parts[0]);
-    maxRange = parseInt(parts[1]);
-    score = 0;
-    generateQuestion();
-}
-
-function updateLanguageUI(changeQuestion = false) {
-    let lang = currentLanguage();
-    let btn = document.getElementById("action-btn");
-    let dropdown = document.getElementById("range-select-dropdown");
-    
-    if(lang === 'mr') {
-        document.getElementById("select-range-label").innerText = "🎯 संख्या गट निवडा:";
-        document.getElementById("score-board-count").innerText = "SCORE: " + convertToMarathi(score);
-        document.getElementById("instruction-text").innerText = "🤔 या संख्येच्या नंतरची (पुढची) संख्या सांगा:";
-        const grpTexts = ["१ ते १०","११ ते २०","२१ ते ३०","३१ ते ४०","४१ ते ५०","५१ ते ६०","६१ ते ७०","७१ ते ८०","८१ ते ९०","९१ ते १००"];
-        for(let i=0; i<10; i++) dropdown.options[i].text = "🔢 गट: " + grpTexts[i];
-    } else {
-        document.getElementById("select-range-label").innerText = "🎯 Select Number Group:";
-        document.getElementById("score-board-count").innerText = "SCORE: " + score;
-        document.getElementById("instruction-text").innerText = "🤔 What is the AFTER number of:";
-        const grpTexts = ["1 to 10","11 to 20","21 to 30","31 to 40","41 to 50","51 to 60","61 to 70","71 to 80","81 to 90","91 to 100"];
-        for(let i=0; i<10; i++) dropdown.options[i].text = "🔢 Group: " + grpTexts[i];
-    }
-
-    if (changeQuestion) { generateQuestion(); return; }
-    
-    let state = btn.getAttribute("data-state") || "check";
-    if(state === "next") {
-        btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
-    } else if(state === "retry") {
-        btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
-    } else {
-        btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
-    }
-
-    renderMainNumber();
-    renderOptions();
-}
-
-function setButtonState(state) {
-    let btn = document.getElementById("action-btn");
-    let lang = currentLanguage();
-    btn.setAttribute("data-state", state);
-    
-    if(state === "next") {
-        btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
-        btn.onclick = generateQuestion;
-    } else if(state === "retry") {
-        btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
-        btn.onclick = retryCurrentQuestion;
-    } else {
-        btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
-        btn.onclick = checkAnswer;
-    }
-}
-
-function generateQuestion() {
-    selectedAns = null;
-    isReviewState = false;
-    let rangeDiff = maxRange - minRange + 1;
-    
-    // पुढची संख्या विचारण्यासाठी मुख्य संख्या minRange ते (maxRange - 1) च्या दरम्यान हवी
-    currentMainNumber = Math.floor(Math.random() * (rangeDiff - 1)) + minRange;
-    correctAns = currentMainNumber + 1;
-
-    document.getElementById("result-message").innerText = "";
-    document.getElementById("main-num-box").className = "num-showcase";
-    
-    let optionsSet = new Set();
-    optionsSet.add(correctAns);
-    
-    while(optionsSet.size < 4) {
-        let randOpt = Math.floor(Math.random() * rangeDiff) + minRange;
-        if(randOpt !== currentMainNumber) optionsSet.add(randOpt);
-    }
-    
-    generatedOptions = Array.from(optionsSet).sort(() => Math.random() - 0.5);
-    updateLanguageUI(false); 
-    setButtonState("check");
-}
-
-function renderMainNumber() {
-    let lang = currentLanguage();
-    let mBox = document.getElementById("main-num-box");
-    mBox.innerText = (lang === 'mr') ? convertToMarathi(currentMainNumber) : currentMainNumber;
-}
-
-function renderOptions() {
-    let lang = currentLanguage();
-    let optContainer = document.getElementById("options-container");
-    if(!optContainer) return;
-    optContainer.innerHTML = "";
-    
-    generatedOptions.forEach(val => {
-        let displayVal = (lang === 'mr') ? convertToMarathi(val) : val;
-        let btn = document.createElement("button");
-        btn.className = "opt-btn";
-        btn.id = "opt-" + val;
-        btn.innerText = displayVal;
-        btn.onclick = function() { selectNumber(val); };
-        if(isReviewState && val === selectedAns) btn.disabled = true;
-        optContainer.appendChild(btn);
-    });
-}
-
-function selectNumber(val) {
-    selectedAns = val;
-    let btns = document.querySelectorAll(".opt-btn");
-    btns.forEach(b => b.style.borderColor = "rgba(0, 242, 254, 0.5)");
-    let selectedBtn = document.getElementById("opt-" + val);
-    if(selectedBtn) selectedBtn.style.borderColor = "#00e676";
-}
-
-function checkAnswer() {
-    let lang = currentLanguage();
-    if(selectedAns === null) {
-        alert((lang === 'mr') ? "कृपया एक पर्याय निवडा!" : "Please select an option!");
-        return;
-    }
-    
-    let res = document.getElementById("result-message");
-    let mBox = document.getElementById("main-num-box");
-    
-    if(selectedAns === correctAns) {
-        playCorrectSound(); 
-        res.innerText = (lang === 'mr') ? "✓ अगदी बरोबर! खूप छान. 🎉" : "✓ Correct Answer! Well done. 🎉";
-        res.className = "result correct";
-        mBox.className = "num-showcase success-state";
+        <h3>🤔 Tell the next (following) number:</h3>
         
-        if(!isReviewState) {
-            score++;
-            document.getElementById("score-board-count").innerText = "SCORE: " + ((lang === 'mr') ? convertToMarathi(score) : score);
-        }
-        disableAllOptions();
-        setButtonState("next");
-    } else {
-        playWrongSound(); 
-        res.innerText = (lang === 'mr') ? "✗ चुकीचे उत्तर! पुन्हा प्रयत्न करा." : "✗ Wrong Answer! Try again.";
-        res.className = "result wrong";
-        mBox.className = "num-showcase error-state";
+        <div class="question-card">?</div>
         
-        let badBtn = document.getElementById(`opt-${selectedAns}`);
-        if(badBtn) badBtn.disabled = true;
-        isReviewState = true; 
-        setButtonState("retry");
-    }
-}
+        <button class="action-btn">Check Answer</button>
+    </div>
 
-function disableAllOptions() {
-    let btns = document.querySelectorAll(".opt-btn");
-    btns.forEach(b => b.disabled = true);
-}
+    <!-- ४. JavaScript लॉजिक (स्क्रीन अदलाबदल करणे) -->
+    <script>
+        function toggleLanguage(selectedLang) {
+            // दोन्ही स्क्रीनचे एलिमेंट्स मिळवणे
+            const marathiScreen = document.getElementById('screen-marathi');
+            const englishScreen = document.getElementById('screen-english');
+            
+            // भाषेच्या बटन्सचे एलिमेंट्स मिळवणे
+            const marathiBtn = document.getElementById('btn-marathi');
+            const englishBtn = document.getElementById('btn-english');
 
-function retryCurrentQuestion() {
-    selectedAns = null;
-    isReviewState = false;
-    document.getElementById("result-message").innerText = "";
-    document.getElementById("main-num-box").className = "num-showcase";
-    generatedOptions.forEach(val => {
-        let btn = document.getElementById(`opt-${val}`);
-        if(btn) {
-            btn.disabled = false;
-            btn.style.borderColor = "rgba(0, 242, 254, 0.5)";
+            if (selectedLang === 'marathi') {
+                // मराठी स्क्रीन दाखवा आणि इंग्रजी पूर्णपणे लपवा
+                marathiScreen.style.display = 'block';
+                englishScreen.style.display = 'none';
+                
+                // बटण हायलाईट बदलणे
+                marathiBtn.classList.add('active');
+                englishBtn.classList.remove('active');
+            } else if (selectedLang === 'english') {
+                // इंग्रजी स्क्रीन दाखवा आणि मराठी पूर्णपणे लपवा
+                marathiScreen.style.display = 'none';
+                englishScreen.style.display = 'block';
+                
+                // बटण हायलाईट बदलणे
+                englishBtn.classList.add('active');
+                marathiBtn.classList.remove('active');
+            }
         }
-    });
-    setButtonState("check");
-}
+    </script>
 
-window.onload = function() { generateQuestion(); };
-</script>
 </body>
 </html>
