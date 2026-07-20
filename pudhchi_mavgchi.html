@@ -270,14 +270,12 @@
             <div class="num-box" id="box-3">?</div>
         </div>
         
-        <div class="options-flex" id="options-container">
-            </div>
+        <div class="options-flex" id="options-container"></div>
         
         <button id="action-btn" class="submit-btn" onclick="checkAnswer()">उत्तर तपासा</button>
         <div class="result" id="result-message"></div>
     </div>
 </div>
-
 <script>
     let score = 0, correctAns = 0, selectedAns = null;
     let lastCorrectAns = 0;
@@ -376,6 +374,23 @@
         }
     }
 
+    function setButtonState(state) {
+        let btn = document.getElementById("action-btn");
+        let lang = currentLanguage();
+        btn.setAttribute("data-state", state);
+        
+        if(state === "next") {
+            btn.innerText = (lang === 'mr') ? "पुढचे उदाहरण" : "Next Question";
+            btn.onclick = generateQuestion;
+        } else if(state === "retry") {
+            btn.innerText = (lang === 'mr') ? "पुन्हा प्रयत्न करा 🔄" : "Try Again 🔄";
+            btn.onclick = retryCurrentQuestion;
+        } else {
+            btn.innerText = (lang === 'mr') ? "उत्तर तपासा" : "Check Answer";
+            btn.onclick = checkAnswer;
+        }
+    }
+
     function generateQuestion() {
         selectedAns = null;
         isReviewState = false;
@@ -420,7 +435,6 @@
         
         generatedOptions = Array.from(optionsSet).sort(() => Math.random() - 0.5);
         
-        // आधी भाषा आणि UI सेटअप करा, नंतरच डेटा रेंडर होईल
         updateLanguageUI();
         setButtonState("check");
     }
@@ -470,6 +484,11 @@
             btn.id = "opt-" + val;
             btn.innerText = displayVal;
             btn.onclick = function() { selectNumber(val); };
+            
+            if(isReviewState && val === selectedAns) {
+                btn.disabled = true;
+            }
+            
             optContainer.appendChild(btn);
         });
     }
@@ -527,8 +546,10 @@
 
     function retryCurrentQuestion() {
         selectedAns = null;
+        isReviewState = false;
         renderCurrentNumbersInBoxes();
         document.getElementById("result-message").innerText = "";
+        
         generatedOptions.forEach(val => {
             let btn = document.getElementById(`opt-${val}`);
             if(btn) {
@@ -538,4 +559,10 @@
         });
         setButtonState("check");
     }
-    
+
+    window.onload = function() {
+        generateQuestion();
+    };
+</script>
+</body>
+</html>
