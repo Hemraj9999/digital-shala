@@ -46,7 +46,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      max-width: 650px;
+      max-width: 700px;
       margin: 10px auto;
       flex-wrap: wrap;
       gap: 8px;
@@ -108,6 +108,24 @@
       background-color: var(--accent-color);
       color: #000;
       font-weight: bold;
+    }
+
+    .question-area {
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .mascot {
+      font-size: 45px;
+      margin-bottom: -10px;
+      animation: bounce 2s infinite ease-in-out;
+      display: inline-block;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
 
     .question-title {
@@ -218,6 +236,12 @@
     .feedback-message.correct { color: #00ff66; }
     .feedback-message.wrong { color: #ff3333; }
 
+    .key-hint {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 5px;
+    }
+
     /* रिझल्ट मोडल पॉपअप */
     .modal-overlay {
       display: none;
@@ -234,16 +258,33 @@
       border: 2px solid var(--accent-color);
       padding: 25px;
       border-radius: 20px;
-      max-width: 320px;
+      max-width: 340px;
       width: 85%;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
 
     .modal-card h2 { margin-top: 0; color: #ffd700; }
-    .modal-card p { font-size: 18px; margin: 12px 0; }
+    .modal-card p { font-size: 16px; margin: 10px 0; }
+    .badge-display {
+      font-size: 40px;
+      margin: 10px 0;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
     .btn-restart {
-      background: #00e676; border: none; padding: 10px 25px;
-      font-size: 16px; font-weight: bold; border-radius: 20px; cursor: pointer;
+      background: #00e676; border: none; padding: 10px 20px;
+      font-size: 16px; font-weight: bold; border-radius: 20px; cursor: pointer; color: #000;
+    }
+
+    .btn-whatsapp {
+      background: #25d366; border: none; padding: 10px 20px;
+      font-size: 15px; font-weight: bold; border-radius: 20px; cursor: pointer; color: #fff;
     }
   </style>
 </head>
@@ -279,9 +320,13 @@
     <button class="btn-mode" id="mode-before" onclick="setMode('before')">Before Number</button>
     <button class="btn-mode" id="mode-after" onclick="setMode('after')">After Number</button>
     <button class="btn-mode" id="mode-middle" onclick="setMode('middle')">Middle Number</button>
+    <button class="btn-mode" id="mode-mixed" onclick="setMode('mixed')">🎲 Mixed Mode</button>
   </div>
 
-  <div class="question-title" id="question-text">पुढील संख्या सांगा:</div>
+  <div class="question-area">
+    <div class="mascot" id="mascot">🐰</div>
+    <div class="question-title" id="question-text">पुढील संख्या सांगा:</div>
+  </div>
 
   <div class="boxes-container">
     <div class="box" id="box1"></div>
@@ -293,6 +338,7 @@
 
   <div class="options-title" id="options-label">योग्य अंक निवडा किंवा ड्रॅग करा:</div>
   <div class="options-container" id="options-box"></div>
+  <div class="key-hint" id="key-hint">💡 कॉम्प्युटर वापरत असल्यास १, २, ३, ४ दाबून उत्तर द्या</div>
 
   <div class="action-btn-group">
     <button class="btn-replay" onclick="speakQuestionAudio()">🔄 पुन्हा ऐका</button>
@@ -300,13 +346,18 @@
     <button class="btn-next" id="next-btn" onclick="nextQuestionFlow()">Next Question ➔</button>
   </div>
 
-  <!-- १० प्रश्नांनंतरचा निकाल पॉपअप -->
+  <!-- १० प्रश्नांनंतरचा निकाल आणि रिपोर्ट शेअर पॉपअप -->
   <div class="modal-overlay" id="result-modal">
     <div class="modal-card">
       <h2 id="modal-title">🏆 अभिनंदन! 🏆</h2>
+      <div class="badge-display" id="badge-icon">👑</div>
+      <p id="badge-name" style="font-weight:bold; color:#ffd700;"></p>
       <p id="modal-score">तुमचे गुण: ८ / १०</p>
       <p id="modal-accuracy">अचूकता: ८०%</p>
-      <button class="btn-restart" onclick="restartQuiz()">पुन्हा खेळा 🔄</button>
+      <div class="modal-actions">
+        <button class="btn-whatsapp" onclick="shareWhatsAppReport()">📱 WhatsApp वर रिपोर्ट पाठवा</button>
+        <button class="btn-restart" onclick="restartQuiz()">पुन्हा खेळा 🔄</button>
+      </div>
     </div>
   </div>
   <script>
@@ -314,22 +365,24 @@
       marathi: {
         scoreText: "गुण: ",
         qCounter: "प्रश्न: ",
-        btnBefore: "पूर्वीची संख्या (Before)",
-        btnAfter: "पुढील संख्या (After)",
-        btnMiddle: "मधील संख्या (Middle)",
+        btnBefore: "पूर्वीची संख्या",
+        btnAfter: "पुढील संख्या",
+        btnMiddle: "मधील संख्या",
+        btnMixed: "🎲 मिश्रित प्रश्न",
         qBefore: "आधीची संख्या रिकाम्या बॉक्समध्ये टाका:",
         qAfter: "नंतरची संख्या रिकाम्या बॉक्समध्ये टाका:",
         qMiddle: "मधील संख्या रिकाम्या बॉक्समध्ये टाका:",
-        optionsLabel: "योग्य अंक निवडा किंवा ड्रॅग करा:",
+        optionsLabel: "योग्य अंक निवडा, ड्रॅग करा किंवा १-४ की दाबा:",
         checkBtn: "उत्तर तपासा",
         nextBtn: "पुढील प्रश्न ➔",
         correctMsg: "शाब्बास! बरोबर उत्तर!",
         wrongMsg: "चुकले! पुन्हा प्रयत्न करा.",
         revealMsg: "योग्य उत्तर हे आहे: ",
         selectMsg: "कृपया आधी एक संख्या निवडा!",
-        modalTitle: "🏆 अभिनंदन! 🏆",
+        modalTitle: "🏆 निकाल कार्ड 🏆",
         modalScore: "तुमचे गुण: ",
         modalAcc: "अचूकता: ",
+        keyHint: "💡 कॉम्प्युटर वापरत असल्यास १, २, ३, ४ दाबून उत्तर द्या",
         speechLang: "mr-IN",
         levels: { easy: "सोपे (१-२०)", medium: "मध्यम (१-१००)", hard: "कठीण (१००-१०००)" }
       },
@@ -339,19 +392,21 @@
         btnBefore: "Before Number",
         btnAfter: "After Number",
         btnMiddle: "Middle Number",
+        btnMixed: "🎲 Mixed Mode",
         qBefore: "Place the correct BEFORE number:",
         qAfter: "Place the correct AFTER number:",
         qMiddle: "Place the correct MIDDLE number:",
-        optionsLabel: "Select or drag the correct number:",
+        optionsLabel: "Select, drag or press keys 1-4:",
         checkBtn: "Check Answer",
         nextBtn: "Next Question ➔",
         correctMsg: "Great Job! Correct Answer!",
         wrongMsg: "Wrong Answer! Try again.",
         revealMsg: "The correct answer is: ",
         selectMsg: "Please select a number first!",
-        modalTitle: "🏆 Congratulations! 🏆",
+        modalTitle: "🏆 Result Card 🏆",
         modalScore: "Your Score: ",
         modalAcc: "Accuracy: ",
+        keyHint: "💡 On computer, press keys 1, 2, 3, 4 to select option",
         speechLang: "en-US",
         levels: { easy: "Easy (1-20)", medium: "Medium (1-100)", hard: "Hard (100-1000)" }
       }
@@ -359,6 +414,7 @@
 
     let currentLang = 'marathi';
     let currentMode = 'after';
+    let activeSubMode = 'after';
     let currentLevel = 'easy';
     let currentNumber = 10;
     let correctAnswer = 11;
@@ -368,8 +424,10 @@
     let wrongAttempts = 0;
     let questionCount = 1;
     const maxQuestions = 10;
-
     let isAudioOn = true;
+    let currentOptionsList = [];
+
+    const mascots = ['🐰', '🦊', '🦁', '🐸', '🐼', '🦄'];
 
     function formatNumber(num) {
       if (num === "?" || num === null) return "?";
@@ -410,13 +468,13 @@
     function speakQuestionAudio() {
       let qStr = "";
       if (currentLang === 'marathi') {
-        if (currentMode === 'after') qStr = formatNumber(currentNumber + 1) + " नंतर काय येते?";
-        else if (currentMode === 'before') qStr = formatNumber(currentNumber) + " च्या आधी काय येते?";
-        else if (currentMode === 'middle') qStr = formatNumber(currentNumber) + " आणि " + formatNumber(currentNumber + 2) + " च्या मधील संख्या सांगा";
+        if (activeSubMode === 'after') qStr = formatNumber(currentNumber + 1) + " नंतर काय येते?";
+        else if (activeSubMode === 'before') qStr = formatNumber(currentNumber) + " च्या आधी काय येते?";
+        else if (activeSubMode === 'middle') qStr = formatNumber(currentNumber) + " आणि " + formatNumber(currentNumber + 2) + " च्या मधील संख्या सांगा";
       } else {
-        if (currentMode === 'after') qStr = "What comes after " + (currentNumber + 1) + "?";
-        else if (currentMode === 'before') qStr = "What comes before " + currentNumber + "?";
-        else if (currentMode === 'middle') qStr = "What comes between " + currentNumber + " and " + (currentNumber + 2) + "?";
+        if (activeSubMode === 'after') qStr = "What comes after " + (currentNumber + 1) + "?";
+        else if (activeSubMode === 'before') qStr = "What comes before " + currentNumber + "?";
+        else if (activeSubMode === 'middle') qStr = "What comes between " + currentNumber + " and " + (currentNumber + 2) + "?";
       }
       speakText(qStr);
     }
@@ -451,9 +509,11 @@
       document.getElementById('mode-before').innerText = langData[lang].btnBefore;
       document.getElementById('mode-after').innerText = langData[lang].btnAfter;
       document.getElementById('mode-middle').innerText = langData[lang].btnMiddle;
+      document.getElementById('mode-mixed').innerText = langData[lang].btnMixed;
       document.getElementById('options-label').innerText = langData[lang].optionsLabel;
       document.getElementById('check-btn').innerText = langData[lang].checkBtn;
       document.getElementById('next-btn').innerText = langData[lang].nextBtn;
+      document.getElementById('key-hint').innerText = langData[lang].keyHint;
 
       const lvlSelect = document.getElementById('level-select');
       lvlSelect.options[0].text = langData[lang].levels.easy;
@@ -474,6 +534,7 @@
       document.getElementById('mode-before').classList.toggle('active', mode === 'before');
       document.getElementById('mode-after').classList.toggle('active', mode === 'after');
       document.getElementById('mode-middle').classList.toggle('active', mode === 'middle');
+      document.getElementById('mode-mixed').classList.toggle('active', mode === 'mixed');
       restartQuiz();
     }
 
@@ -490,8 +551,18 @@
       
       const checkBtn = document.getElementById('check-btn');
       checkBtn.style.display = 'inline-block';
-      checkBtn.disabled = true; // Anti-guessing delay unlock
+      checkBtn.disabled = true;
       document.getElementById('next-btn').style.display = 'none';
+
+      // ॲनिमेटेड मास्कॉट बदलणे
+      document.getElementById('mascot').innerText = mascots[Math.floor(Math.random() * mascots.length)];
+
+      if (currentMode === 'mixed') {
+        const subModes = ['before', 'after', 'middle'];
+        activeSubMode = subModes[Math.floor(Math.random() * subModes.length)];
+      } else {
+        activeSubMode = currentMode;
+      }
 
       currentNumber = getRandomNumber();
       
@@ -505,7 +576,7 @@
         b.style.color = 'var(--text-color)';
       });
 
-      if (currentMode === 'after') {
+      if (activeSubMode === 'after') {
         qText.innerText = langData[currentLang].qAfter;
         b1.innerText = formatNumber(currentNumber);
         b2.innerText = formatNumber(currentNumber + 1);
@@ -513,7 +584,7 @@
         b3.classList.add('drop-zone');
         correctAnswer = currentNumber + 2;
       } 
-      else if (currentMode === 'before') {
+      else if (activeSubMode === 'before') {
         qText.innerText = langData[currentLang].qBefore;
         b1.innerText = "?";
         b1.classList.add('drop-zone');
@@ -521,7 +592,7 @@
         b3.innerText = formatNumber(currentNumber + 1);
         correctAnswer = currentNumber - 1;
       } 
-      else if (currentMode === 'middle') {
+      else if (activeSubMode === 'middle') {
         qText.innerText = langData[currentLang].qMiddle;
         b1.innerText = formatNumber(currentNumber);
         b2.innerText = "?";
@@ -548,6 +619,7 @@
       }
 
       options.sort(() => Math.random() - 0.5);
+      currentOptionsList = options;
 
       options.forEach(num => {
         let card = document.createElement('div');
@@ -588,11 +660,27 @@
         }
       });
 
-      // उत्तर निवडल्यावर बटण १ सेकंदाने लॉक/अनलॉक (Anti-Guessing)
       setTimeout(() => {
         document.getElementById('check-btn').disabled = false;
-      }, 500);
+      }, 300);
     }
+
+    // कीबोर्ड १-४ द्वारे पर्याय निवडणे
+    window.addEventListener('keydown', function(e) {
+      if (['1', '2', '3', '4'].includes(e.key)) {
+        let index = parseInt(e.key) - 1;
+        if (currentOptionsList[index] !== undefined) {
+          selectOption(currentOptionsList[index]);
+        }
+      } else if (e.key === 'Enter') {
+        const checkBtn = document.getElementById('check-btn');
+        if (checkBtn.style.display !== 'none' && !checkBtn.disabled) {
+          checkAnswer();
+        } else {
+          nextQuestionFlow();
+        }
+      }
+    });
 
     function checkAnswer() {
       const feedback = document.getElementById('feedback');
@@ -619,7 +707,7 @@
         updateDisplay();
 
         speakText(langData[currentLang].correctMsg, function() {
-          setTimeout(() => { nextQuestionFlow(); }, 400);
+          setTimeout(() => { nextQuestionFlow(); }, 300);
         });
 
       } else {
@@ -665,8 +753,37 @@
       let accuracy = Math.round((score / maxQuestions) * 100);
       document.getElementById('modal-accuracy').innerText = langData[currentLang].modalAcc + formatNumber(accuracy) + "%";
 
+      // बॅज रिवॉर्ड सिस्टम
+      const badgeIcon = document.getElementById('badge-icon');
+      const badgeName = document.getElementById('badge-name');
+      
+      if (score === 10) {
+        badgeIcon.innerText = "👑";
+        badgeName.innerText = currentLang === 'marathi' ? "गणित सम्राट (Math King)" : "Math Emperor";
+      } else if (score >= 8) {
+        badgeIcon.innerText = "⭐";
+        badgeName.innerText = currentLang === 'marathi' ? "सुपर स्टार (Super Star)" : "Super Star";
+      } else if (score >= 5) {
+        badgeIcon.innerText = "🥇";
+        badgeName.innerText = currentLang === 'marathi' ? "प्रविण खेळाडू (Smart Player)" : "Smart Player";
+      } else {
+        badgeIcon.innerText = "🎯";
+        badgeName.innerText = currentLang === 'marathi' ? "प्रयत्नशील (Keep Trying)" : "Keep Trying";
+      }
+
       modal.style.display = 'flex';
       if (typeof confetti === 'function') confetti({ particleCount: 150, spread: 90 });
+    }
+
+    function shareWhatsAppReport() {
+      let badge = document.getElementById('badge-name').innerText;
+      let text = `🎮 *गणित खेळ रिपोर्ट - संख्या ओळख* 🎮\n\n` +
+                 `📊 गुण: ${score} / ${maxQuestions}\n` +
+                 `🏆 मिळवलेला बॅज: ${badge}\n` +
+                 `🎯 पातळी: ${currentLevel.toUpperCase()}\n\n` +
+                 `खूप छान प्रगती! 👏`;
+      let url = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text);
+      window.open(url, '_blank');
     }
 
     function restartQuiz() {
