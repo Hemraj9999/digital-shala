@@ -6,7 +6,6 @@
   <title>पुढची - मागची संख्या खेळ</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
-    /* बेसिक डिझाइन व थीम्स */
     :root {
       --bg-color: #0b192c;
       --card-bg: #1e3e62;
@@ -117,7 +116,6 @@
       font-weight: 500;
     }
 
-    /* ३ मुख्य बॉक्स */
     .boxes-container {
       display: flex;
       justify-content: center;
@@ -223,7 +221,6 @@
 </head>
 <body id="game-body">
 
-  <!-- टॉप बार कंट्रोल -->
   <div class="top-bar">
     <div>
       <button class="btn-custom active" id="btn-marathi" onclick="switchLanguage('marathi')">मराठी</button>
@@ -250,7 +247,6 @@
     <div class="streak-badge" id="streak-text">⭐ ०</div>
   </div>
 
-  <!-- गेम मोड्स -->
   <div class="mode-buttons">
     <button class="btn-mode" id="mode-before" onclick="setMode('before')">Before Number</button>
     <button class="btn-mode" id="mode-after" onclick="setMode('after')">After Number</button>
@@ -274,7 +270,7 @@
     <button class="btn-check" id="check-btn" onclick="checkAnswer()">Check Answer</button>
     <button class="btn-next" id="next-btn" onclick="generateQuestion()">Next Question ➔</button>
   </div>
-<script>
+  <script>
     const langData = {
       marathi: {
         scoreText: "गुण: ",
@@ -288,8 +284,8 @@
         optionsLabel: "योग्य अंक निवडा किंवा ड्रॅग करा:",
         checkBtn: "उत्तर तपासा",
         nextBtn: "पुढील प्रश्न ➔",
-        correctMsg: "शाब्बास! बरोबर उत्तर! 🎉",
-        wrongMsg: "चुकले! पुन्हा प्रयत्न करा. ❌",
+        correctMsg: "शाब्बास! बरोबर उत्तर!",
+        wrongMsg: "चुकले! पुन्हा प्रयत्न करा.",
         revealMsg: "योग्य उत्तर हे आहे: ",
         selectMsg: "कृपया आधी एक संख्या निवडा!",
         timeUpMsg: "वेळ संपली! एकूण गुण: ",
@@ -308,8 +304,8 @@
         optionsLabel: "Select or drag the correct number:",
         checkBtn: "Check Answer",
         nextBtn: "Next Question ➔",
-        correctMsg: "Great Job! Correct Answer! 🎉",
-        wrongMsg: "Wrong Answer! Try again. ❌",
+        correctMsg: "Great Job! Correct Answer!",
+        wrongMsg: "Wrong Answer! Try again.",
         revealMsg: "The correct answer is: ",
         selectMsg: "Please select a number first!",
         timeUpMsg: "Time's up! Score: ",
@@ -338,12 +334,19 @@
       return currentLang === 'marathi' ? num.toLocaleString('mr-IN') : num.toString();
     }
 
-    function speakText(text) {
+    // सुधारित ऑडिओ फंक्शन - जुना आवाज पूर्ण संपवून रांगेत बोलणे
+    function speakText(text, onEndCallback = null) {
       if (isAudioOn && 'speechSynthesis' in window) {
         window.speechSynthesis.cancel();
+        
         let utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = langData[currentLang].speechLang;
         utterance.rate = 0.9;
+        
+        if (onEndCallback) {
+          utterance.onend = onEndCallback;
+        }
+        
         window.speechSynthesis.speak(utterance);
       }
     }
@@ -588,6 +591,7 @@
       });
     }
 
+    // सुधारित उत्तर तपासणी (ऑडिओ संपल्यानंतरच नवा प्रश्न)
     function checkAnswer() {
       const feedback = document.getElementById('feedback');
 
@@ -600,11 +604,9 @@
 
       if (selectedAnswer === correctAnswer) {
         feedback.className = 'feedback-message correct';
-        feedback.innerText = langData[currentLang].correctMsg;
+        feedback.innerText = langData[currentLang].correctMsg + " 🎉";
         
         playAudioTone('correct');
-        speakText(langData[currentLang].correctMsg);
-
         score += 1;
         streak += 1;
 
@@ -614,7 +616,10 @@
 
         updateDisplay();
 
-        setTimeout(() => { generateQuestion(); }, 1500);
+        // अभिनंदन पूर्ण बोलून झाल्यावरच लगेच पुढचा प्रश्न विचारला जाईल
+        speakText(langData[currentLang].correctMsg, function() {
+          setTimeout(() => { generateQuestion(); }, 300);
+        });
 
       } else {
         streak = 0;
