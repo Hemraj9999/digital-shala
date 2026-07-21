@@ -70,7 +70,7 @@
       display: flex;
       justify-content: center;
       gap: 12px;
-      margin: 25px 0;
+      margin: 20px 0;
     }
     .box {
       width: 85px;
@@ -91,16 +91,16 @@
       color: #ff8800;
     }
 
-    /* पर्याय (Options Area) */
+    /* पर्यायांची रचना */
     .options-title {
       font-size: 16px;
-      margin-top: 20px;
+      margin-top: 15px;
       color: #00d2ff;
     }
     .options-container {
       display: flex;
       justify-content: center;
-      gap: 15px;
+      gap: 12px;
       margin: 15px 0;
       flex-wrap: wrap;
     }
@@ -115,12 +115,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: grab;
+      cursor: pointer;
       box-shadow: 0 4px 8px rgba(0,0,0,0.3);
       transition: transform 0.2s;
     }
     .option-card:active {
-      cursor: grabbing;
       transform: scale(1.1);
     }
 
@@ -132,8 +131,23 @@
       padding: 12px 30px;
       font-size: 18px;
       border-radius: 25px;
-      margin-top: 20px;
+      margin-top: 10px;
       cursor: pointer;
+    }
+
+    /* स्क्रीनवर दिसणारा फीडबॅक मेसेज पट्टी */
+    .feedback-message {
+      font-size: 20px;
+      font-weight: bold;
+      min-height: 30px;
+      margin: 10px 0;
+      transition: all 0.3s ease;
+    }
+    .feedback-message.correct {
+      color: #00ff66;
+    }
+    .feedback-message.wrong {
+      color: #ff3333;
     }
   </style>
 </head>
@@ -148,7 +162,7 @@
   <!-- स्कोअर बोर्ड -->
   <div class="score-board" id="score-text">गुण: ०</div>
 
-  <!-- ३ मोड्स (Before, After, Middle) -->
+  <!-- ३ मोड्स -->
   <div class="mode-buttons">
     <button class="btn-mode" id="mode-before" onclick="setMode('before')">Before Number</button>
     <button class="btn-mode" id="mode-after" onclick="setMode('after')">After Number</button>
@@ -165,13 +179,14 @@
     <div class="box" id="box3"></div>
   </div>
 
+  <!-- स्क्रीनवर उत्तर बरोबर/चूक दाखवणारा संदेश -->
+  <div class="feedback-message" id="feedback"></div>
+
   <!-- पर्यायांचे क्षेत्र -->
   <div class="options-title" id="options-label">योग्य पर्याय निवडा किंवा ड्रॅग करा:</div>
-  <div class="options-container" id="options-box">
-    <!-- पर्यायांची बटणे ऑटोमॅटिक इथे जोडली जातील -->
-  </div>
+  <div class="options-container" id="options-box"></div>
 
-  <button class="btn-check" id="check-btn" onclick="checkAnswer()">उत्तर तपासा</button>
+  <button class="btn-check" id="check-btn" onclick="checkAnswer()">Check Answer</button>
 
   <script>
     const langData = {
@@ -180,28 +195,30 @@
         btnBefore: "पूर्वीची संख्या (Before)",
         btnAfter: "पुढील संख्या (After)",
         btnMiddle: "मधील संख्या (Middle)",
-        qBefore: "आधीची योग्य संख्या रिकाम्या बॉक्समध्ये टाका:",
-        qAfter: "नंतरची योग्य संख्या रिकाम्या बॉक्समध्ये टाका:",
-        qMiddle: "मधील योग्य संख्या रिकाम्या बॉक्समध्ये टाका:",
-        optionsLabel: "योग्य अंक निवडा किंवा उचलून बॉक्समध्ये टाका:",
+        qBefore: "आधीची संख्या रिकाम्या बॉक्समध्ये टाका:",
+        qAfter: "नंतरची संख्या रिकाम्या बॉक्समध्ये टाका:",
+        qMiddle: "मधील संख्या रिकाम्या बॉक्समध्ये टाका:",
+        optionsLabel: "योग्य अंक निवडा किंवा ड्रॅग करा:",
         checkBtn: "उत्तर तपासा",
         correctMsg: "शाब्बास! बरोबर उत्तर! 🎉",
         wrongMsg: "चुकले! पुन्हा प्रयत्न करा. ❌",
-        selectMsg: "कृपया आधी एक संख्या निवडा!"
+        selectMsg: "कृपया आधी एक संख्या निवडा!",
+        speechLang: "mr-IN"
       },
       english: {
         scoreText: "SCORE: ",
         btnBefore: "Before Number",
         btnAfter: "After Number",
         btnMiddle: "Middle Number",
-        qBefore: "Place the correct BEFORE number in the empty box:",
-        qAfter: "Place the correct AFTER number in the empty box:",
-        qMiddle: "Place the correct MIDDLE number in the empty box:",
+        qBefore: "Place the correct BEFORE number:",
+        qAfter: "Place the correct AFTER number:",
+        qMiddle: "Place the correct MIDDLE number:",
         optionsLabel: "Select or drag the correct number:",
         checkBtn: "Check Answer",
         correctMsg: "Great Job! Correct Answer! 🎉",
         wrongMsg: "Wrong Answer! Try again. ❌",
-        selectMsg: "Please select a number first!"
+        selectMsg: "Please select a number first!",
+        speechLang: "en-US"
       }
     };
 
@@ -211,6 +228,17 @@
     let correctAnswer = 11;
     let selectedAnswer = null;
     let score = 0;
+
+    // मोबाईल/ब्राउझरमध्ये बोलणारा आवाज (Text to Speech)
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // जुना आवाज थांबवून नवीन बोलणे
+        let utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = langData[currentLang].speechLang;
+        utterance.rate = 0.9; // बोलण्याची गती
+        window.speechSynthesis.speak(utterance);
+      }
+    }
 
     function switchLanguage(lang) {
       currentLang = lang;
@@ -238,6 +266,7 @@
 
     function generateQuestion() {
       selectedAnswer = null;
+      document.getElementById('feedback').innerText = ''; // मेसेज साफ करणे
       currentNumber = Math.floor(Math.random() * 40) + 10;
       
       const b1 = document.getElementById('box1');
@@ -245,7 +274,6 @@
       const b3 = document.getElementById('box3');
       const qText = document.getElementById('question-text');
 
-      // क्लास रिसेट करणे
       [b1, b2, b3].forEach(b => b.className = 'box');
 
       if (currentMode === 'after') {
@@ -281,7 +309,6 @@
       const optionsBox = document.getElementById('options-box');
       optionsBox.innerHTML = '';
 
-      // १ बरोबर पर्याय आणि ३ चुकीचे पर्याय
       let options = [correctAnswer];
       while (options.length < 4) {
         let wrong = correctAnswer + (Math.floor(Math.random() * 7) - 3);
@@ -290,7 +317,6 @@
         }
       }
 
-      // पर्याय रँडमली मिक्स करणे
       options.sort(() => Math.random() - 0.5);
 
       options.forEach(num => {
@@ -299,12 +325,10 @@
         card.innerText = num;
         card.draggable = true;
 
-        // क्लिक करून निवडणे (मोबाईलसाठी सोपे)
         card.onclick = function() {
           selectOption(num);
         };
 
-        // ड्रॅग सुरू करणे
         card.ondragstart = function(e) {
           e.dataTransfer.setData("text", num);
         };
@@ -335,18 +359,36 @@
     }
 
     function checkAnswer() {
+      const feedback = document.getElementById('feedback');
+
       if (selectedAnswer === null) {
-        alert(langData[currentLang].selectMsg);
+        feedback.className = 'feedback-message wrong';
+        feedback.innerText = langData[currentLang].selectMsg;
+        speakText(langData[currentLang].selectMsg);
         return;
       }
 
       if (selectedAnswer === correctAnswer) {
-        alert(langData[currentLang].correctMsg);
+        feedback.className = 'feedback-message correct';
+        feedback.innerText = langData[currentLang].correctMsg;
+        
+        // मोबाईल स्वतः बोलेल
+        speakText(langData[currentLang].correctMsg);
+
         score += 1;
         updateScoreDisplay();
-        generateQuestion();
+
+        // १.५ सेकंदांनंतर पुढील नवीन प्रश्न येईल
+        setTimeout(() => {
+          generateQuestion();
+        }, 1500);
+
       } else {
-        alert(langData[currentLang].wrongMsg);
+        feedback.className = 'feedback-message wrong';
+        feedback.innerText = langData[currentLang].wrongMsg;
+        
+        // चुकाचे उत्तर असल्यास आवाज
+        speakText(langData[currentLang].wrongMsg);
       }
     }
 
@@ -355,7 +397,7 @@
     }
 
     window.onload = function() {
-      switchLanguage('marathi');
+      switchLanguage('english'); // स्क्रीनशॉटप्रमाणे इंग्लिश किंवा मराठीत सेट करा
       setMode('after');
     };
   </script>
