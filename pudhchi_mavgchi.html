@@ -46,7 +46,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      max-width: 600px;
+      max-width: 650px;
       margin: 10px auto;
       flex-wrap: wrap;
       gap: 8px;
@@ -191,23 +191,23 @@
       justify-content: center;
       gap: 10px;
       margin-top: 10px;
+      flex-wrap: wrap;
     }
 
-    .btn-check, .btn-next {
+    .btn-check, .btn-next, .btn-replay {
       background-color: #00e676;
       color: #000;
       font-weight: bold;
       border: none;
-      padding: 10px 22px;
-      font-size: 16px;
+      padding: 10px 20px;
+      font-size: 15px;
       border-radius: 25px;
       cursor: pointer;
     }
 
-    .btn-next {
-      background-color: #ff9100;
-      display: none;
-    }
+    .btn-replay { background-color: #00bcd4; color: #fff; }
+    .btn-next { background-color: #ff9100; display: none; }
+    .btn-check:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .feedback-message {
       font-size: 18px;
@@ -217,6 +217,34 @@
     }
     .feedback-message.correct { color: #00ff66; }
     .feedback-message.wrong { color: #ff3333; }
+
+    /* रिझल्ट मोडल पॉपअप */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 2px solid var(--accent-color);
+      padding: 25px;
+      border-radius: 20px;
+      max-width: 320px;
+      width: 85%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    .modal-card h2 { margin-top: 0; color: #ffd700; }
+    .modal-card p { font-size: 18px; margin: 12px 0; }
+    .btn-restart {
+      background: #00e676; border: none; padding: 10px 25px;
+      font-size: 16px; font-weight: bold; border-radius: 20px; cursor: pointer;
+    }
   </style>
 </head>
 <body id="game-body">
@@ -228,7 +256,7 @@
     </div>
 
     <button class="btn-custom" id="btn-mute" onclick="toggleMute()">🔊 Voice: ON</button>
-    <button class="btn-custom" id="btn-timer-toggle" onclick="toggleTimerMode()">⏱️ Timer: OFF</button>
+    <button class="btn-custom" id="btn-fullscreen" onclick="toggleFullScreen()">⛶ Fullscreen</button>
 
     <select class="theme-select" onchange="changeTheme(this.value)">
       <option value="space">🌌 Space Theme</option>
@@ -242,7 +270,7 @@
       <option value="hard">Hard (100-1000)</option>
     </select>
 
-    <div class="info-badge" id="timer-text" style="display:none;">वेळ: ३०</div>
+    <div class="info-badge" id="q-counter">प्रश्न: १/१०</div>
     <div class="info-badge" id="score-text">गुण: ०</div>
     <div class="streak-badge" id="streak-text">⭐ ०</div>
   </div>
@@ -267,14 +295,25 @@
   <div class="options-container" id="options-box"></div>
 
   <div class="action-btn-group">
+    <button class="btn-replay" onclick="speakQuestionAudio()">🔄 पुन्हा ऐका</button>
     <button class="btn-check" id="check-btn" onclick="checkAnswer()">Check Answer</button>
-    <button class="btn-next" id="next-btn" onclick="generateQuestion()">Next Question ➔</button>
+    <button class="btn-next" id="next-btn" onclick="nextQuestionFlow()">Next Question ➔</button>
+  </div>
+
+  <!-- १० प्रश्नांनंतरचा निकाल पॉपअप -->
+  <div class="modal-overlay" id="result-modal">
+    <div class="modal-card">
+      <h2 id="modal-title">🏆 अभिनंदन! 🏆</h2>
+      <p id="modal-score">तुमचे गुण: ८ / १०</p>
+      <p id="modal-accuracy">अचूकता: ८०%</p>
+      <button class="btn-restart" onclick="restartQuiz()">पुन्हा खेळा 🔄</button>
+    </div>
   </div>
   <script>
     const langData = {
       marathi: {
         scoreText: "गुण: ",
-        timerText: "वेळ: ",
+        qCounter: "प्रश्न: ",
         btnBefore: "पूर्वीची संख्या (Before)",
         btnAfter: "पुढील संख्या (After)",
         btnMiddle: "मधील संख्या (Middle)",
@@ -288,13 +327,15 @@
         wrongMsg: "चुकले! पुन्हा प्रयत्न करा.",
         revealMsg: "योग्य उत्तर हे आहे: ",
         selectMsg: "कृपया आधी एक संख्या निवडा!",
-        timeUpMsg: "वेळ संपली! एकूण गुण: ",
+        modalTitle: "🏆 अभिनंदन! 🏆",
+        modalScore: "तुमचे गुण: ",
+        modalAcc: "अचूकता: ",
         speechLang: "mr-IN",
         levels: { easy: "सोपे (१-२०)", medium: "मध्यम (१-१००)", hard: "कठीण (१००-१०००)" }
       },
       english: {
         scoreText: "SCORE: ",
-        timerText: "TIME: ",
+        qCounter: "Q: ",
         btnBefore: "Before Number",
         btnAfter: "After Number",
         btnMiddle: "Middle Number",
@@ -308,7 +349,9 @@
         wrongMsg: "Wrong Answer! Try again.",
         revealMsg: "The correct answer is: ",
         selectMsg: "Please select a number first!",
-        timeUpMsg: "Time's up! Score: ",
+        modalTitle: "🏆 Congratulations! 🏆",
+        modalScore: "Your Score: ",
+        modalAcc: "Accuracy: ",
         speechLang: "en-US",
         levels: { easy: "Easy (1-20)", medium: "Medium (1-100)", hard: "Hard (100-1000)" }
       }
@@ -323,30 +366,23 @@
     let score = 0;
     let streak = 0;
     let wrongAttempts = 0;
+    let questionCount = 1;
+    const maxQuestions = 10;
 
     let isAudioOn = true;
-    let isTimerActive = false;
-    let timeLeft = 30;
-    let timerInterval = null;
 
     function formatNumber(num) {
       if (num === "?" || num === null) return "?";
       return currentLang === 'marathi' ? num.toLocaleString('mr-IN') : num.toString();
     }
 
-    // सुधारित ऑडिओ फंक्शन - जुना आवाज पूर्ण संपवून रांगेत बोलणे
     function speakText(text, onEndCallback = null) {
       if (isAudioOn && 'speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        
         let utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = langData[currentLang].speechLang;
         utterance.rate = 0.9;
-        
-        if (onEndCallback) {
-          utterance.onend = onEndCallback;
-        }
-        
+        if (onEndCallback) utterance.onend = onEndCallback;
         window.speechSynthesis.speak(utterance);
       }
     }
@@ -355,6 +391,14 @@
       isAudioOn = !isAudioOn;
       document.getElementById('btn-mute').innerText = isAudioOn ? "🔊 Voice: ON" : "🔇 Voice: OFF";
       if (!isAudioOn && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(()=>{});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
     }
 
     function changeTheme(theme) {
@@ -383,69 +427,20 @@
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+        osc.connect(gain); gain.connect(ctx.destination);
 
         if (type === 'correct') {
           osc.frequency.setValueAtTime(523.25, ctx.currentTime);
           osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
           gain.gain.setValueAtTime(0.2, ctx.currentTime);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.25);
+          osc.start(); osc.stop(ctx.currentTime + 0.25);
         } else {
           osc.frequency.setValueAtTime(220, ctx.currentTime);
           osc.frequency.setValueAtTime(180, ctx.currentTime + 0.1);
           gain.gain.setValueAtTime(0.2, ctx.currentTime);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.25);
+          osc.start(); osc.stop(ctx.currentTime + 0.25);
         }
       } catch (e) {}
-    }
-
-    function toggleTimerMode() {
-      isTimerActive = !isTimerActive;
-      const btn = document.getElementById('btn-timer-toggle');
-      const timerBoard = document.getElementById('timer-text');
-
-      btn.classList.toggle('active', isTimerActive);
-      btn.innerText = isTimerActive ? "⏱️ Timer: ON" : "⏱️ Timer: OFF";
-      timerBoard.style.display = isTimerActive ? "inline-block" : "none";
-
-      score = 0;
-      streak = 0;
-      updateDisplay();
-
-      if (isTimerActive) startTimer();
-      else clearInterval(timerInterval);
-
-      generateQuestion();
-    }
-
-    function startTimer() {
-      clearInterval(timerInterval);
-      timeLeft = 30;
-      updateTimerDisplay();
-
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        updateTimerDisplay();
-
-        if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          let msg = langData[currentLang].timeUpMsg + formatNumber(score);
-          alert(msg);
-          speakText(msg);
-          score = 0;
-          streak = 0;
-          updateDisplay();
-          startTimer();
-          generateQuestion();
-        }
-      }, 1000);
-    }
-
-    function updateTimerDisplay() {
-      document.getElementById('timer-text').innerText = langData[currentLang].timerText + formatNumber(timeLeft);
     }
 
     function switchLanguage(lang) {
@@ -466,13 +461,12 @@
       lvlSelect.options[2].text = langData[lang].levels.hard;
 
       updateDisplay();
-      if (isTimerActive) updateTimerDisplay();
       generateQuestion();
     }
 
     function changeLevel(level) {
       currentLevel = level;
-      generateQuestion();
+      restartQuiz();
     }
 
     function setMode(mode) {
@@ -480,7 +474,7 @@
       document.getElementById('mode-before').classList.toggle('active', mode === 'before');
       document.getElementById('mode-after').classList.toggle('active', mode === 'after');
       document.getElementById('mode-middle').classList.toggle('active', mode === 'middle');
-      generateQuestion();
+      restartQuiz();
     }
 
     function getRandomNumber() {
@@ -493,7 +487,10 @@
       selectedAnswer = null;
       wrongAttempts = 0;
       document.getElementById('feedback').innerText = '';
-      document.getElementById('check-btn').style.display = 'inline-block';
+      
+      const checkBtn = document.getElementById('check-btn');
+      checkBtn.style.display = 'inline-block';
+      checkBtn.disabled = true; // Anti-guessing delay unlock
       document.getElementById('next-btn').style.display = 'none';
 
       currentNumber = getRandomNumber();
@@ -535,6 +532,7 @@
 
       setupDropZone();
       generateOptions();
+      updateDisplay();
       setTimeout(speakQuestionAudio, 300);
     }
 
@@ -589,9 +587,13 @@
           card.classList.remove('selected');
         }
       });
+
+      // उत्तर निवडल्यावर बटण १ सेकंदाने लॉक/अनलॉक (Anti-Guessing)
+      setTimeout(() => {
+        document.getElementById('check-btn').disabled = false;
+      }, 500);
     }
 
-    // सुधारित उत्तर तपासणी (ऑडिओ संपल्यानंतरच नवा प्रश्न)
     function checkAnswer() {
       const feedback = document.getElementById('feedback');
 
@@ -616,9 +618,8 @@
 
         updateDisplay();
 
-        // अभिनंदन पूर्ण बोलून झाल्यावरच लगेच पुढचा प्रश्न विचारला जाईल
         speakText(langData[currentLang].correctMsg, function() {
-          setTimeout(() => { generateQuestion(); }, 300);
+          setTimeout(() => { nextQuestionFlow(); }, 400);
         });
 
       } else {
@@ -647,8 +648,38 @@
       }
     }
 
+    function nextQuestionFlow() {
+      if (questionCount >= maxQuestions) {
+        showResults();
+      } else {
+        questionCount++;
+        generateQuestion();
+      }
+    }
+
+    function showResults() {
+      const modal = document.getElementById('result-modal');
+      document.getElementById('modal-title').innerText = langData[currentLang].modalTitle;
+      document.getElementById('modal-score').innerText = langData[currentLang].modalScore + formatNumber(score) + " / " + formatNumber(maxQuestions);
+      
+      let accuracy = Math.round((score / maxQuestions) * 100);
+      document.getElementById('modal-accuracy').innerText = langData[currentLang].modalAcc + formatNumber(accuracy) + "%";
+
+      modal.style.display = 'flex';
+      if (typeof confetti === 'function') confetti({ particleCount: 150, spread: 90 });
+    }
+
+    function restartQuiz() {
+      score = 0;
+      streak = 0;
+      questionCount = 1;
+      document.getElementById('result-modal').style.display = 'none';
+      generateQuestion();
+    }
+
     function updateDisplay() {
       document.getElementById('score-text').innerText = langData[currentLang].scoreText + formatNumber(score);
+      document.getElementById('q-counter').innerText = langData[currentLang].qCounter + formatNumber(questionCount) + "/" + formatNumber(maxQuestions);
       document.getElementById('streak-text').innerText = "⭐ " + formatNumber(streak);
     }
 
