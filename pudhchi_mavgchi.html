@@ -1,216 +1,277 @@
 <!DOCTYPE html>
 <html lang="mr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Number Game</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #0d2347;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .lang-container {
-            margin-top: 20px;
-            background-color: #09172e;
-            padding: 5px;
-            border-radius: 25px;
-            display: flex;
-            border: 1px solid #1e3d6b;
-        }
-
-        .lang-btn {
-            background: transparent;
-            color: #a0aec0;
-            border: none;
-            padding: 8px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .lang-btn.active {
-            background-color: #00bcd4;
-            color: black;
-            box-shadow: 0 0 10px #00bcd4;
-        }
-
-        .game-screen {
-            width: 90%;
-            max-width: 400px;
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #091936;
-            border-radius: 20px;
-            border: 1px solid #16325c;
-            text-align: center;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-        }
-
-        .score-box {
-            background-color: #ff5722;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 15px;
-            display: inline-block;
-            font-weight: bold;
-            margin-top: 10px;
-            font-size: 18px;
-        }
-
-        .select-box {
-            width: 100%;
-            padding: 12px;
-            background-color: #050f24;
-            color: white;
-            border: 2px solid #00bcd4;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .question-card {
-            background-color: #0e2954;
-            border: 2px solid #00bcd4;
-            border-radius: 20px;
-            padding: 30px;
-            margin: 20px auto;
-            font-size: 64px;
-            font-weight: bold;
-            width: 100px;
-            height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: inset 0 0 15px rgba(0,188,212,0.3);
-        }
-
-        .action-btn {
-            background: linear-gradient(to right, #00c6ff, #0072ff);
-            color: white;
-            border: none;
-            padding: 14px 35px;
-            font-size: 18px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            box-shadow: 0 4px 15px rgba(0,198,255,0.4);
-            transition: transform 0.1s ease;
-        }
-
-        .action-btn:active {
-            transform: scale(0.98);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>पुढची - मागची संख्या खेळ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0b192c;
+      color: #ffffff;
+      text-align: center;
+      padding: 15px;
+    }
+    .lang-btn-container {
+      margin-bottom: 15px;
+    }
+    .btn-lang {
+      padding: 8px 16px;
+      margin: 0 5px;
+      font-weight: bold;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      background-color: #1e3e62;
+      color: white;
+    }
+    .btn-lang.active {
+      background-color: #00d2ff;
+      color: #000;
+    }
+    .score-board {
+      background-color: #ff6500;
+      display: inline-block;
+      padding: 5px 20px;
+      border-radius: 15px;
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    /* ३ बॉक्स दाखवण्यासाठी फ्लेक्सबॉक्स */
+    .boxes-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .box {
+      width: 80px;
+      height: 80px;
+      border: 2px solid #00d2ff;
+      border-radius: 12px;
+      background-color: #1e3e62;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .box.question {
+      background-color: #00d2ff;
+      color: #000;
+    }
+    /* मोड निवडण्यासाठी ३ बटणे (Before, After, Middle) */
+    .mode-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+    .btn-mode {
+      padding: 10px 12px;
+      border: 1px solid #00d2ff;
+      border-radius: 8px;
+      background-color: transparent;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-mode.active {
+      background-color: #00d2ff;
+      color: #000;
+      font-weight: bold;
+    }
+    .question-title {
+      font-size: 18px;
+      margin: 15px 0;
+    }
+    input[type="number"] {
+      width: 120px;
+      padding: 10px;
+      font-size: 20px;
+      border-radius: 8px;
+      border: none;
+      text-align: center;
+    }
+    .btn-check {
+      background-color: #0084ff;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 18px;
+      border-radius: 25px;
+      margin-top: 15px;
+      cursor: pointer;
+      width: 80%;
+      max-width: 250px;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- १. भाषा निवडण्याचा विभाग -->
-    <div class="lang-container">
-        <button id="btn-marathi" class="lang-btn" onclick="changeLanguage('marathi')">मराठी</button>
-        <button id="btn-english" class="lang-btn active" onclick="changeLanguage('english')">English</button>
-    </div>
+  <!-- भाषा निवड बटणे -->
+  <div class="lang-btn-container">
+    <button class="btn-lang" id="btn-marathi" onclick="switchLanguage('marathi')">मराठी</button>
+    <button class="btn-lang" id="btn-english" onclick="switchLanguage('english')">English</button>
+  </div>
 
-    <!-- २. मुख्य गेम स्क्रीन -->
-    <div class="game-screen">
-        <div class="score-box">
-            <span id="text-score-label">SCORE:</span> <span id="score-val">0</span>
-        </div>
-        
-        <p style="margin-top: 20px; font-weight: bold;">
-            🎯 <span id="text-select-group">Select Number Group:</span>
-        </p>
-        
-        <select id="group-select" class="select-box">
-            <!-- ऑप्शन्स JavaScript द्वारे येतील -->
-        </select>
+  <!-- स्कोअर बोर्ड -->
+  <div class="score-board" id="score-text">गुण: ०</div>
 
-        <h3>🤔 <span id="text-question">Tell the next (following) number:</span></h3>
-        
-        <div class="question-card" id="display-number">?</div>
-        
-        <button class="action-btn" id="btn-check">Check Answer</button>
-    </div>
+  <!-- ३ मोड्सचे पर्याय (Before Number, After Number, Middle Number) -->
+  <div class="mode-buttons">
+    <button class="btn-mode" id="mode-before" onclick="setMode('before')">Before Number</button>
+    <button class="btn-mode" id="mode-after" onclick="setMode('after')">After Number</button>
+    <button class="btn-mode" id="mode-middle" onclick="setMode('middle')">Middle Number</button>
+  </div>
 
-    <!-- JavaScript फाईलची लिंक (या फाईलच्या खाली कोणताही मजकूर नसावा) -->
-    <script src="script.js"></script>
+  <!-- प्रश्न शीर्षक -->
+  <div class="question-title" id="question-text">पुढील संख्या सांगा:</div>
 
+  <!-- ३ बॉक्सची रचना -->
+  <div class="boxes-container">
+    <div class="box" id="box1">?</div>
+    <div class="box question" id="box2">१०</div>
+    <div class="box" id="box3">?</div>
+  </div>
+
+  <!-- उत्तर देण्याची जागा -->
+  <div>
+    <input type="number" id="user-answer" placeholder="?" />
+  </div>
+
+  <br>
+  <button class="btn-check" id="check-btn" onclick="checkAnswer()">उत्तर तपासा</button>
+
+  <script>
+    // १. भाषेचा आणि मजकुराचा डेटाबेस
+    const langData = {
+      marathi: {
+        scoreText: "गुण: ",
+        btnBefore: "पूर्वीची संख्या (Before)",
+        btnAfter: "पुढील संख्या (After)",
+        btnMiddle: "मधील संख्या (Middle)",
+        qBefore: "दिलेल्या संख्येच्या आधीची (पूर्वीची) संख्या कोणती?",
+        qAfter: "दिलेल्या संख्येच्या नंतरची (पुढील) संख्या कोणती?",
+        qMiddle: "मधील (प्रश्नचिन्ह असलेल्या) जागेवर कोणती संख्या येईल?",
+        checkBtn: "उत्तर तपासा",
+        correctMsg: "शाब्बास! बरोबर उत्तर! 🎉",
+        wrongMsg: "चुकले! पुन्हा प्रयत्न करा. ❌"
+      },
+      english: {
+        scoreText: "SCORE: ",
+        btnBefore: "Before Number",
+        btnAfter: "After Number",
+        btnMiddle: "Middle Number",
+        qBefore: "Tell the previous (before) number:",
+        qAfter: "Tell the next (following) number:",
+        qMiddle: "Tell the middle missing number:",
+        checkBtn: "Check Answer",
+        correctMsg: "Great Job! Correct Answer! 🎉",
+        wrongMsg: "Wrong Answer! Try again. ❌"
+      }
+    };
+
+    let currentLang = 'marathi';
+    let currentMode = 'after'; // default mode
+    let currentNumber = 15;
+    let correctAnswer = 16;
+    let score = 0;
+
+    // भाषा बदलण्याचे फंक्शन
+    function switchLanguage(lang) {
+      currentLang = lang;
+      
+      document.getElementById('btn-marathi').classList.toggle('active', lang === 'marathi');
+      document.getElementById('btn-english').classList.toggle('active', lang === 'english');
+
+      document.getElementById('mode-before').innerText = langData[lang].btnBefore;
+      document.getElementById('mode-after').innerText = langData[lang].btnAfter;
+      document.getElementById('mode-middle').innerText = langData[lang].btnMiddle;
+      document.getElementById('check-btn').innerText = langData[lang].checkBtn;
+
+      updateScoreDisplay();
+      generateQuestion();
+    }
+
+    // खेळण्याचा प्रकार (Mode) सेट करणे
+    function setMode(mode) {
+      currentMode = mode;
+      
+      document.getElementById('mode-before').classList.toggle('active', mode === 'before');
+      document.getElementById('mode-after').classList.toggle('active', mode === 'after');
+      document.getElementById('mode-middle').classList.toggle('active', mode === 'middle');
+
+      generateQuestion();
+    }
+
+    // नवीन प्रश्न तयार करणे
+    function generateQuestion() {
+      // १ ते ५० मधील कोणतीही संख्या
+      currentNumber = Math.floor(Math.random() * 40) + 5;
+      
+      const b1 = document.getElementById('box1');
+      const b2 = document.getElementById('box2');
+      const b3 = document.getElementById('box3');
+      const qText = document.getElementById('question-text');
+
+      document.getElementById('user-answer').value = '';
+
+      if (currentMode === 'after') {
+        qText.innerText = langData[currentLang].qAfter;
+        b1.innerText = ""; // उघडा किंवा रिकामा ठेऊ शकता
+        b1.style.visibility = "hidden"; // ५ पैकी ३ ऐवजी २ बॉक्सच वापरायचे असल्यास विजिबिलिटी लपवू शकता
+        b2.innerText = currentNumber;
+        b3.innerText = "?";
+        b3.style.visibility = "visible";
+        correctAnswer = currentNumber + 1;
+      } 
+      else if (currentMode === 'before') {
+        qText.innerText = langData[currentLang].qBefore;
+        b1.innerText = "?";
+        b1.style.visibility = "visible";
+        b2.innerText = currentNumber;
+        b3.innerText = "";
+        b3.style.visibility = "hidden";
+        correctAnswer = currentNumber - 1;
+      } 
+      else if (currentMode === 'middle') {
+        qText.innerText = langData[currentLang].qMiddle;
+        b1.innerText = currentNumber;
+        b1.style.visibility = "visible";
+        b2.innerText = "?";
+        b2.style.visibility = "visible";
+        b3.innerText = currentNumber + 2;
+        b3.style.visibility = "visible";
+        correctAnswer = currentNumber + 1;
+      }
+    }
+
+    // उत्तर तपासणे
+    function checkAnswer() {
+      const userAns = parseInt(document.getElementById('user-answer').value);
+
+      if (userAns === correctAnswer) {
+        alert(langData[currentLang].correctMsg);
+        score += 1;
+        updateScoreDisplay();
+        generateQuestion();
+      } else {
+        alert(langData[currentLang].wrongMsg);
+      }
+    }
+
+    function updateScoreDisplay() {
+      document.getElementById('score-text').innerText = langData[currentLang].scoreText + score;
+    }
+
+    // सुरुवातीला सेटअप सुरू करणे
+    window.onload = function() {
+      switchLanguage('marathi');
+      setMode('after');
+    };
+  </script>
 </body>
 </html>
-// १. भाषेचा डेटाबेस
-const langData = {
-    marathi: {
-        scoreLabel: "SCORE:",
-        selectGroup: "संख्या गट निवडा:",
-        question: "या संख्येच्या नंतरची (पुढची) संख्या सांगा:",
-        checkBtn: "उत्तर तपासा",
-        options: [
-            { value: "1-10", text: "🔢 गट: १ ते १०" },
-            { value: "11-20", text: "🔢 गट: ११ ते २०" }
-        ]
-    },
-    english: {
-        scoreLabel: "SCORE:",
-        selectGroup: "Select Number Group:",
-        question: "Tell the next (following) number:",
-        checkBtn: "Check Answer",
-        options: [
-            { value: "1-10", text: "🔢 Group: 1 to 10" },
-            { value: "11-20", text: "🔢 Group: 11 to 20" }
-        ]
-    }
-};
-
-// सुरुवातीची डिफॉल्ट भाषा
-let currentLang = 'english'; 
-
-// २. भाषा बदलणारे फंक्शन
-function changeLanguage(lang) {
-    currentLang = lang;
-    
-    // बटणांचे हायलाईट स्टेटस बदलणे
-    const btnMarathi = document.getElementById('btn-marathi');
-    const btnEnglish = document.getElementById('btn-english');
-    
-    if (btnMarathi && btnEnglish) {
-        btnMarathi.classList.toggle('active', lang === 'marathi');
-        btnEnglish.classList.toggle('active', lang === 'english');
-    }
-    
-    // स्क्रीनवरील मजकूर बदलणे
-    document.getElementById('text-score-label').innerText = langData[lang].scoreLabel;
-    document.getElementById('text-select-group').innerText = langData[lang].selectGroup;
-    document.getElementById('text-question').innerText = langData[lang].question;
-    document.getElementById('btn-check').innerText = langData[lang].checkBtn;
-    
-    // ड्रॉपडाउन (Select Box) मधील ऑप्शन्स बदलणे
-    const selectBox = document.getElementById('group-select');
-    if (selectBox) {
-        const currentSelection = selectBox.value;
-        selectBox.innerHTML = "";
-        
-        langData[lang].options.forEach(opt => {
-            let optionEl = document.createElement('option');
-            optionEl.value = opt.value;
-            optionEl.text = opt.text;
-            if (opt.value === currentSelection) optionEl.selected = true;
-            selectBox.appendChild(optionEl);
-        });
-    }
-}
-
-// ३. पेज लोड झाल्यावर पहिली भाषा लोड करणे
-window.onload = function() {
-    changeLanguage(currentLang);
-};
