@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>पुढची - मागची संख्या खेळ</title>
-  <!-- Confetti Library for Winning Animation -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     body {
@@ -20,12 +19,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      max-width: 500px;
+      max-width: 550px;
       margin: 0 auto 15px auto;
       flex-wrap: wrap;
       gap: 10px;
     }
-    .btn-lang, .level-select {
+    .btn-lang, .level-select, .btn-timer {
       padding: 8px 14px;
       font-weight: bold;
       border: 1px solid #00d2ff;
@@ -35,16 +34,24 @@
       color: white;
       font-size: 14px;
     }
-    .btn-lang.active {
+    .btn-lang.active, .btn-timer.active {
       background-color: #00d2ff;
       color: #000;
     }
     .score-board {
       background-color: #ff6500;
-      padding: 6px 20px;
+      padding: 6px 16px;
       border-radius: 15px;
       font-weight: bold;
-      font-size: 18px;
+      font-size: 16px;
+    }
+    .timer-board {
+      background-color: #e65100;
+      padding: 6px 16px;
+      border-radius: 15px;
+      font-weight: bold;
+      font-size: 16px;
+      display: none;
     }
     .mode-buttons {
       display: flex;
@@ -73,7 +80,6 @@
       color: #e0e0e0;
     }
 
-    /* ३ बॉक्सची रचना */
     .boxes-container {
       display: flex;
       justify-content: center;
@@ -93,7 +99,6 @@
       font-weight: bold;
       transition: all 0.3s;
     }
-    /* रिकामा बॉक्स (Drop Zone) */
     .box.drop-zone {
       border: 3px dashed #ff8800;
       background-color: rgba(255, 255, 255, 0.05);
@@ -105,7 +110,6 @@
       color: #00ff66 !important;
     }
 
-    /* पर्यायांची रचना */
     .options-title {
       font-size: 16px;
       margin-top: 15px;
@@ -162,7 +166,6 @@
       display: none;
     }
 
-    /* स्क्रीनवर दिसणारा फीडबॅक मेसेज पट्टी */
     .feedback-message {
       font-size: 20px;
       font-weight: bold;
@@ -176,47 +179,43 @@
 </head>
 <body>
 
-  <!-- टॉप बार: भाषा, स्कोअर आणि लेव्हल -->
   <div class="top-bar">
     <div>
       <button class="btn-lang" id="btn-marathi" onclick="switchLanguage('marathi')">मराठी</button>
       <button class="btn-lang" id="btn-english" onclick="switchLanguage('english')">English</button>
     </div>
     
+    <button class="btn-timer" id="btn-timer-toggle" onclick="toggleTimerMode()">⏱️ Timer: OFF</button>
+
     <select class="level-select" id="level-select" onchange="changeLevel(this.value)">
       <option value="easy">Easy (1-20)</option>
       <option value="medium">Medium (1-100)</option>
       <option value="hard">Hard (100-1000)</option>
     </select>
 
+    <div class="timer-board" id="timer-text">वेळ: ३०</div>
     <div class="score-board" id="score-text">गुण: ०</div>
   </div>
 
-  <!-- ३ मोड्स -->
   <div class="mode-buttons">
     <button class="btn-mode" id="mode-before" onclick="setMode('before')">Before Number</button>
     <button class="btn-mode" id="mode-after" onclick="setMode('after')">After Number</button>
     <button class="btn-mode" id="mode-middle" onclick="setMode('middle')">Middle Number</button>
   </div>
 
-  <!-- प्रश्न शीर्षक -->
   <div class="question-title" id="question-text">पुढील संख्या सांगा:</div>
 
-  <!-- ३ मुख्य बॉक्स -->
   <div class="boxes-container">
     <div class="box" id="box1"></div>
     <div class="box" id="box2"></div>
     <div class="box" id="box3"></div>
   </div>
 
-  <!-- फीडबॅक मेसेज -->
   <div class="feedback-message" id="feedback"></div>
 
-  <!-- पर्यायांचे क्षेत्र -->
   <div class="options-title" id="options-label">योग्य अंक निवडा किंवा ड्रॅग करा:</div>
   <div class="options-container" id="options-box"></div>
 
-  <!-- अ‍ॅक्शन बटणे -->
   <div class="action-btn-group">
     <button class="btn-check" id="check-btn" onclick="checkAnswer()">Check Answer</button>
     <button class="btn-next" id="next-btn" onclick="generateQuestion()">Next Question ➔</button>
@@ -226,6 +225,7 @@
     const langData = {
       marathi: {
         scoreText: "गुण: ",
+        timerText: "वेळ: ",
         btnBefore: "पूर्वीची संख्या (Before)",
         btnAfter: "पुढील संख्या (After)",
         btnMiddle: "मधील संख्या (Middle)",
@@ -239,11 +239,13 @@
         wrongMsg: "चुकले! पुन्हा प्रयत्न करा. ❌",
         revealMsg: "योग्य उत्तर हे आहे: ",
         selectMsg: "कृपया आधी एक संख्या निवडा!",
+        timeUpMsg: "वेळ संपली! तुमचा स्कोअर: ",
         speechLang: "mr-IN",
         levels: { easy: "सोपे (१-२०)", medium: "मध्यम (१-१००)", hard: "कठीण (१००-१०००)" }
       },
       english: {
         scoreText: "SCORE: ",
+        timerText: "TIME: ",
         btnBefore: "Before Number",
         btnAfter: "After Number",
         btnMiddle: "Middle Number",
@@ -257,6 +259,7 @@
         wrongMsg: "Wrong Answer! Try again. ❌",
         revealMsg: "The correct answer is: ",
         selectMsg: "Please select a number first!",
+        timeUpMsg: "Time's up! Your score: ",
         speechLang: "en-US",
         levels: { easy: "Easy (1-20)", medium: "Medium (1-100)", hard: "Hard (100-1000)" }
       }
@@ -271,7 +274,11 @@
     let score = 0;
     let wrongAttempts = 0;
 
-    // देवनागरी / इंग्रजी अंक फॉरमॅट करणे
+    // टाईमर व्हेरिएबल्स
+    let isTimerActive = false;
+    let timeLeft = 30;
+    let timerInterval = null;
+
     function formatNumber(num) {
       if (num === "?" || num === null) return "?";
       if (currentLang === 'marathi') {
@@ -280,7 +287,6 @@
       return num.toString();
     }
 
-    // व्हॉइस ऑडिओ (Text to Speech)
     function speakText(text) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
@@ -291,7 +297,29 @@
       }
     }
 
-    // साऊंड इफेक्ट्स (Web Audio API)
+    // प्रश्न व्हॉइसमध्ये वाचणे
+    function speakQuestionAudio() {
+      let speechQuery = "";
+      if (currentLang === 'marathi') {
+        if (currentMode === 'after') {
+          speechQuery = formatNumber(currentNumber + 1) + " नंतर कोणती संख्या येते?";
+        } else if (currentMode === 'before') {
+          speechQuery = formatNumber(currentNumber) + " च्या आधी कोणती संख्या येते?";
+        } else if (currentMode === 'middle') {
+          speechQuery = formatNumber(currentNumber) + " आणि " + formatNumber(currentNumber + 2) + " च्या मधील संख्या कोणती?";
+        }
+      } else {
+        if (currentMode === 'after') {
+          speechQuery = "What comes after " + (currentNumber + 1) + "?";
+        } else if (currentMode === 'before') {
+          speechQuery = "What comes before " + currentNumber + "?";
+        } else if (currentMode === 'middle') {
+          speechQuery = "What comes between " + currentNumber + " and " + (currentNumber + 2) + "?";
+        }
+      }
+      speakText(speechQuery);
+    }
+
     function playAudioTone(type) {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -301,21 +329,67 @@
         gain.connect(ctx.destination);
 
         if (type === 'correct') {
-          osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
           gain.gain.setValueAtTime(0.3, ctx.currentTime);
           osc.start();
           osc.stop(ctx.currentTime + 0.3);
         } else if (type === 'wrong') {
-          osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
+          osc.frequency.setValueAtTime(220, ctx.currentTime);
           osc.frequency.setValueAtTime(180, ctx.currentTime + 0.1);
           gain.gain.setValueAtTime(0.3, ctx.currentTime);
           osc.start();
           osc.stop(ctx.currentTime + 0.3);
         }
       } catch (e) {
-        console.log("Audio not supported");
+        console.log("Audio error");
       }
+    }
+
+    function toggleTimerMode() {
+      isTimerActive = !isTimerActive;
+      const btn = document.getElementById('btn-timer-toggle');
+      const timerBoard = document.getElementById('timer-text');
+
+      btn.classList.toggle('active', isTimerActive);
+      btn.innerText = isTimerActive ? "⏱️ Timer: ON" : "⏱️ Timer: OFF";
+      timerBoard.style.display = isTimerActive ? "inline-block" : "none";
+
+      score = 0;
+      updateScoreDisplay();
+
+      if (isTimerActive) {
+        startTimer();
+      } else {
+        clearInterval(timerInterval);
+      }
+      generateQuestion();
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timeLeft = 30;
+      updateTimerDisplay();
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          let endMsg = langData[currentLang].timeUpMsg + formatNumber(score);
+          alert(endMsg);
+          speakText(endMsg);
+          score = 0;
+          updateScoreDisplay();
+          startTimer();
+          generateQuestion();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      document.getElementById('timer-text').innerText = langData[currentLang].timerText + formatNumber(timeLeft);
     }
 
     function switchLanguage(lang) {
@@ -330,13 +404,13 @@
       document.getElementById('check-btn').innerText = langData[lang].checkBtn;
       document.getElementById('next-btn').innerText = langData[lang].nextBtn;
 
-      // ड्रॉपडाउन पर्याय भाषांतरित करणे
       const lvlSelect = document.getElementById('level-select');
       lvlSelect.options[0].text = langData[lang].levels.easy;
       lvlSelect.options[1].text = langData[lang].levels.medium;
       lvlSelect.options[2].text = langData[lang].levels.hard;
 
       updateScoreDisplay();
+      if (isTimerActive) updateTimerDisplay();
       generateQuestion();
     }
 
@@ -356,11 +430,11 @@
 
     function getRandomNumber() {
       if (currentLevel === 'easy') {
-        return Math.floor(Math.random() * 18) + 2; // 2 to 19
+        return Math.floor(Math.random() * 18) + 2;
       } else if (currentLevel === 'medium') {
-        return Math.floor(Math.random() * 95) + 3; // 3 to 98
+        return Math.floor(Math.random() * 95) + 3;
       } else {
-        return Math.floor(Math.random() * 890) + 105; // 105 to 995
+        return Math.floor(Math.random() * 890) + 105;
       }
     }
 
@@ -410,6 +484,9 @@
 
       setupDropZone();
       generateOptions();
+
+      // प्रश्न ऑडिओमध्ये बोलणे
+      setTimeout(speakQuestionAudio, 300);
     }
 
     function generateOptions() {
@@ -434,28 +511,20 @@
         card.setAttribute('data-value', num);
         card.draggable = true;
 
-        // क्लिक / टच इव्हेंट
         card.onclick = function() {
           selectOption(num);
         };
 
-        // डेस्कटॉप ड्रॅग इव्हेंट
         card.ondragstart = function(e) {
           e.dataTransfer.setData("text", num);
         };
 
-        // मोबाईल टच सपोर्ट (Mobile Drag & Drop Simulation)
-        setupTouchEvents(card, num);
+        card.ontouchstart = function(e) {
+          selectOption(num);
+        };
 
         optionsBox.appendChild(card);
       });
-    }
-
-    // मोबाईल टचद्वारे ड्रॅग-अँड-ड्रॉप चालवण्यासाठी
-    function setupTouchEvents(card, num) {
-      card.ontouchstart = function(e) {
-        selectOption(num);
-      };
     }
 
     function setupDropZone() {
@@ -478,7 +547,6 @@
       dropZone.innerText = formatNumber(num);
       dropZone.style.color = "#00d2ff";
 
-      // पर्यायांना हायलाइट करणे
       document.querySelectorAll('.option-card').forEach(card => {
         if (parseInt(card.getAttribute('data-value')) === num) {
           card.classList.add('selected');
@@ -505,7 +573,6 @@
         playAudioTone('correct');
         speakText(langData[currentLang].correctMsg);
 
-        // Confetti अ‍ॅनिमेशन उडवणे
         if (typeof confetti === 'function') {
           confetti({ particleCount: 60, spread: 70, origin: { y: 0.7 } });
         }
@@ -522,7 +589,6 @@
         playAudioTone('wrong');
 
         if (wrongAttempts >= 2) {
-          // २ वेळा चुका झाल्यावर अचूक उत्तर हायलाइट करणे
           feedback.className = 'feedback-message wrong';
           const revealMsg = langData[currentLang].revealMsg + formatNumber(correctAnswer);
           feedback.innerText = revealMsg;
