@@ -42,21 +42,38 @@
       transition: background-color 0.4s;
     }
 
+    /* स्वच्छ आणि सुटसुटीत टॉप बार */
     .top-bar {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      max-width: 700px;
-      margin: 10px auto;
-      flex-wrap: wrap;
-      gap: 8px;
+      max-width: 500px;
+      margin: 5px auto 10px auto;
+      padding: 0 5px;
+    }
+
+    .stats-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .btn-settings {
+      background: var(--card-bg);
+      border: 1px solid var(--accent-color);
+      color: var(--text-color);
+      font-size: 20px;
+      padding: 6px 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
 
     .btn-custom, .level-select, .theme-select {
-      padding: 6px 12px;
+      padding: 8px 12px;
       font-weight: bold;
       border: 1px solid var(--accent-color);
-      border-radius: 20px;
+      border-radius: 12px;
       cursor: pointer;
       background-color: var(--card-bg);
       color: var(--text-color);
@@ -71,43 +88,27 @@
     .info-badge {
       background-color: #ff6500;
       color: #fff;
-      padding: 6px 14px;
-      border-radius: 15px;
+      padding: 6px 10px;
+      border-radius: 12px;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .streak-badge {
       background-color: #ffd700;
       color: #000;
-      padding: 6px 12px;
-      border-radius: 15px;
+      padding: 6px 10px;
+      border-radius: 12px;
       font-weight: bold;
-      font-size: 14px;
-    }
-
-    .mode-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin: 12px 0;
-      flex-wrap: wrap;
-    }
-
-    .btn-mode {
-      padding: 8px 12px;
-      border: 1px solid var(--accent-color);
-      border-radius: 8px;
-      background-color: transparent;
-      color: var(--text-color);
-      cursor: pointer;
       font-size: 13px;
     }
 
-    .btn-mode.active {
-      background-color: var(--accent-color);
-      color: #000;
-      font-weight: bold;
+    /* मोड आणि पातळीची नवीन ओळ */
+    .controls-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 8px 0 15px 0;
     }
 
     .question-area {
@@ -129,7 +130,7 @@
     }
 
     .question-title {
-      font-size: 18px;
+      font-size: 17px;
       margin: 10px 0;
       font-weight: 500;
     }
@@ -142,15 +143,15 @@
     }
 
     .box {
-      width: 80px;
-      height: 80px;
+      width: 75px;
+      height: 75px;
       border: 3px solid var(--accent-color);
       border-radius: 15px;
       background-color: var(--card-bg);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 30px;
+      font-size: 28px;
       font-weight: bold;
       transition: all 0.3s;
     }
@@ -168,7 +169,7 @@
     }
 
     .options-title {
-      font-size: 15px;
+      font-size: 14px;
       margin-top: 10px;
       color: var(--accent-color);
     }
@@ -179,7 +180,7 @@
       gap: 10px;
       margin: 12px 0;
       flex-wrap: wrap;
-      min-height: 70px;
+      min-height: 65px;
     }
 
     .option-card {
@@ -228,10 +229,10 @@
     .btn-check:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .feedback-message {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: bold;
-      min-height: 28px;
-      margin: 8px 0;
+      min-height: 26px;
+      margin: 6px 0;
     }
     .feedback-message.correct { color: #00ff66; }
     .feedback-message.wrong { color: #ff3333; }
@@ -242,6 +243,7 @@
       margin-top: 5px;
     }
 
+    /* पॉप-अप मॉडल्स (सेटिंग्ज व निकाल) */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -255,22 +257,28 @@
     .modal-card {
       background: var(--card-bg);
       border: 2px solid var(--accent-color);
-      padding: 25px;
+      padding: 20px 25px;
       border-radius: 20px;
       max-width: 340px;
       width: 85%;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
 
-    .modal-card h2 { margin-top: 0; color: #ffd700; }
-    .modal-card p { font-size: 16px; margin: 10px 0; }
-    .badge-display {
-      font-size: 40px;
-      margin: 10px 0;
+    .modal-card h2 { margin-top: 0; color: #ffd700; font-size: 20px; }
+    .modal-card p { font-size: 15px; margin: 8px 0; }
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 12px 0;
+      gap: 10px;
     }
 
+    .badge-display { font-size: 40px; margin: 10px 0; }
+
     .student-name-input {
-      width: 80%;
+      width: 85%;
       padding: 8px 12px;
       border-radius: 10px;
       border: 1px solid var(--accent-color);
@@ -282,54 +290,50 @@
     .modal-actions {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-top: 15px;
+      gap: 8px;
+      margin-top: 12px;
     }
 
-    .btn-restart {
+    .btn-restart, .btn-close-settings {
       background: #00e676; border: none; padding: 10px 20px;
-      font-size: 16px; font-weight: bold; border-radius: 20px; cursor: pointer; color: #000;
+      font-size: 15px; font-weight: bold; border-radius: 20px; cursor: pointer; color: #000;
     }
+
+    .btn-close-settings { background: #ff5252; color: #fff; }
 
     .btn-whatsapp {
       background: #25d366; border: none; padding: 10px 20px;
-      font-size: 15px; font-weight: bold; border-radius: 20px; cursor: pointer; color: #fff;
+      font-size: 14px; font-weight: bold; border-radius: 20px; cursor: pointer; color: #fff;
     }
   </style>
 </head>
 <body id="game-body">
 
+  <!-- नवीन स्वच्छ आणि सुटसुटीत टॉप बार -->
   <div class="top-bar">
-    <div>
-      <button class="btn-custom active" id="btn-marathi" onclick="switchLanguage('marathi')">मराठी</button>
-      <button class="btn-custom" id="btn-english" onclick="switchLanguage('english')">English</button>
+    <button class="btn-settings" onclick="openSettingsModal()" title="सेटिंग्ज">⚙️</button>
+    
+    <div class="stats-group">
+      <div class="info-badge" id="q-counter">प्रश्न: १/१०</div>
+      <div class="streak-badge" id="streak-text">⭐ ०</div>
+      <div class="info-badge" id="score-text">गुण: ०</div>
     </div>
+  </div>
 
-    <button class="btn-custom" id="btn-mute" onclick="toggleMute()">🔊 Voice: ON</button>
-    <button class="btn-custom" id="btn-fullscreen" onclick="toggleFullScreen()">⛶ Fullscreen</button>
-
-    <select class="theme-select" onchange="changeTheme(this.value)">
-      <option value="space">🌌 Space Theme</option>
-      <option value="jungle">🌿 Jungle Theme</option>
-      <option value="candy">🍬 Candy Theme</option>
+  <!-- गेम प्रकार आणि पातळी ड्रॉपडाउन मेनू -->
+  <div class="controls-row">
+    <select class="level-select" id="mode-select" onchange="setMode(this.value)">
+      <option value="after">पुढील संख्या</option>
+      <option value="before">पूर्वीची संख्या</option>
+      <option value="middle">मधील संख्या</option>
+      <option value="mixed">🎲 मिश्रित प्रश्न</option>
     </select>
 
     <select class="level-select" id="level-select" onchange="changeLevel(this.value)">
-      <option value="easy">Easy (1-20)</option>
-      <option value="medium">Medium (1-100)</option>
-      <option value="hard">Hard (100-1000)</option>
+      <option value="easy">सोपे (१-२०)</option>
+      <option value="medium">मध्यम (१-१००)</option>
+      <option value="hard">कठीण (१००-१०००)</option>
     </select>
-
-    <div class="info-badge" id="q-counter">प्रश्न: १/१०</div>
-    <div class="info-badge" id="score-text">गुण: ०</div>
-    <div class="streak-badge" id="streak-text">⭐ ०</div>
-  </div>
-
-  <div class="mode-buttons">
-    <button class="btn-mode" id="mode-before" onclick="setMode('before')">पूर्वीची संख्या</button>
-    <button class="btn-mode" id="mode-after" onclick="setMode('after')">पुढील संख्या</button>
-    <button class="btn-mode" id="mode-middle" onclick="setMode('middle')">मधील संख्या</button>
-    <button class="btn-mode" id="mode-mixed" onclick="setMode('mixed')">🎲 मिश्रित प्रश्न</button>
   </div>
 
   <div class="question-area">
@@ -355,6 +359,40 @@
     <button class="btn-next" id="next-btn" onclick="nextQuestionFlow()">पुढील प्रश्न ➔</button>
   </div>
 
+  <!-- ⚙️ सेटिंग्ज मॉडेल (पॉप-अप) -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-card">
+      <h2 id="settings-title">⚙️ सेटिंग्ज (Settings)</h2>
+      
+      <div class="setting-item">
+        <span>भाषा (Language):</span>
+        <div>
+          <button class="btn-custom active" id="btn-marathi" onclick="switchLanguage('marathi')">मराठी</button>
+          <button class="btn-custom" id="btn-english" onclick="switchLanguage('english')">English</button>
+        </div>
+      </div>
+
+      <div class="setting-item">
+        <span>थीम (Theme):</span>
+        <select class="theme-select" onchange="changeTheme(this.value)">
+          <option value="space">🌌 Space</option>
+          <option value="jungle">🌿 Jungle</option>
+          <option value="candy">🍬 Candy</option>
+        </select>
+      </div>
+
+      <div class="setting-item">
+        <button class="btn-custom" id="btn-mute" onclick="toggleMute()">🔊 Voice: ON</button>
+        <button class="btn-custom" id="btn-fullscreen" onclick="toggleFullScreen()">⛶ Fullscreen</button>
+      </div>
+
+      <div class="modal-actions" style="margin-top: 15px;">
+        <button class="btn-close-settings" onclick="closeSettingsModal()">बंद करा ✖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🏆 निकाल मॉडेल (Result Popup) -->
   <div class="modal-overlay" id="result-modal">
     <div class="modal-card">
       <h2 id="modal-title">🏆 अभिनंदन! 🏆</h2>
@@ -370,16 +408,16 @@
         <button class="btn-restart" onclick="restartQuiz()">पुन्हा खेळा 🔄</button>
       </div>
     </div>
-  </div>
-  <script>
+        </div>
+        <script>
     const langData = {
       marathi: {
         scoreText: "गुण: ",
         qCounter: "प्रश्न: ",
-        btnBefore: "पूर्वीची संख्या",
-        btnAfter: "पुढील संख्या",
-        btnMiddle: "मधील संख्या",
-        btnMixed: "🎲 मिश्रित प्रश्न",
+        optBefore: "पूर्वीची संख्या",
+        optAfter: "पुढील संख्या",
+        optMiddle: "मधील संख्या",
+        optMixed: "🎲 मिश्रित प्रश्न",
         qBefore: "आधीची संख्या रिकाम्या बॉक्समध्ये टाका:",
         qAfter: "नंतरची संख्या रिकाम्या बॉक्समध्ये टाका:",
         qMiddle: "मधील संख्या रिकाम्या बॉक्समध्ये टाका:",
@@ -400,10 +438,10 @@
       english: {
         scoreText: "SCORE: ",
         qCounter: "Q: ",
-        btnBefore: "Before Number",
-        btnAfter: "After Number",
-        btnMiddle: "Middle Number",
-        btnMixed: "🎲 Mixed Mode",
+        optBefore: "Before Number",
+        optAfter: "After Number",
+        optMiddle: "Middle Number",
+        optMixed: "🎲 Mixed Mode",
         qBefore: "Place the correct BEFORE number:",
         qAfter: "Place the correct AFTER number:",
         qMiddle: "Place the correct MIDDLE number:",
@@ -439,6 +477,14 @@
     let currentOptionsList = [];
 
     const mascots = ['🐰', '🦊', '🦁', '🐸', '🐼', '🦄'];
+
+    function openSettingsModal() {
+      document.getElementById('settings-modal').style.display = 'flex';
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settings-modal').style.display = 'none';
+    }
 
     function formatNumber(num) {
       if (num === "?" || num === null) return "?";
@@ -517,10 +563,12 @@
       document.getElementById('btn-marathi').classList.toggle('active', lang === 'marathi');
       document.getElementById('btn-english').classList.toggle('active', lang === 'english');
 
-      document.getElementById('mode-before').innerText = langData[lang].btnBefore;
-      document.getElementById('mode-after').innerText = langData[lang].btnAfter;
-      document.getElementById('mode-middle').innerText = langData[lang].btnMiddle;
-      document.getElementById('mode-mixed').innerText = langData[lang].btnMixed;
+      const mSelect = document.getElementById('mode-select');
+      mSelect.options[0].text = langData[lang].optAfter;
+      mSelect.options[1].text = langData[lang].optBefore;
+      mSelect.options[2].text = langData[lang].optMiddle;
+      mSelect.options[3].text = langData[lang].optMixed;
+
       document.getElementById('options-label').innerText = langData[lang].optionsLabel;
       document.getElementById('check-btn').innerText = langData[lang].checkBtn;
       document.getElementById('next-btn').innerText = langData[lang].nextBtn;
@@ -542,10 +590,6 @@
 
     function setMode(mode) {
       currentMode = mode;
-      document.getElementById('mode-before').classList.toggle('active', mode === 'before');
-      document.getElementById('mode-after').classList.toggle('active', mode === 'after');
-      document.getElementById('mode-middle').classList.toggle('active', mode === 'middle');
-      document.getElementById('mode-mixed').classList.toggle('active', mode === 'mixed');
       restartQuiz();
     }
 
@@ -586,7 +630,6 @@
         b.style.color = 'var(--text-color)';
       });
 
-      // --- दुरुस्त केलेले लॉजिक ---
       if (activeSubMode === 'after') {
         qText.innerText = langData[currentLang].qAfter;
         b1.innerText = formatNumber(currentNumber - 1);
