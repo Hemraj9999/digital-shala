@@ -42,7 +42,7 @@
       touch-action: manipulation;
     }
 
-    /* 🌐 १. सुरुवातीची भाषा निवड स्क्रीन (Language Modal) */
+    /* 🌐 १. सुरुवातीची भाषा निवड स्क्रीन */
     .lang-modal-overlay {
       position: fixed;
       top: 0; left: 0; 
@@ -99,15 +99,24 @@
       padding: 0 10px;
     }
 
-    .menu-toggle-btn {
+    .left-btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .menu-toggle-btn, .back-btn {
       background: var(--card-bg);
       border: 2px solid var(--accent-color);
       color: var(--text-color);
-      font-size: 24px;
-      padding: 6px 14px;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 6px 12px;
       border-radius: 12px;
       cursor: pointer;
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .stats-group {
@@ -119,22 +128,22 @@
     .info-badge {
       background-color: #ff6500;
       color: #fff;
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 12px;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .streak-badge {
       background-color: #ffd700;
       color: #000;
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 12px;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 13px;
     }
 
-    /* ☰ ३. स्लाईड-आऊट ड्रॉवर मेनू (Side Drawer) */
+    /* ☰ ३. स्लाईड-आऊट ड्रॉवर मेनू */
     .drawer-overlay {
       display: none;
       position: fixed;
@@ -170,7 +179,7 @@
       margin-bottom: 15px;
     }
 
-    .drawer-header h3 { margin: 0; color: #ffd700; font-size: 20px; }
+    .drawer-header h3 { margin: 0; color: #ffd700; font-size: 18px; }
     .close-drawer-btn {
       background: none; border: none; color: #ff5252;
       font-size: 24px; cursor: pointer; font-weight: bold;
@@ -222,11 +231,11 @@
     }
     .box.drop-zone { border: 3.5px dashed #ff8800; color: #ff8800; }
 
-    .options-container { display: flex; justify-content: center; gap: 12px; margin: 15px 0; flex-wrap: wrap; }
+    .options-container { display: flex; justify-content: center; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
     .option-card {
-      width: 70px; height: 70px;
+      width: 75px; height: 75px;
       background: linear-gradient(135deg, var(--btn-color), #1d4ed8);
-      color: white; font-size: 32px; font-weight: 800;
+      color: white; font-size: 34px; font-weight: 800;
       border-radius: 16px; display: flex; align-items: center; justify-content: center;
       cursor: pointer; box-shadow: 0 5px 12px rgba(0,0,0,0.4);
     }
@@ -264,7 +273,11 @@
 
   <!-- ☰ टॉप बार -->
   <div class="top-bar">
-    <button class="menu-toggle-btn" onclick="toggleDrawer()">☰</button>
+    <div class="left-btn-group">
+      <button class="menu-toggle-btn" onclick="toggleDrawer()">☰</button>
+      <!-- 🔙 मागे जाण्याचे बटण -->
+      <button class="back-btn" id="btn-back" onclick="goBackToLanguageSelect()">⬅ मागे</button>
+    </div>
     <div class="stats-group">
       <div class="info-badge" id="q-counter">प्रश्न: १/१०</div>
       <div class="streak-badge" id="streak-text">⭐ ०</div>
@@ -272,17 +285,17 @@
     </div>
   </div>
 
-  <!-- ☰ तीन लाईन्स स्लाईड-आऊट मेनू (Side Drawer) -->
+  <!-- ☰ तीन लाईन्स स्लाईड-आऊट मेनू -->
   <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
   <div class="side-drawer" id="side-drawer">
     <div class="drawer-header">
-      <h3>⚙️ मेनू आणि सेटिंग्ज</h3>
+      <h3 id="drawer-title">⚙️ मेनू आणि सेटिंग्ज</h3>
       <button class="close-drawer-btn" onclick="toggleDrawer()">✖</button>
     </div>
 
     <!-- १. खेळाचा प्रकार -->
     <div class="menu-section">
-      <label>🎯 खेळाचा प्रकार:</label>
+      <label id="lbl-mode">🎯 खेळाचा प्रकार:</label>
       <select class="drawer-select" id="mode-select" onchange="setMode(this.value)">
         <option value="after">पुढील संख्या</option>
         <option value="before">पूर्वीची संख्या</option>
@@ -293,7 +306,7 @@
 
     <!-- २. काठिण्य पातळी -->
     <div class="menu-section">
-      <label>📊 काठिण्य पातळी:</label>
+      <label id="lbl-level">📊 काठिण्य पातळी:</label>
       <select class="drawer-select" id="level-select" onchange="changeLevel(this.value)">
         <option value="easy">सोपे (१-२०)</option>
         <option value="medium">मध्यम (१-१००)</option>
@@ -303,7 +316,7 @@
 
     <!-- ३. भाषा निवड -->
     <div class="menu-section">
-      <label>🌐 भाषा (Language):</label>
+      <label id="lbl-lang">🌐 भाषा (Language):</label>
       <div class="lang-btn-group">
         <button class="btn-lang active" id="btn-marathi" onclick="switchLanguage('marathi')">मराठी</button>
         <button class="btn-lang" id="btn-english" onclick="switchLanguage('english')">English</button>
@@ -312,7 +325,7 @@
 
     <!-- ४. थीम निवड -->
     <div class="menu-section">
-      <label>🎨 थीम (Theme):</label>
+      <label id="lbl-theme">🎨 थीम (Theme):</label>
       <select class="drawer-select" onchange="changeTheme(this.value)">
         <option value="space">🌌 Space</option>
         <option value="jungle">🌿 Jungle</option>
@@ -342,11 +355,11 @@
 
   <div class="feedback-message" id="feedback"></div>
 
-  <div style="font-size: 14px; color: #00d2ff;" id="options-label">योग्य अंक निवडा, ड्रॅग करा किंवा १-४ की दाबा:</div>
+  <div style="font-size: 14px; color: #00d2ff;" id="options-label">योग्य अंक निवडा, ड्रॅग करा किंवा १-३ की दाबा:</div>
   <div class="options-container" id="options-box"></div>
 
   <div class="action-btn-group">
-    <button class="btn-replay" onclick="speakQuestionAudio()">🔄 पुन्हा ऐका</button>
+    <button class="btn-replay" id="btn-replay" onclick="speakQuestionAudio()">🔄 पुन्हा ऐका</button>
     <button class="btn-check" id="check-btn" onclick="checkAnswer()">उत्तर तपासा</button>
   </div>
     <script>
@@ -367,10 +380,15 @@
     function selectInitialLanguage(lang) {
       switchLanguage(lang);
       document.getElementById('lang-modal').style.display = 'none';
-      generateQuestion();
+      restartQuiz();
     }
 
-    // ☰ २. ड्रॉवर मेनू उघडणे / बंद करणे
+    // 🔙 २. मागे भाषा निवड स्क्रीनवर जाणे
+    function goBackToLanguageSelect() {
+      document.getElementById('lang-modal').style.display = 'flex';
+    }
+
+    // ☰ ३. ड्रॉवर मेनू टॉगल करणे
     function toggleDrawer() {
       document.getElementById('side-drawer').classList.toggle('open');
       document.getElementById('drawer-overlay').classList.toggle('open');
@@ -419,10 +437,35 @@
       restartQuiz();
     }
 
+    // 🌐 भाषा बदलल्यावर सर्व मजकूर अपडेट करणे
     function switchLanguage(lang) {
       currentLang = lang;
       document.getElementById('btn-marathi').classList.toggle('active', lang === 'marathi');
       document.getElementById('btn-english').classList.toggle('active', lang === 'english');
+
+      // मागे जाण्याचे बटण व इतर लेबल्स अपडेट
+      if (lang === 'marathi') {
+        document.getElementById('btn-back').innerText = "⬅ मागे";
+        document.getElementById('options-label').innerText = "योग्य अंक निवडा किंवा १-३ की दाबा:";
+        document.getElementById('btn-replay').innerText = "🔄 पुन्हा ऐका";
+        document.getElementById('check-btn').innerText = "उत्तर तपासा";
+        document.getElementById('drawer-title').innerText = "⚙️ मेनू आणि सेटिंग्ज";
+        document.getElementById('lbl-mode').innerText = "🎯 खेळाचा प्रकार:";
+        document.getElementById('lbl-level').innerText = "📊 काठिण्य पातळी:";
+        document.getElementById('lbl-lang').innerText = "🌐 भाषा (Language):";
+        document.getElementById('lbl-theme').innerText = "🎨 थीम (Theme):";
+      } else {
+        document.getElementById('btn-back').innerText = "⬅ Back";
+        document.getElementById('options-label').innerText = "Select correct number or press 1-3 keys:";
+        document.getElementById('btn-replay').innerText = "🔄 Replay";
+        document.getElementById('check-btn').innerText = "Check Answer";
+        document.getElementById('drawer-title').innerText = "⚙️ Menu & Settings";
+        document.getElementById('lbl-mode').innerText = "🎯 Game Mode:";
+        document.getElementById('lbl-level').innerText = "📊 Difficulty Level:";
+        document.getElementById('lbl-lang').innerText = "🌐 Language:";
+        document.getElementById('lbl-theme').innerText = "🎨 Theme:";
+      }
+
       generateQuestion();
     }
 
@@ -477,11 +520,14 @@
       updateDisplay();
     }
 
+    // 🎯 फक्त ३ पर्याय बनवणे (Only 3 Options)
     function generateOptions() {
       const optionsBox = document.getElementById('options-box');
       optionsBox.innerHTML = '';
       let options = [correctAnswer];
-      while (options.length < 4) {
+      
+      // फक्त ३ पर्यायांसाठी लूप
+      while (options.length < 3) {
         let wrong = correctAnswer + (Math.floor(Math.random() * 7) - 3);
         if (wrong > 0 && !options.includes(wrong)) options.push(wrong);
       }
@@ -537,11 +583,10 @@
       document.getElementById('streak-text').innerText = "⭐ " + formatNumber(streak);
     }
 
-    // सुरुवातीला भाषा स्क्रीन दाखवणे
+    // सुरुवातीला भाषा निवडणे
     window.onload = function() {
       document.getElementById('lang-modal').style.display = 'flex';
     };
   </script>
 </body>
 </html>
-
