@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>संख्या खेळ - हॅम्बर्गर मेनू</title>
+  <title>संख्या खेळ</title>
+  <!-- Confetti Library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     :root {
@@ -41,7 +42,54 @@
       touch-action: manipulation;
     }
 
-    /* ☰ टॉप बार - स्वच्छ लेआउट */
+    /* 🌐 १. सुरुवातीची भाषा निवड स्क्रीन (Language Modal) */
+    .lang-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; 
+      width: 100%; height: 100%;
+      background: rgba(11, 25, 44, 0.96);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .lang-modal-card {
+      background: #1e3e62;
+      border: 3px solid #00d2ff;
+      padding: 30px 20px;
+      border-radius: 24px;
+      max-width: 350px;
+      width: 85%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+
+    .welcome-lang-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .btn-welcome-lang {
+      padding: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 16px;
+      border: none;
+      background: linear-gradient(135deg, #0084ff, #00d2ff);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+    }
+
+    .btn-welcome-lang:active {
+      transform: scale(0.95);
+    }
+
+    /* ☰ २. टॉप बार */
     .top-bar {
       display: flex;
       justify-content: space-between;
@@ -51,7 +99,6 @@
       padding: 0 10px;
     }
 
-    /* तीन लाईन्सचे बटण (Hamburger Icon) */
     .menu-toggle-btn {
       background: var(--card-bg);
       border: 2px solid var(--accent-color);
@@ -61,9 +108,6 @@
       border-radius: 12px;
       cursor: pointer;
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     .stats-group {
@@ -90,14 +134,13 @@
       font-size: 14px;
     }
 
-    /* ☰ स्लाईड-आऊट ड्रॉवर मेनू (Side Drawer) */
+    /* ☰ ३. स्लाईड-आऊट ड्रॉवर मेनू (Side Drawer) */
     .drawer-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.7);
       z-index: 1000;
-      transition: opacity 0.3s;
     }
 
     .side-drawer {
@@ -161,7 +204,7 @@
     }
     .btn-lang.active { background: var(--accent-color); color: #000; }
 
-    /* गेम एरिया स्टाइल */
+    /* 🎮 ४. मुख्य गेम एरिया */
     .question-area { max-width: 500px; margin: 0 auto; }
     .mascot { font-size: 50px; margin-bottom: -5px; display: inline-block; }
     .marathi-title { font-size: 22px; font-weight: bold; color: #4ade80; margin: 5px 0 2px 0; }
@@ -200,6 +243,24 @@
   </style>
 </head>
 <body id="game-body">
+
+  <!-- 🌐 सुरुवातीची भाषा निवड स्क्रीन -->
+  <div class="lang-modal-overlay" id="lang-modal">
+    <div class="lang-modal-card">
+      <div style="font-size: 50px; margin-bottom: 10px;">🎮</div>
+      <h2>नमस्कार! / Welcome!</h2>
+      <p>कृपया तुमची भाषा निवडा<br><span style="font-size: 14px; opacity: 0.8;">Please select your language</span></p>
+      
+      <div class="welcome-lang-buttons">
+        <button class="btn-welcome-lang" onclick="selectInitialLanguage('marathi')">
+          🚩 मराठी
+        </button>
+        <button class="btn-welcome-lang" onclick="selectInitialLanguage('english')">
+          🇬🇧 English
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ☰ टॉप बार -->
   <div class="top-bar">
@@ -287,8 +348,8 @@
   <div class="action-btn-group">
     <button class="btn-replay" onclick="speakQuestionAudio()">🔄 पुन्हा ऐका</button>
     <button class="btn-check" id="check-btn" onclick="checkAnswer()">उत्तर तपासा</button>
-      </div>
-      <script>
+  </div>
+    <script>
     let currentLang = 'marathi';
     let currentMode = 'after';
     let activeSubMode = 'after';
@@ -302,7 +363,14 @@
     const maxQuestions = 10;
     let isAudioOn = true;
 
-    /* ☰ ड्रॉवर मेनू उघडणे / बंद करणे */
+    // 🌐 १. सुरुवातीला भाषा निवडणे
+    function selectInitialLanguage(lang) {
+      switchLanguage(lang);
+      document.getElementById('lang-modal').style.display = 'none';
+      generateQuestion();
+    }
+
+    // ☰ २. ड्रॉवर मेनू उघडणे / बंद करणे
     function toggleDrawer() {
       document.getElementById('side-drawer').classList.toggle('open');
       document.getElementById('drawer-overlay').classList.toggle('open');
@@ -383,21 +451,21 @@
       [b1, b2, b3].forEach(b => b.className = 'box');
 
       if (activeSubMode === 'after') {
-        document.getElementById('marathi-title-text').innerText = "नंतर येणारी संख्या ओळखा";
+        document.getElementById('marathi-title-text').innerText = currentLang === 'marathi' ? "नंतर येणारी संख्या ओळखा" : "Identify After Number";
         document.getElementById('question-text').innerText = "Place the correct AFTER number:";
         b1.innerText = formatNumber(currentNumber - 1);
         b2.innerText = formatNumber(currentNumber);
         b3.innerText = "?"; b3.classList.add('drop-zone');
         correctAnswer = currentNumber + 1;
       } else if (activeSubMode === 'before') {
-        document.getElementById('marathi-title-text').innerText = "आधी येणारी संख्या ओळखा";
+        document.getElementById('marathi-title-text').innerText = currentLang === 'marathi' ? "आधी येणारी संख्या ओळखा" : "Identify Before Number";
         document.getElementById('question-text').innerText = "Place the correct BEFORE number:";
         b1.innerText = "?"; b1.classList.add('drop-zone');
         b2.innerText = formatNumber(currentNumber);
         b3.innerText = formatNumber(currentNumber + 1);
         correctAnswer = currentNumber - 1;
       } else {
-        document.getElementById('marathi-title-text').innerText = "मधील संख्या ओळखा";
+        document.getElementById('marathi-title-text').innerText = currentLang === 'marathi' ? "मधील संख्या ओळखा" : "Identify Middle Number";
         document.getElementById('question-text').innerText = "Place the correct MIDDLE number:";
         b1.innerText = formatNumber(currentNumber - 1);
         b2.innerText = "?"; b2.classList.add('drop-zone');
@@ -439,16 +507,16 @@
 
       if (selectedAnswer === correctAnswer) {
         feedback.style.color = '#00ff66';
-        feedback.innerText = "शाब्बास! बरोबर उत्तर! 🎉";
+        feedback.innerText = currentLang === 'marathi' ? "शाब्बास! बरोबर उत्तर! 🎉" : "Great job! Correct! 🎉";
         score++; streak++;
         if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60 });
-        speakText("बरोबर!");
+        speakText(currentLang === 'marathi' ? "बरोबर!" : "Correct!");
         setTimeout(() => { questionCount++; generateQuestion(); }, 1000);
       } else {
         feedback.style.color = '#ff3333';
-        feedback.innerText = "चुकले! पुन्हा प्रयत्न करा.";
+        feedback.innerText = currentLang === 'marathi' ? "चुकले! पुन्हा प्रयत्न करा." : "Wrong! Try again.";
         streak = 0;
-        speakText("पुन्हा प्रयत्न करा");
+        speakText(currentLang === 'marathi' ? "पुन्हा प्रयत्न करा" : "Try again");
       }
       updateDisplay();
     }
@@ -464,12 +532,16 @@
     }
 
     function updateDisplay() {
-      document.getElementById('score-text').innerText = "गुण: " + formatNumber(score);
-      document.getElementById('q-counter').innerText = "प्रश्न: " + formatNumber(questionCount) + "/" + formatNumber(maxQuestions);
+      document.getElementById('score-text').innerText = (currentLang === 'marathi' ? "गुण: " : "Score: ") + formatNumber(score);
+      document.getElementById('q-counter').innerText = (currentLang === 'marathi' ? "प्रश्न: " : "Q: ") + formatNumber(questionCount) + "/" + formatNumber(maxQuestions);
       document.getElementById('streak-text').innerText = "⭐ " + formatNumber(streak);
     }
 
-    window.onload = generateQuestion;
+    // सुरुवातीला भाषा स्क्रीन दाखवणे
+    window.onload = function() {
+      document.getElementById('lang-modal').style.display = 'flex';
+    };
   </script>
 </body>
 </html>
+
