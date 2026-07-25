@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>डिजिटल शाळा - विषय निवडा</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Arial', sans-serif; margin: 0; padding: 0; }
+        body { background: #eef2f3; text-align: center; padding: 20px; }
+        h1 { color: #2c3e50; margin-bottom: 25px; }
+        
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .subject-card {
+            background: white;
+            padding: 25px 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: #333;
+            font-size: 20px;
+            font-weight: bold;
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subject-card:hover { transform: translateY(-5px); }
+        .icon { font-size: 40px; }
+    </style>
+</head>
+<body>
+
+    <h1>🏫 डिजिटल शाळा - विषय निवडा</h1>
+
+    <div class="subject-grid">
+        <a href="marathi/index.html" class="subject-card">
+            <span class="icon">🚩</span> मराठी
+        </a>
+        <a href="hindi/index.html" class="subject-card">
+            <span class="icon">🇮🇳</span> हिंदी
+        </a>
+        <a href="english/index.html" class="subject-card">
+            <span class="icon">🔤</span> English
+        </a>
+        <a href="maths/index.html" class="subject-card">
+            <span class="icon">🔢</span> गणित
+        </a>
+        <a href="science/index.html" class="subject-card">
+            <span class="icon">🔬</span> विज्ञान
+        </a>
+    </div>
+
+</body>
+</html>
