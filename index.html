@@ -3,60 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>डिजिटल शाळा - विषय निवडा</title>
+    <title>डिजिटल शाळा - मुख्य विषय</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Arial', sans-serif; margin: 0; padding: 0; }
-        body { background: #eef2f3; text-align: center; padding: 20px; }
-        h1 { color: #2c3e50; margin-bottom: 25px; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
+        body { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); min-height: 100vh; text-align: center; padding: 20px; }
         
+        /* Header */
+        .header { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); max-width: 650px; margin: 0 auto 25px auto; }
+        h1 { color: #2c3e50; font-size: 26px; margin-bottom: 5px; }
+        p.subtitle { color: #7f8c8d; font-size: 15px; font-weight: 500; }
+
+        /* Grid */
         .subject-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 15px;
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
         }
 
+        /* Subject Cards */
         .subject-card {
-            background: white;
             padding: 25px 15px;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 18px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
             text-decoration: none;
-            color: #333;
-            font-size: 20px;
+            color: white;
+            font-size: 22px;
             font-weight: bold;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
-        .subject-card:hover { transform: translateY(-5px); }
-        .icon { font-size: 40px; }
+        .subject-card:hover { transform: translateY(-8px) scale(1.03); }
+        .icon { font-size: 45px; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 50%; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; }
+
+        /* Color Schemes for Themes */
+        .marathi { background: linear-gradient(45deg, #ff416c, #ff4b2b); }
+        .hindi { background: linear-gradient(45deg, #f7971e, #ffd200); }
+        .english { background: linear-gradient(45deg, #2193b0, #6dd5ed); }
+        .maths { background: linear-gradient(45deg, #11998e, #38ef7d); }
+        .science { background: linear-gradient(45deg, #8e2de2, #4a00e0); }
+
+        /* Footer */
+        .footer { margin-top: 35px; color: #333; font-size: 14px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h1>🏫 डिजिटल शाळा - विषय निवडा</h1>
+    <div class="header">
+        <h1>🏫 डिजिटल प्राथमिक शाळा</h1>
+        <p class="subtitle">तुमचा आवडीचा विषय निवडा आणि शिकायला सुरुवात करा!</p>
+    </div>
 
     <div class="subject-grid">
-        <a href="marathi/index.html" class="subject-card">
+        <a href="marathi/index.html" class="subject-card marathi">
             <span class="icon">🚩</span> मराठी
         </a>
-        <a href="hindi/index.html" class="subject-card">
+        <a href="hindi/index.html" class="subject-card hindi">
             <span class="icon">🇮🇳</span> हिंदी
         </a>
-        <a href="english/index.html" class="subject-card">
+        <a href="english/index.html" class="subject-card english">
             <span class="icon">🔤</span> English
         </a>
-        <a href="maths/index.html" class="subject-card">
+        <a href="maths/index.html" class="subject-card maths">
             <span class="icon">🔢</span> गणित
         </a>
-        <a href="science/index.html" class="subject-card">
+        <a href="science/index.html" class="subject-card science">
             <span class="icon">🔬</span> विज्ञान
         </a>
+    </div>
+
+    <div class="footer">
+        <p>💡 शैक्षणिक ई-कंटेंट उपक्रम | सर्व हक्क सुरक्षित</p>
     </div>
 
 </body>
