@@ -130,9 +130,6 @@
         <div class="alphabet-grid" id="alphabetGrid"></div>
     </div>
 
-    <!-- एकाच MP3 फाईलसाठी ऑडिओ टॅग -->
-    <audio id="mainAudio" src="marathi_all.mp3" preload="auto"></audio>
-
     <script>
         const marathiData = {
             swar: ["अ", "आ", "इ", "ई", "उ", "ऊ", "ऋ", "ए", "ऐ", "ओ", "औ", "अं", "अः"],
@@ -147,8 +144,7 @@
         };
 
         const grid = document.getElementById("alphabetGrid");
-        const audio = document.getElementById("mainAudio");
-        let stopTimer = null;
+        let activeAudio = null;
 
         function loadLetters(type, btnElement) {
             if(btnElement) {
@@ -164,7 +160,7 @@
                 card.innerText = letter;
 
                 card.onclick = function() {
-                    playSingleAudio(letter);
+                    playLetterSound(letter);
                     animateCard(this);
                 };
 
@@ -177,17 +173,24 @@
             );
         }
 
-        // एकाच MP3 फाईलमधून फक्त विशिष्ट अक्षराचा आवाज प्ले करणे
-        function playSingleAudio(char) {
-            // जर आधीचा आवाज सुरू असेल तर थांबवा
-            clearTimeout(stopTimer);
-            audio.pause();
+        // एकाच अक्षराचा इन्स्टंट आवाज प्ले करणे
+        function playLetterSound(char) {
+            // १. आधीचा आवाज थांबवणे
+            if (activeAudio) {
+                activeAudio.pause();
+                activeAudio.currentTime = 0;
+            }
 
-            // गूगल सर्व्हरवरून फक्त त्या विशिष्ट अक्षराचा स्वतंत्र आवाज त्वरित प्ले होईल
-            let singleAudioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(char)}&tl=mr&client=tw-ob`;
+            // २. गूगलच्या क्लाऊड सर्व्हरवरून फक्त एकाच अक्षराचा ऑडिओ लहान स्वरूपात प्ले होतो
+            let soundUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(char)}&tl=mr&client=tw-ob`;
             
-            let tempAudio = new Audio(singleAudioUrl);
-            tempAudio.play().catch(e => console.log("Audio Error"));
+            activeAudio = new Audio(soundUrl);
+            activeAudio.play().catch(() => {
+                // बॅकअप: जर ऑनलाईन ब्लॉक झाले तर ब्राऊझर व्हॉईस
+                let msg = new SpeechSynthesisUtterance(char);
+                msg.lang = 'mr-IN';
+                window.speechSynthesis.speak(msg);
+            });
         }
 
         function animateCard(element) {
