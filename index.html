@@ -42,11 +42,11 @@
             backdrop-filter: blur(25px);
             box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
             font-size: 14px; 
-            transition: all 0.3s ease;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
 
         .tool-btn { cursor: pointer; }
-        .tool-btn:hover { background: rgba(0, 242, 254, 0.25); box-shadow: 0 0 30px rgba(0, 242, 254, 0.8); transform: translateY(-3px); }
+        .tool-btn:hover { background: rgba(0, 242, 254, 0.25); box-shadow: 0 0 30px rgba(0, 242, 254, 0.8); }
 
         .header { 
             background: rgba(255, 255, 255, 0.02); 
@@ -78,7 +78,7 @@
             border-radius: 30px; outline: none;
             text-align: center;
             box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.9);
-            transition: all 0.3s ease;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .search-box::placeholder { color: #888; }
         .search-box:focus { border-color: #ff0844; box-shadow: 0 0 30px rgba(255, 8, 68, 0.6); }
@@ -91,6 +91,11 @@
             perspective: 1200px;
         }
 
+        /* Container wrapper handles floating animation */
+        .card-wrapper {
+            perspective: 1000px;
+        }
+
         .subject-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -100,8 +105,8 @@
             display: flex; flex-direction: column; align-items: center; gap: 15px;
             cursor: pointer;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
-            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
             transform-style: preserve-3d;
+            will-change: transform;
         }
 
         .icon { 
@@ -146,21 +151,31 @@
         </div>
 
         <div class="subject-grid" id="subjectGrid">
-            <a href="marathi/index.html" class="subject-card marathi" onclick="playClickSound()">
-                <span class="icon">🚩</span> <span class="subject-title">मराठी</span>
-            </a>
-            <a href="hindi/index.html" class="subject-card hindi" onclick="playClickSound()">
-                <span class="icon">🇮🇳</span> <span class="subject-title">हिंदी</span>
-            </a>
-            <a href="english/index.html" class="subject-card english" onclick="playClickSound()">
-                <span class="icon">🔤</span> <span class="subject-title">English</span>
-            </a>
-            <a href="maths/index.html" class="subject-card maths" onclick="playClickSound()">
-                <span class="icon">🔢</span> <span class="subject-title">गणित</span>
-            </a>
-            <a href="science/index.html" class="subject-card science" onclick="playClickSound()">
-                <span class="icon">🔬</span> <span class="subject-title">विज्ञान</span>
-            </a>
+            <div class="card-wrapper">
+                <a href="marathi/index.html" class="subject-card marathi" onclick="playClickSound()">
+                    <span class="icon">🚩</span> <span class="subject-title">मराठी</span>
+                </a>
+            </div>
+            <div class="card-wrapper">
+                <a href="hindi/index.html" class="subject-card hindi" onclick="playClickSound()">
+                    <span class="icon">🇮🇳</span> <span class="subject-title">हिंदी</span>
+                </a>
+            </div>
+            <div class="card-wrapper">
+                <a href="english/index.html" class="subject-card english" onclick="playClickSound()">
+                    <span class="icon">🔤</span> <span class="subject-title">English</span>
+                </a>
+            </div>
+            <div class="card-wrapper">
+                <a href="maths/index.html" class="subject-card maths" onclick="playClickSound()">
+                    <span class="icon">🔢</span> <span class="subject-title">गणित</span>
+                </a>
+            </div>
+            <div class="card-wrapper">
+                <a href="science/index.html" class="subject-card science" onclick="playClickSound()">
+                    <span class="icon">🔬</span> <span class="subject-title">विज्ञान</span>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -171,17 +186,16 @@
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('webgl-bg'), antialias: true, alpha: true });
         
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
         let starGeo = new THREE.BufferGeometry();
         let starCount = 3000;
         let positions = new Float32Array(starCount * 3);
-        let velocities = [];
 
-        for(let i=0; i<starCount; i++) {
+        for(let i = 0; i < starCount; i++) {
             positions[i*3] = (Math.random() - 0.5) * 1000;
             positions[i*3+1] = (Math.random() - 0.5) * 1000;
             positions[i*3+2] = Math.random() * 1000;
-            velocities.push(2);
         }
 
         starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -200,8 +214,8 @@
 
         function animateStars() {
             let posArr = starGeo.attributes.position.array;
-            for(let i=0; i<starCount; i++) {
-                posArr[i*3+2] -= 3; // Forward Motion Speed
+            for(let i = 0; i < starCount; i++) {
+                posArr[i*3+2] -= 3;
                 if(posArr[i*3+2] < 0) {
                     posArr[i*3+2] = 1000;
                 }
@@ -217,10 +231,11 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         });
 
         // 2. GSAP Floating Cards
-        gsap.to(".subject-card", {
+        gsap.to(".card-wrapper", {
             y: "-=12",
             duration: 2.5,
             repeat: -1,
@@ -229,22 +244,35 @@
             stagger: 0.15
         });
 
-        // 3. 3D Card Parallax Tilt
+        // 3. Smooth GSAP 3D Parallax Tilt on Cards
         const cards = document.querySelectorAll('.subject-card');
         cards.forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left - rect.width / 2;
                 const y = e.clientY - rect.top - rect.height / 2;
-                card.style.transform = `rotateY(${x / 5}deg) rotateX(${-y / 5}deg) translateZ(15px)`;
+                
+                gsap.to(card, {
+                    rotationY: x / 5,
+                    rotationX: -y / 5,
+                    z: 15,
+                    duration: 0.2,
+                    ease: "power1.out"
+                });
             });
 
             card.addEventListener('mouseleave', () => {
-                card.style.transform = 'rotateY(0deg) rotateX(0deg) translateZ(0px)';
+                gsap.to(card, {
+                    rotationY: 0,
+                    rotationX: 0,
+                    z: 0,
+                    duration: 0.5,
+                    ease: "power2.out"
+                });
             });
         });
 
-        // 4. Auto Date & Functions
+        // 4. Auto Date & Utilities
         function setMarathiDate() {
             const days = ["रविवार", "सोमवार", "मंगळवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
             const months = ["जानेवारी", "फेब्रुवारी", "मार्च", "एप्रिल", "मे", "जून", "जुलै", "ऑगस्ट", "सप्टेंबर", "ऑक्टोबर", "नोव्हेंबर", "डिसेंबर"];
@@ -254,17 +282,27 @@
 
         function filterSubjects() {
             let input = document.getElementById("searchInput").value.toLowerCase();
-            cards.forEach(card => {
-                let text = card.querySelector(".subject-title").innerText.toLowerCase();
-                card.style.display = text.includes(input) ? "flex" : "none";
+            const wrappers = document.querySelectorAll('.card-wrapper');
+            wrappers.forEach(wrapper => {
+                let text = wrapper.querySelector(".subject-title").innerText.toLowerCase();
+                wrapper.style.display = text.includes(input) ? "block" : "none";
             });
+        }
+
+        // Voice handling (handles browser user interaction constraints)
+        let hasSpokenWelcome = false;
+        function speakWelcome() {
+            if (hasSpokenWelcome) return;
+            hasSpokenWelcome = true;
+            let msg = new SpeechSynthesisUtterance("डिजिटल शाळेमध्ये तुमचे स्वागत आहे! तुमचा विषय निवडा.");
+            msg.lang = 'mr-IN';
+            window.speechSynthesis.speak(msg);
         }
 
         window.onload = function() {
             setMarathiDate();
-            let msg = new SpeechSynthesisUtterance("डिजिटल शाळेमध्ये तुमचे स्वागत आहे! तुमचा विषय निवडा.");
-            msg.lang = 'mr-IN';
-            window.speechSynthesis.speak(msg);
+            window.addEventListener('click', speakWelcome, { once: true });
+            window.addEventListener('touchstart', speakWelcome, { once: true });
         };
 
         function playClickSound() {
