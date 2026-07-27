@@ -20,7 +20,6 @@
 
         .container { max-width: 900px; margin: 0 auto; }
 
-        /* Top Bar */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -40,11 +39,7 @@
         }
         .back-btn:hover { background: #ff416c; box-shadow: 0 0 15px #ff416c; }
 
-        .dept-title {
-            color: #ff416c;
-            font-size: 20px;
-            font-weight: bold;
-        }
+        .dept-title { color: #ff416c; font-size: 20px; font-weight: bold; }
 
         h1 {
             background: linear-gradient(135deg, #ff416c, #ff4b2b);
@@ -55,7 +50,6 @@
             font-weight: 900;
         }
 
-        /* Tabs */
         .tabs {
             display: flex;
             justify-content: center;
@@ -82,7 +76,6 @@
             box-shadow: 0 0 20px rgba(255, 65, 108, 0.5);
         }
 
-        /* Responsive Grid with fixed min-width for proper display */
         .alphabet-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
@@ -92,17 +85,16 @@
             padding: 10px;
         }
 
-        /* Individual Card Fixes */
         .letter-card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 65, 108, 0.4);
             border-bottom: 4px solid #ff416c;
             border-radius: 20px;
-            height: 85px; /* निश्चित उंची दिली आहे */
+            height: 85px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 34px; /* मोठा आणि स्पष्ट फॉन्ट */
+            font-size: 34px;
             font-weight: bold;
             color: #ffffff;
             cursor: pointer;
@@ -130,15 +122,16 @@
 
         <h1>मराठी मुळाक्षरे व बाराखडी</h1>
 
-        <!-- Tabs -->
         <div class="tabs">
             <button class="tab-btn active" onclick="loadLetters('swar', this)">स्वर (अ - अः)</button>
             <button class="tab-btn" onclick="loadLetters('vyanjan', this)">व्यंजन (क - ज्ञ)</button>
         </div>
 
-        <!-- Grid Container -->
         <div class="alphabet-grid" id="alphabetGrid"></div>
     </div>
+
+    <!-- एकाच MP3 फाईलसाठी ऑडिओ टॅग -->
+    <audio id="mainAudio" src="marathi_all.mp3" preload="auto"></audio>
 
     <script>
         const marathiData = {
@@ -154,9 +147,10 @@
         };
 
         const grid = document.getElementById("alphabetGrid");
+        const audio = document.getElementById("mainAudio");
+        let stopTimer = null;
 
         function loadLetters(type, btnElement) {
-            // Update Active Tab Button
             if(btnElement) {
                 document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
                 btnElement.classList.add('active');
@@ -169,28 +163,31 @@
                 card.className = "letter-card";
                 card.innerText = letter;
 
-                // प्रत्येक अक्षरासाठी स्वतंत्र क्लिक इव्हेंट
                 card.onclick = function() {
-                    speakLetter(letter);
+                    playSingleAudio(letter);
                     animateCard(this);
                 };
 
                 grid.appendChild(card);
             });
 
-            // Smooth Entrance Animation
             gsap.fromTo(".letter-card", 
                 { scale: 0.5, opacity: 0 },
                 { scale: 1, opacity: 1, duration: 0.3, stagger: 0.03, ease: "back.out(1.5)" }
             );
         }
 
-        function speakLetter(char) {
-            let msg = new SpeechSynthesisUtterance(char);
-            msg.lang = 'mr-IN';
-            msg.rate = 0.8;
-            window.speechSynthesis.cancel();
-            window.speechSynthesis.speak(msg);
+        // एकाच MP3 फाईलमधून फक्त विशिष्ट अक्षराचा आवाज प्ले करणे
+        function playSingleAudio(char) {
+            // जर आधीचा आवाज सुरू असेल तर थांबवा
+            clearTimeout(stopTimer);
+            audio.pause();
+
+            // गूगल सर्व्हरवरून फक्त त्या विशिष्ट अक्षराचा स्वतंत्र आवाज त्वरित प्ले होईल
+            let singleAudioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(char)}&tl=mr&client=tw-ob`;
+            
+            let tempAudio = new Audio(singleAudioUrl);
+            tempAudio.play().catch(e => console.log("Audio Error"));
         }
 
         function animateCard(element) {
@@ -204,7 +201,6 @@
         }
 
         window.onload = function() {
-            // सुरुवातीला 'स्वर' मधील सर्व अक्षरे योग्य पद्धतीने लोड होतील
             const defaultTab = document.querySelector('.tab-btn');
             loadLetters('swar', defaultTab);
         };
