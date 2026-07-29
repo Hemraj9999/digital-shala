@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>२. अक्षरे गिरवा - Advance</title>
+    <title>२. अक्षरे गिरवा - Pro Edition</title>
     <!-- Confetti Animation Library साठी -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
         body { background: #020205; color: #ffffff; min-height: 100vh; padding: 20px; text-align: center; }
-        .container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 14px; }
 
         .top-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 5px; }
         .back-btn { background: rgba(255, 65, 108, 0.2); border: 1px solid #ff416c; color: #fff; padding: 10px 22px; border-radius: 20px; text-decoration: none; font-weight: bold; }
 
-        h1 { color: #ff416c; }
+        h1 { color: #ff416c; font-size: 26px; }
 
-        /* Navigation Controls (एक-एक करून पुढे/मागे जाण्यासाठी) */
+        /* Navigation Controls */
         .navigation-controls {
             display: flex;
             align-items: center;
@@ -30,7 +30,7 @@
             color: #fff;
             border: none;
             padding: 10px 20px;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             border-radius: 12px;
             cursor: pointer;
@@ -39,7 +39,19 @@
         }
         .nav-btn:hover { background: #ff4b2b; transform: scale(1.05); }
 
-        .letter-selector { background: #151522; color: #fff; padding: 10px 15px; border-radius: 12px; border: 1px solid #ff416c; font-size: 20px; font-weight: bold; cursor: pointer; }
+        .letter-selector { background: #151522; color: #fff; padding: 10px 15px; border-radius: 12px; border: 1px solid #ff416c; font-size: 18px; font-weight: bold; cursor: pointer; }
+
+        /* Accuracy / Coverage Badge */
+        .accuracy-badge {
+            background: #151522;
+            border: 2px solid #00ffcc;
+            color: #00ffcc;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 6px 16px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+        }
 
         .canvas-container {
             position: relative;
@@ -54,19 +66,24 @@
 
         canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 17px; }
 
-        .tracing-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; }
-        .control-btn { background: #222238; border: 1px solid #ff416c; color: #fff; padding: 10px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        .control-btn:hover { background: #ff416c; }
+        .tracing-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
+        .control-btn { background: #222238; border: 1px solid #ff416c; color: #fff; padding: 8px 16px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .control-btn:hover, .control-btn.active { background: #ff416c; }
 
         .color-picker-wrapper {
             display: flex;
             align-items: center;
             gap: 8px;
             background: #151522;
-            padding: 6px 12px;
+            padding: 4px 10px;
             border-radius: 12px;
             border: 1px solid #ff416c;
         }
+
+        /* Pen Mode Toggle Buttons */
+        .pen-modes { display: flex; gap: 8px; justify-content: center; margin: 4px 0; }
+        .mode-btn { background: #151522; border: 1px solid #555; color: #fff; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .mode-btn.active { border-color: #00ffcc; color: #00ffcc; background: rgba(0, 255, 204, 0.1); }
     </style>
 </head>
 <body>
@@ -77,6 +94,11 @@
         </div>
 
         <h1>✍️ अक्षरे गिरवा</h1>
+
+        <!-- १. टक्केवारी दाखवणारा प्रोग्रेस ट्रॅकर -->
+        <div class="accuracy-badge">
+            प्रगती: <span id="progressText">०%</span>
+        </div>
 
         <!-- नेक्स्ट / प्रिव्हिअस बटन्स -->
         <div class="navigation-controls">
@@ -89,14 +111,21 @@
             <canvas id="traceCanvas" width="320" height="320"></canvas>
         </div>
 
+        <!-- २. पेनचे विविध मोड (Neon, Rainbow, Solid) -->
+        <div class="pen-modes">
+            <button class="mode-btn active" id="neonModeBtn" onclick="setPenStyle('neon')">🌟 Neon Glow</button>
+            <button class="mode-btn" id="rainbowModeBtn" onclick="setPenStyle('rainbow')">🌈 Rainbow Ink</button>
+            <button class="mode-btn" id="guideToggleBtn" onclick="toggleGuideDots()">📍 1-2-3 मार्ग दाखवा</button>
+        </div>
+
         <div class="tracing-controls">
             <button class="control-btn" onclick="clearCanvas()">🧹 पुसा (Clear)</button>
             <button class="control-btn" onclick="speakCurrentTraceLetter()">🔊 आवाज ऐका</button>
-            
-            <!-- कलर पिकर जो रंग सेव्ह करून ठेवेल -->
+
+            <!-- कलर पिकर -->
             <div class="color-picker-wrapper">
-                <label for="penColor" style="font-size: 14px;">रंग:</label>
-                <input type="color" id="penColor" value="#00ffcc" title="पेनाचा रंग निवडा" onchange="savePenColor(this.value)" style="width: 35px; height: 35px; border: none; cursor: pointer; border-radius: 8px; background: none;">
+                <label for="penColor" style="font-size: 13px;">रंग:</label>
+                <input type="color" id="penColor" value="#00ffcc" title="पेनाचा रंग निवडा" onchange="savePenColor(this.value)" style="width: 30px; height: 30px; border: none; cursor: pointer; border-radius: 6px; background: none;">
             </div>
         </div>
     </div>
@@ -109,10 +138,24 @@
             "प", "फ", "ब", "भ", "म", "य", "र", "ल", "व", "श", "ष", "स", "ह", "ळ", "क्ष", "ज्ञ"
         ];
 
+        // ३. १, २, ३ मार्गदर्शक पॉइंट्स (Tracing Points & Arrows)
+        const guidePoints = {
+            "अ": [{x: 100, y: 110, label: "1➔"}, {x: 100, y: 190, label: "2➔"}, {x: 170, y: 170, label: "3➔"}, {x: 210, y: 110, label: "4↓"}],
+            "क": [{x: 160, y: 70, label: "1↓"}, {x: 110, y: 160, label: "2↻"}, {x: 210, y: 160, label: "3↷"}],
+            "आ": [{x: 90, y: 110, label: "1➔"}, {x: 90, y: 190, label: "2➔"}, {x: 180, y: 110, label: "3↓"}, {x: 220, y: 110, label: "4↓"}]
+            // इतर अक्षरांसाठी डिफॉल्ट गाईड ऑटो-जनरेट होईल
+        };
+
         let currentIndex = 0;
         const canvas = document.getElementById('traceCanvas');
         const ctx = canvas.getContext('2d');
         let isDrawing = false;
+        
+        let currentPenStyle = 'neon'; // 'neon' किंवा 'rainbow'
+        let rainbowHue = 0;
+        let showGuides = true;
+        let isCompleted = false;
+        let totalLetterPixels = 0;
 
         function initTracing() {
             const select = document.getElementById('traceSelect');
@@ -124,7 +167,6 @@
                 select.appendChild(opt);
             });
 
-            // १. सेव्ह केलेला रंग लोड करा (नसल्यास डिफॉल्ट #00ffcc)
             const savedColor = localStorage.getItem('tracePenColor');
             if (savedColor) {
                 document.getElementById('penColor').value = savedColor;
@@ -133,23 +175,33 @@
             loadCurrentLetter();
         }
 
-        // २. पेनचा रंग कायमस्वरूपी सेव्ह करणे (LocalStorage)
         function savePenColor(color) {
             localStorage.setItem('tracePenColor', color);
         }
 
+        function setPenStyle(style) {
+            currentPenStyle = style;
+            document.getElementById('neonModeBtn').classList.toggle('active', style === 'neon');
+            document.getElementById('rainbowModeBtn').classList.toggle('active', style === 'rainbow');
+        }
+
+        function toggleGuideDots() {
+            showGuides = !showGuides;
+            document.getElementById('guideToggleBtn').classList.toggle('active', showGuides);
+            clearCanvas();
+        }
+
         function loadCurrentLetter() {
             document.getElementById('traceSelect').value = currentIndex;
+            isCompleted = false;
             clearCanvas();
             speakCurrentTraceLetter();
         }
 
-        // एकापाठोपाठ पुढे/मागे जाण्यासाठी फंकशन्स
         function nextLetter() {
             if (currentIndex < allLetters.length - 1) {
                 currentIndex++;
                 loadCurrentLetter();
-                triggerConfetti(); // भारी वाटण्यासाठी फटाके!
             }
         }
 
@@ -165,16 +217,122 @@
             loadCurrentLetter();
         }
 
+        // ४. अक्षराची पार्श्वभूमी आणि गाईड्स काढणे
         function drawBackgroundLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.font = "bold 180px 'Segoe UI', Arial, sans-serif";
-            ctx.fillStyle = "rgba(255, 255, 255, 0.2)"; // थोडा अधिक ठळक केला आहे
+            ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
+            ctx.shadowBlur = 0;
             ctx.fillText(allLetters[currentIndex], canvas.width / 2, canvas.height / 2 + 15);
+
+            // एकूण टार्गेट पिक्सेल मोजणे (टक्केवारीसाठी)
+            calculateBasePixels();
+
+            // १, २, ३ पॉइंट-टू-पॉइंट गाईड दाखवणे
+            if (showGuides) {
+                drawGuides();
+            }
+
+            updateProgressDisplay(0);
+        }
+
+        function drawGuides() {
+            let letter = allLetters[currentIndex];
+            let points = guidePoints[letter] || [
+                {x: canvas.width / 2 - 40, y: 100, label: "1➔"},
+                {x: canvas.width / 2, y: 160, label: "2↓"},
+                {x: canvas.width / 2 + 40, y: 220, label: "3➔"}
+            ];
+
+            points.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 11, 0, Math.PI * 2);
+                ctx.fillStyle = "#ff416c";
+                ctx.fill();
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.font = "bold 11px sans-serif";
+                ctx.fillStyle = "#ffffff";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(p.label, p.x, p.y);
+            });
         }
 
         function clearCanvas() { drawBackgroundLetter(); }
+
+        // ५. टक्केवारी (Accuracy Tracker) मोजणी
+        function calculateBasePixels() {
+            let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            let count = 0;
+            for (let i = 3; i < imgData.data.length; i += 4) {
+                if (imgData.data[i] > 30) count++;
+            }
+            totalLetterPixels = count || 1;
+        }
+
+        function checkCoverage() {
+            if (isCompleted) return;
+
+            let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            let coveredCount = 0;
+
+            // मोजणे की किती पांढरे/झळाळणारे पिक्सेल्स गिरवले गेले आहेत
+            for (let i = 0; i < imgData.data.length; i += 16) { // जलद गतीसाठी स्टेप १६
+                let r = imgData.data[i];
+                let g = imgData.data[i + 1];
+                let b = imgData.data[i + 2];
+                let a = imgData.data[i + 3];
+
+                // जर रंग पूर्णपणे बॅकग्राउंडचा नसेल
+                if (a > 100 && (r > 50 || g > 50 || b > 50)) {
+                    coveredCount++;
+                }
+            }
+
+            let percent = Math.min(100, Math.round((coveredCount * 4 / totalLetterPixels) * 100));
+            updateProgressDisplay(percent);
+
+            // ६. ८०% पेक्षा जास्त गिरवल्यास रिव्हार्ड (Confetti & Audio Reward)
+            if (percent >= 80 && !isCompleted) {
+                isCompleted = true;
+                triggerReward();
+            }
+        }
+
+        function updateProgressDisplay(percent) {
+            document.getElementById('progressText').innerText = percent + "%";
+        }
+
+        // ७. ऑडिओ रिव्हार्ड आणि फटाके (Confetti)
+        function triggerReward() {
+            triggerConfetti();
+            playAudioReward();
+        }
+
+        function triggerConfetti() {
+            confetti({
+                particleCount: 70,
+                spread: 80,
+                origin: { y: 0.7 }
+            });
+        }
+
+        function playAudioReward() {
+            // मराठीत कौतुक करणारा ऑडिओ
+            let rewardText = "शाब्बास! खूप छान!";
+            let soundUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(rewardText)}&tl=mr&client=tw-ob`;
+            let audio = new Audio(soundUrl);
+            audio.play().catch(() => {
+                let msg = new SpeechSynthesisUtterance(rewardText);
+                msg.lang = 'mr-IN';
+                window.speechSynthesis.speak(msg);
+            });
+        }
 
         function speakCurrentTraceLetter() {
             let currentText = allLetters[currentIndex];
@@ -187,17 +345,13 @@
             });
         }
 
-        // ३. छान ॲनिमेशन (Confetti) पुढच्या अक्षरावर जाताना
-        function triggerConfetti() {
-            confetti({
-                particleCount: 40,
-                spread: 60,
-                origin: { y: 0.8 }
-            });
-        }
-
+        // ८. ड्रॉईंग लॉजिक (Neon Glow आणि Rainbow Effect सह)
         function startDrawing(e) { isDrawing = true; draw(e); }
-        function stopDrawing() { isDrawing = false; ctx.beginPath(); }
+        function stopDrawing() { 
+            isDrawing = false; 
+            ctx.beginPath(); 
+            checkCoverage(); 
+        }
 
         function draw(e) {
             if (!isDrawing) return;
@@ -207,14 +361,24 @@
             let x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
             let y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
 
-            ctx.lineWidth = 16;
+            ctx.lineWidth = 18;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.strokeStyle = document.getElementById('penColor').value;
 
-            // ग्‍लो (Neon Glow) इफेक्टसाठी:
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = document.getElementById('penColor').value;
+            // पेनाचा प्रकार ठरवणे
+            if (currentPenStyle === 'rainbow') {
+                rainbowHue = (rainbowHue + 5) % 360;
+                let rainbowColor = `hsl(${rainbowHue}, 100%, 50%)`;
+                ctx.strokeStyle = rainbowColor;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = rainbowColor;
+            } else {
+                // Neon Glow Mode
+                let chosenColor = document.getElementById('penColor').value;
+                ctx.strokeStyle = chosenColor;
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = chosenColor;
+            }
 
             ctx.lineTo(x, y);
             ctx.stroke();
