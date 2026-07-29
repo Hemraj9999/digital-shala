@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>१. अक्षरे ऐका</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        body { background: #020205; color: #ffffff; min-height: 100vh; padding: 20px; text-align: center; }
+        .container { max-width: 900px; margin: 0 auto; }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .back-btn { background: rgba(255, 65, 108, 0.2); border: 1px solid #ff416c; color: #fff; padding: 10px 22px; border-radius: 20px; text-decoration: none; font-weight: bold; }
+
+        h1 { color: #ff416c; margin-bottom: 20px; }
+
+        .sub-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .sub-btn { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 16px; }
+        .sub-btn.active { background: #ff416c; border-color: #ff416c; font-weight: bold; }
+
+        .alphabet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; padding: 10px; }
+        .letter-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 65, 108, 0.4); border-bottom: 4px solid #ff416c; border-radius: 18px; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: #ffffff; cursor: pointer; transition: 0.2s; }
+        .letter-card:hover { transform: translateY(-5px); background: rgba(255, 65, 108, 0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <a href="index.html" class="back-btn">⬅ मागे जा</a>
+            <span style="color:#ff416c; font-weight:bold;">पर्याय १</span>
+        </div>
+
+        <h1>🔊 अक्षरे ऐका</h1>
+
+        <div class="sub-tabs">
+            <button class="sub-btn active" onclick="loadLetters('swar', this)">स्वर (अ - अः)</button>
+            <button class="sub-btn" onclick="loadLetters('vyanjan', this)">व्यंजन (क - ज्ञ)</button>
+        </div>
+
+        <div class="alphabet-grid" id="alphabetGrid"></div>
+    </div>
+
+    <script>
+        const marathiData = {
+            swar: ["अ", "आ", "इ", "ई", "उ", "ऊ", "ऋ", "ए", "ऐ", "ओ", "औ", "अं", "अः"],
+            vyanjan: [
+                "क", "ख", "ग", "घ", "ङ", "च", "छ", "ज", "झ", "ञ",
+                "ट", "ठ", "ड", "ढ", "ण", "त", "थ", "द", "ध", "न",
+                "प", "फ", "ब", "भ", "म", "य", "र", "ल", "व", "श", "ष", "स", "ह", "ळ", "क्ष", "ज्ञ"
+            ]
+        };
+
+        const grid = document.getElementById("alphabetGrid");
+        let activeAudio = null;
+
+        function loadLetters(type, btnElement) {
+            if(btnElement) {
+                document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+            grid.innerHTML = ""; 
+
+            marathiData[type].forEach(letter => {
+                const card = document.createElement("div");
+                card.className = "letter-card";
+                card.innerText = letter;
+                card.onclick = function() {
+                    playLetterSound(letter);
+                    gsap.to(this, { scale: 1.15, duration: 0.1, yoyo: true, repeat: 1 });
+                };
+                grid.appendChild(card);
+            });
+        }
+
+        function playLetterSound(char) {
+            if (activeAudio) { activeAudio.pause(); }
+            let soundUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(char)}&tl=mr&client=tw-ob`;
+            activeAudio = new Audio(soundUrl);
+            activeAudio.play().catch(() => {
+                let msg = new SpeechSynthesisUtterance(char);
+                msg.lang = 'mr-IN';
+                window.speechSynthesis.speak(msg);
+            });
+        }
+
+        window.onload = function() { loadLetters('swar', document.querySelector('.sub-btn')); };
+    </script>
+</body>
+</html>
