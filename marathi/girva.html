@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>२. अक्षरे गिरवा</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        body { background: #020205; color: #ffffff; min-height: 100vh; padding: 20px; text-align: center; }
+        .container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 10px; }
+        .back-btn { background: rgba(255, 65, 108, 0.2); border: 1px solid #ff416c; color: #fff; padding: 10px 22px; border-radius: 20px; text-decoration: none; font-weight: bold; }
+
+        h1 { color: #ff416c; }
+
+        .canvas-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            background: #0f0f1a;
+            border: 3px solid #ff416c;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(255, 65, 108, 0.3);
+            touch-action: none;
+        }
+
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 17px; }
+
+        .tracing-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; }
+        .control-btn { background: #222238; border: 1px solid #ff416c; color: #fff; padding: 10px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .control-btn:hover { background: #ff416c; }
+
+        .letter-selector { background: #151522; color: #fff; padding: 10px 15px; border-radius: 12px; border: 1px solid #ff416c; font-size: 18px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <a href="index.html" class="back-btn">⬅ मागे जा</a>
+            <span style="color:#ff416c; font-weight:bold;">पर्याय २</span>
+        </div>
+
+        <h1>✍️ अक्षरे गिरवा</h1>
+
+        <div>
+            <label for="traceSelect" style="font-size: 18px; font-weight: bold;">अक्षर निवडा: </label>
+            <select id="traceSelect" class="letter-selector" onchange="changeTraceLetter(this.value)"></select>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="traceCanvas" width="320" height="320"></canvas>
+        </div>
+
+        <div class="tracing-controls">
+            <button class="control-btn" onclick="clearCanvas()">🧹 पुसा (Clear)</button>
+            <button class="control-btn" onclick="speakCurrentTraceLetter()">🔊 आवाज ऐका</button>
+            <input type="color" id="penColor" value="#00ffcc" title="पेनाचा रंग निवडा" style="width: 45px; height: 40px; border: none; cursor: pointer; border-radius: 8px;">
+        </div>
+    </div>
+
+    <script>
+        const allLetters = [
+            "अ", "आ", "इ", "ई", "उ", "ऊ", "ऋ", "ए", "ऐ", "ओ", "औ", "अं", "अः",
+            "क", "ख", "ग", "घ", "ङ", "च", "छ", "ज", "झ", "ञ",
+            "ट", "ठ", "ड", "ढ", "ण", "त", "थ", "द", "ध", "न",
+            "प", "फ", "ब", "भ", "म", "य", "र", "ल", "व", "श", "ष", "स", "ह", "ळ", "क्ष", "ज्ञ"
+        ];
+
+        const canvas = document.getElementById('traceCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let currentTraceLetter = "अ";
+
+        function initTracing() {
+            const select = document.getElementById('traceSelect');
+            allLetters.forEach(lettr => {
+                let opt = document.createElement('option');
+                opt.value = lettr;
+                opt.innerText = lettr;
+                select.appendChild(opt);
+            });
+            drawBackgroundLetter();
+        }
+
+        function changeTraceLetter(letter) {
+            currentTraceLetter = letter;
+            clearCanvas();
+            speakCurrentTraceLetter();
+        }
+
+        function drawBackgroundLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "bold 180px 'Segoe UI', Arial, sans-serif";
+            ctx.fillStyle = "rgba(255, 255, 255, 0.18)";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(currentTraceLetter, canvas.width / 2, canvas.height / 2 + 15);
+        }
+
+        function clearCanvas() { drawBackgroundLetter(); }
+
+        function speakCurrentTraceLetter() {
+            let soundUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(currentTraceLetter)}&tl=mr&client=tw-ob`;
+            let audio = new Audio(soundUrl);
+            audio.play().catch(() => {
+                let msg = new SpeechSynthesisUtterance(currentTraceLetter);
+                msg.lang = 'mr-IN';
+                window.speechSynthesis.speak(msg);
+            });
+        }
+
+        function startDrawing(e) { isDrawing = true; draw(e); }
+        function stopDrawing() { isDrawing = false; ctx.beginPath(); }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+
+            let rect = canvas.getBoundingClientRect();
+            let x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+            let y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+
+            ctx.lineWidth = 14;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = document.getElementById('penColor').value;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mousemove', draw);
+
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchend', stopDrawing);
+        canvas.addEventListener('touchmove', draw);
+
+        window.onload = initTracing;
+    </script>
+</body>
+</html>
