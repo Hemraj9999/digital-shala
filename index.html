@@ -28,7 +28,7 @@
             z-index: 1; pointer-events: none;
         }
 
-        .main-container { max-width: 850px; margin: 0 auto; position: relative; z-index: 10; }
+        .main-container { max-width: 1050px; margin: 0 auto; position: relative; z-index: 10; }
 
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 12px; }
 
@@ -91,7 +91,6 @@
             perspective: 1200px;
         }
 
-        /* Container wrapper handles floating animation */
         .card-wrapper {
             perspective: 1000px;
         }
@@ -101,7 +100,7 @@
             border: 1px solid rgba(255, 255, 255, 0.12);
             padding: 28px 12px; border-radius: 28px; 
             backdrop-filter: blur(25px);
-            text-decoration: none; color: white; font-size: 20px; font-weight: bold;
+            text-decoration: none; color: white; font-size: 19px; font-weight: bold;
             display: flex; flex-direction: column; align-items: center; gap: 15px;
             cursor: pointer;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
@@ -128,11 +127,22 @@
         .english { border-bottom: 3px solid #00f2fe; }
         .english .icon { background: linear-gradient(135deg, #00f2fe, #4facfe); box-shadow: 0 10px 30px rgba(0, 242, 254, 0.6); }
 
-        .maths { border-bottom: 3px solid #38ef7d; }
-        .maths .icon { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 10px 30px rgba(56, 239, 125, 0.6); }
+        /* मराठी माध्यम */
+        .maths-mr { border-bottom: 3px solid #38ef7d; }
+        .maths-mr .icon { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 10px 30px rgba(56, 239, 125, 0.6); }
 
-        .science { border-bottom: 3px solid #b224ef; }
-        .science .icon { background: linear-gradient(135deg, #b224ef, #7579ff); box-shadow: 0 10px 30px rgba(178, 36, 239, 0.6); }
+        .science-mr { border-bottom: 3px solid #b224ef; }
+        .science-mr .icon { background: linear-gradient(135deg, #b224ef, #7579ff); box-shadow: 0 10px 30px rgba(178, 36, 239, 0.6); }
+
+        /* सेमी / इंग्रजी माध्यम (Mathematics & Science) */
+        .maths-en { border-bottom: 3px solid #ff0844; }
+        .maths-en .icon { background: linear-gradient(135deg, #ff0844, #ffb199); box-shadow: 0 10px 30px rgba(255, 8, 68, 0.6); }
+
+        .science-en { border-bottom: 3px solid #00c6ff; }
+        .science-en .icon { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 0 10px 30px rgba(0, 198, 255, 0.6); }
+
+        .social { border-bottom: 3px solid #ff8c00; }
+        .social .icon { background: linear-gradient(135deg, #ff8c00, #e52e71); box-shadow: 0 10px 30px rgba(255, 140, 0, 0.6); }
     </style>
 </head>
 <body>
@@ -147,10 +157,11 @@
 
         <div class="header">
             <h1>✨ डिजिटल प्राथमिक शाळा ✨</h1>
-            <input type="text" class="search-box" id="searchInput" placeholder="🔍 विषय शोधा (उदा. मराठी, गणित)..." onkeyup="filterSubjects()">
+            <input type="text" class="search-box" id="searchInput" placeholder="🔍 विषय शोधा (उदा. गणित, Science)..." onkeyup="filterSubjects()">
         </div>
 
         <div class="subject-grid" id="subjectGrid">
+            <!-- भाषा -->
             <div class="card-wrapper">
                 <a href="marathi/index.html" class="subject-card marathi" onclick="playClickSound()">
                     <span class="icon">🚩</span> <span class="subject-title">मराठी</span>
@@ -166,14 +177,35 @@
                     <span class="icon">🔤</span> <span class="subject-title">English</span>
                 </a>
             </div>
+
+            <!-- मराठी माध्यम -->
             <div class="card-wrapper">
-                <a href="maths/index.html" class="subject-card maths" onclick="playClickSound()">
+                <a href="maths/index.html" class="subject-card maths-mr" onclick="playClickSound()">
                     <span class="icon">🔢</span> <span class="subject-title">गणित</span>
                 </a>
             </div>
             <div class="card-wrapper">
-                <a href="science/index.html" class="subject-card science" onclick="playClickSound()">
+                <a href="science/index.html" class="subject-card science-mr" onclick="playClickSound()">
                     <span class="icon">🔬</span> <span class="subject-title">विज्ञान</span>
+                </a>
+            </div>
+
+            <!-- सेमी / इंग्रजी माध्यम (Mathematics & Science) -->
+            <div class="card-wrapper">
+                <a href="mathematics/index.html" class="subject-card maths-en" onclick="playClickSound()">
+                    <span class="icon">📐</span> <span class="subject-title">Mathematics</span>
+                </a>
+            </div>
+            <div class="card-wrapper">
+                <a href="science_en/index.html" class="subject-card science-en" onclick="playClickSound()">
+                    <span class="icon">🧪</span> <span class="subject-title">Science</span>
+                </a>
+            </div>
+
+            <!-- सामाजिक शास्त्र -->
+            <div class="card-wrapper">
+                <a href="social/index.html" class="subject-card social" onclick="playClickSound()">
+                    <span class="icon">🌍</span> <span class="subject-title">सामाजिक शास्त्र</span>
                 </a>
             </div>
         </div>
@@ -289,7 +321,7 @@
             });
         }
 
-        // Voice handling (handles browser user interaction constraints)
+        // Voice handling
         let hasSpokenWelcome = false;
         function speakWelcome() {
             if (hasSpokenWelcome) return;
