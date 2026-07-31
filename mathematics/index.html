@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="mr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>गणित डॅशबोर्ड - डिजिटल शाळा</title>
+    <title>Mathematics Dashboard - Digital School</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
@@ -69,7 +69,7 @@
             text-shadow: 0 0 20px rgba(56, 239, 125, 0.3);
         }
 
-        /* डॅशबोर्ड कार्ड्स ग्रिड */
+        /* Dashboard Cards Grid */
         .dash-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -98,7 +98,7 @@
             box-shadow: 0 12px 30px rgba(56, 239, 125, 0.4);
         }
 
-        /* रिकाम्या कार्ड्ससाठी डिझाईन */
+        /* Empty Cards Styling */
         .menu-card.empty-card {
             border: 1px dashed rgba(255, 255, 255, 0.2);
             opacity: 0.6;
@@ -116,14 +116,14 @@
         }
 
         .card-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
             color: #38ef7d;
             margin-bottom: 8px;
         }
 
         .card-desc {
-            font-size: 14px;
+            font-size: 13px;
             color: #bbb;
         }
     </style>
@@ -134,85 +134,85 @@
 
     <div class="main-container">
         <div class="top-bar">
-            <a href="../index.html" class="back-btn">⬅️ मुख्य होमपेजवर जा</a>
+            <a href="../index.html" class="back-btn">⬅️ Go to Main Home</a>
         </div>
 
         <div class="header">
-            <h1>📐 गणित विषय डॅशबोर्ड 📐</h1>
-            <p style="margin-top: 8px; color: #aaa;">अभ्यास करण्यासाठी खालील घटकावर क्लिक करा</p>
+            <h1>📐 Mathematics Dashboard 📐</h1>
+            <p style="margin-top: 8px; color: #aaa;">Select a topic below to start learning</p>
         </div>
 
-        <!-- गणित घटकांची यादी (१ चा पूर्ण + ९ रिकामे डॅशबोर्ड) -->
+        <!-- Mathematics Topics Grid (1 Active + 9 Empty Cards) -->
         <div class="dash-grid">
             
-            <!-- १. पहिले कार्ड: 1 to 1000 Numbers -->
+            <!-- 1. Active Card: Numbers 1 to 1000 -->
             <a href="numbers.html" class="menu-card">
                 <div class="card-icon">🔢</div>
-                <div class="card-title">1 to 1000 Numbers</div>
-                <div class="card-desc">इंग्रजी अंक ओळख, गट आणि ध्वनीसह अभ्यासा</div>
+                <div class="card-title">Numbers (1 to 1000)</div>
+                <div class="card-desc">Learn numbers with groups and audio pronunciation</div>
             </a>
 
-            <!-- २. रिकामे कार्ड २ -->
-            <a href="#" class="menu-card empty-card">
-                <div class="card-icon">➕</div>
-                <div class="card-title">घटक २</div>
-                <div class="card-desc">लवकरच येत आहे...</div>
-            </a>
-
-            <!-- ३. रिकामे कार्ड ३ -->
+            <!-- 2. Empty Card 2: Tables -->
             <a href="#" class="menu-card empty-card">
                 <div class="card-icon">✖️</div>
-                <div class="card-title">घटक ३</div>
-                <div class="card-desc">लवकरच येत आहे...</div>
+                <div class="card-title">Tables (1 to 30)</div>
+                <div class="card-desc">Coming Soon...</div>
             </a>
 
-            <!-- ४. रिकामे कार्ड ४ -->
+            <!-- 3. Empty Card 3: Addition & Subtraction -->
+            <a href="#" class="menu-card empty-card">
+                <div class="card-icon">➕</div>
+                <div class="card-title">Addition & Subtraction</div>
+                <div class="card-desc">Coming Soon...</div>
+            </a>
+
+            <!-- 4. Empty Card 4: Multiplication & Division -->
             <a href="#" class="menu-card empty-card">
                 <div class="card-icon">➗</div>
-                <div class="card-title">घटक ४</div>
-                <div class="card-desc">लवकरच येत आहे...</div>
+                <div class="card-title">Multiplication & Division</div>
+                <div class="card-desc">Coming Soon...</div>
             </a>
 
-            <!-- ५. रिकामे कार्ड ५ -->
+            <!-- 5. Empty Card 5: Geometrical Shapes -->
             <a href="#" class="menu-card empty-card">
                 <div class="card-icon">📐</div>
-                <div class="card-title">घटक ५</div>
-                <div class="card-desc">लवकरच येत आहे...</div>
+                <div class="card-title">Geometrical Shapes</div>
+                <div class="card-desc">Coming Soon...</div>
             </a>
 
-            <!-- ६. रिकामे कार्ड ६ -->
+            <!-- 6. Empty Card 6: Fractions -->
             <a href="#" class="menu-card empty-card">
                 <div class="card-icon">📊</div>
-                <div class="card-title">घटक ६</div>
-                <div class="card-desc">लवकरच येत आहे...</div>
+                <div class="card-title">Fractions</div>
+                <div class="card-desc">Coming Soon...</div>
             </a>
 
-            <!-- ७. रिकामे कार्ड ७ -->
+            <!-- 7. Empty Card 7: Time & Clock -->
             <a href="#" class="menu-card empty-card">
                 <div class="card-icon">⏰</div>
-                <div class="card-title">घटक ७</div>
-                <div class="card-desc">लवकरच येत आहे...</div>
+                <div class="card-title">Time & Clock</div>
+                <div class="card-desc">Coming Soon...</div>
             </a>
 
-            <!-- ८. रिकामे कार्ड ८ -->
+            <!-- 8. Empty Card 8: Currency & Money -->
             <a href="#" class="menu-card empty-card">
                 <div class="card-icon">💰</div>
-                <div class="card-title">घटक ८</div>
-                <div class="card-desc">लवकरच येत आहे...</div>
+                <div class="card-title">Money & Currency</div>
+                <div class="card-desc">Coming Soon...</div>
             </a>
 
-            <!-- ९. रिकामे कार्ड ९ -->
+            <!-- 9. Empty Card 9: Ascending & Descending -->
             <a href="#" class="menu-card empty-card">
                 <div class="card-icon">🧮</div>
-                <div class="card-title">घटक ९</div>
-                <div class="card-desc">लवकरच येत आहे...</div>
+                <div class="card-title">Ascending & Descending</div>
+                <div class="card-desc">Coming Soon...</div>
             </a>
 
-            <!-- १०. रिकामे कार्ड १० -->
+            <!-- 10. Empty Card 10: Math Puzzles & Games -->
             <a href="#" class="menu-card empty-card">
                 <div class="card-icon">🎯</div>
-                <div class="card-title">घटक १०</div>
-                <div class="card-desc">लवकरच येत आहे...</div>
+                <div class="card-title">Math Games & Puzzles</div>
+                <div class="card-desc">Coming Soon...</div>
             </a>
 
         </div>
