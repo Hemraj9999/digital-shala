@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>गणित - १ ते १००० अंक (डिजिटल शाळा)</title>
+    <title>गणित - मुख्य डॅशबोर्ड (डिजिटल शाळा)</title>
 
+    <!-- Three.js & GSAP Engine -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
@@ -29,7 +30,7 @@
 
         .main-container { max-width: 1100px; margin: 0 auto; position: relative; z-index: 10; }
 
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
 
         .back-btn, .tool-btn { 
             background: rgba(255, 255, 255, 0.05); 
@@ -54,77 +55,90 @@
         .header { 
             background: rgba(255, 255, 255, 0.02); 
             border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 25px 20px; 
+            padding: 30px 20px; 
             border-radius: 30px; 
             backdrop-filter: blur(25px);
-            margin-bottom: 25px; 
+            margin-bottom: 35px; 
         }
 
         h1 { 
             background: linear-gradient(135deg, #11998e, #38ef7d);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 32px; 
+            font-size: 34px; 
             font-weight: 900;
             letter-spacing: 1px;
-            text-shadow: 0 0 20px rgba(56, 239, 125, 0.3);
+            text-shadow: 0 0 25px rgba(56, 239, 125, 0.3);
         }
 
-        .group-tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+        .task-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 25px; 
             justify-content: center;
-            margin-bottom: 25px;
+            perspective: 1000px;
         }
 
-        .tab-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #fff;
-            padding: 10px 18px;
-            border-radius: 20px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            backdrop-filter: blur(15px);
-            transition: all 0.3s ease;
-        }
+        .task-wrapper { perspective: 1000px; }
 
-        .tab-btn:hover, .tab-btn.active {
-            background: linear-gradient(135deg, #11998e, #38ef7d);
-            color: #000;
-            border-color: #38ef7d;
-            box-shadow: 0 0 20px rgba(56, 239, 125, 0.6);
-        }
-
-        .number-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .num-card {
+        .task-card {
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(56, 239, 125, 0.2);
-            padding: 18px 10px;
-            border-radius: 18px;
-            backdrop-filter: blur(20px);
-            font-size: 20px;
-            font-weight: bold;
-            color: #ffffff;
+            border: 1px solid rgba(56, 239, 125, 0.3);
+            padding: 25px 20px; 
+            border-radius: 25px; 
+            backdrop-filter: blur(25px);
+            text-decoration: none; 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 12px;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-            transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
-            user-select: none;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            transform-style: preserve-3d;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
-        .num-card:hover {
-            transform: scale(1.1);
-            background: rgba(56, 239, 125, 0.2);
+        .task-card:hover {
             border-color: #38ef7d;
-            box-shadow: 0 0 20px rgba(56, 239, 125, 0.5);
+            box-shadow: 0 0 30px rgba(56, 239, 125, 0.5);
+        }
+
+        .task-card.coming-soon {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .icon-box { 
+            font-size: 45px; 
+            width: 75px; 
+            height: 75px; 
+            border-radius: 50%;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            box-shadow: 0 10px 25px rgba(56, 239, 125, 0.4);
+            transform: translateZ(30px);
+        }
+
+        .coming-soon .icon-box {
+            background: linear-gradient(135deg, #444, #666);
+            box-shadow: none;
+        }
+
+        .task-title { 
+            font-size: 20px; 
+            font-weight: bold; 
+            transform: translateZ(20px);
+            color: #ffffff;
+        }
+
+        .task-desc {
+            font-size: 13px;
+            color: #aaa;
+            transform: translateZ(10px);
+            line-height: 1.4;
         }
     </style>
 </head>
@@ -134,17 +148,37 @@
 
     <div class="main-container">
         <div class="top-bar">
-            <a href="../index.html" class="back-btn">⬅️ मागे जा</a>
+            <a href="../index.html" class="back-btn">⬅️ मूळ मुख्यपृष्ठ</a>
             <button class="tool-btn" onclick="toggleFullScreen()">📺 Fullscreen</button>
         </div>
 
         <div class="header">
-            <h1>🔢 गणित - १ ते १००० अंक 🔢</h1>
-            <p style="margin-top: 8px; color: #aaa;">खालील १०० च्या गटांवर क्लिक करून अंक पहा व ऐका</p>
+            <h1>🔢 गणित विषय डॅशबोर्ड 🔢</h1>
+            <p style="margin-top: 8px; color: #bbb;">खालीलपैकी शिकण्यासाठी घटक निवडा</p>
         </div>
 
-        <div class="group-tabs" id="tabsContainer"></div>
-        <div class="number-grid" id="numberGrid"></div>
+        <div class="task-grid">
+            <!-- मुख्य भाग १: अंक ओळख -->
+            <div class="task-wrapper">
+                <a href="numbers.html" class="task-card" onclick="speakText('अंक ओळख')">
+                    <div class="icon-box">🔢</div>
+                    <div class="task-title">अंक ओळख</div>
+                    <div class="task-desc">१ ते १००० अंक (१०० च्या गटात)</div>
+                </a>
+            </div>
+
+            <!-- खालील १० रिकामे/नवीन भाग -->
+            <div class="task-wrapper"><a href="#" class="task-card coming-soon"><div class="icon-box">२</div><div class="task-title">घटक २</div><div class="task-desc">लवकरच येत आहे...</div></a></div>
+            <div class="task-wrapper"><a href="#" class="task-card coming-soon"><div class="icon-box">३</div><div class="task-title">घटक ३</div><div class="task-desc">लवकरच येत आहे...</div></a></div>
+            <div class="task-wrapper"><a href="#" class="task-card coming-soon"><div class="icon-box">४</div><div class="task-title">घटक ४</div><div class="task-desc">लवकरच येत आहे...</div></a></div>
+            <div class="task-wrapper"><a href="#" class="task-card coming-soon"><div class="icon-box">५</div><div class="task-title">घटक ५</div><div class="task-desc">लवकरच येत आहे...</div></a></div>
+            <div class="task-wrapper"><a href="#" class="task-card coming-soon"><div class="icon-box">६</div><div class="task-title">घटक ६</div><div class="task-desc">लवकरच येत आहे...</div></a></div>
+            <div class="task-wrapper"><a href="#" class="task-card coming-soon"><div class="icon-box">७</div><div class="task-title">घटक ७</div><div class="task-desc">लवकरच येत आहे...</div></a></div>
+            <div class="task-wrapper"><a href="#" class="task-card coming-soon"><div class="icon-box">८</div><div class="task-title">घटक ८</div><div class="task-desc">लवकरच येत आहे...</div></a></div>
+            <div class="task-wrapper"><a href="#" class="task-card coming-soon"><div class="icon-box">९</div><div class="task-title">घटक ९</div><div class="task-desc">लवकरच येत आहे...</div></a></div>
+            <div class="task-wrapper"><a href="#" class="task-card coming-soon"><div class="icon-box">१०</div><div class="task-title">घटक १०</div><div class="task-desc">लवकरच येत आहे...</div></a></div>
+            <div class="task-wrapper"><a href="#" class="task-card coming-soon"><div class="icon-box">११</div><div class="task-title">घटक ११</div><div class="task-desc">लवकरच येत आहे...</div></a></div>
+        </div>
     </div>
 
     <script>
@@ -156,7 +190,7 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
         let starGeo = new THREE.BufferGeometry();
-        let starCount = 2000;
+        let starCount = 2500;
         let positions = new Float32Array(starCount * 3);
 
         for(let i = 0; i < starCount; i++) {
@@ -166,7 +200,7 @@
         }
 
         starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        let starMaterial = new THREE.PointsMaterial({ color: 0x38ef7d, size: 1.5, transparent: true, opacity: 0.6 });
+        let starMaterial = new THREE.PointsMaterial({ color: 0x38ef7d, size: 1.5, transparent: true, opacity: 0.7 });
         let stars = new THREE.Points(starGeo, starMaterial);
         scene.add(stars);
         camera.position.z = 1;
@@ -189,51 +223,21 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        const tabsContainer = document.getElementById('tabsContainer');
-        const numberGrid = document.getElementById('numberGrid');
+        gsap.to(".task-wrapper", {
+            y: "-=8",
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: "power1.inOut",
+            stagger: 0.1
+        });
 
-        for (let i = 0; i < 10; i++) {
-            let start = i * 100 + 1;
-            let end = (i + 1) * 100;
-            
-            let btn = document.createElement('button');
-            btn.className = `tab-btn ${i === 0 ? 'active' : ''}`;
-            btn.innerText = `${start} ते ${end}`;
-            btn.onclick = () => loadNumbers(start, end, btn);
-            tabsContainer.appendChild(btn);
-        }
-
-        function loadNumbers(start, end, activeBtn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            if(activeBtn) activeBtn.classList.add('active');
-
-            numberGrid.innerHTML = '';
-
-            for (let num = start; num <= end; num++) {
-                let card = document.createElement('div');
-                card.className = 'num-card';
-                card.innerText = num;
-                card.onclick = () => speakNumber(num);
-                numberGrid.appendChild(card);
-            }
-
-            gsap.from(".num-card", {
-                scale: 0.5,
-                opacity: 0,
-                duration: 0.3,
-                stagger: 0.005,
-                ease: "power1.out"
-            });
-        }
-
-        function speakNumber(num) {
+        function speakText(txt) {
             window.speechSynthesis.cancel();
-            let msg = new SpeechSynthesisUtterance(num.toString());
+            let msg = new SpeechSynthesisUtterance(txt);
             msg.lang = 'mr-IN';
             window.speechSynthesis.speak(msg);
         }
-
-        loadNumbers(1, 100, tabsContainer.children[0]);
 
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
