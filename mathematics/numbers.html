@@ -143,12 +143,14 @@
 
         .search-input::placeholder { color: #888; }
 
-        /* अंकांचे Grid */
+        /* अंकांचे Vertical Grid (उभी मांडणी) */
         .number-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+            grid-template-rows: repeat(10, auto); /* १० ओळी तयार होतील */
+            grid-auto-flow: column; /* अंकांचा प्रवाह उभ्या (Column) क्रमाने होईल */
             gap: 12px;
-            justify-content: center;
+            justify-content: start;
+            overflow-x: auto; /* लहान स्क्रीनवर स्क्रोल करण्यासाठी */
             background: rgba(0, 0, 0, 0.3);
             padding: 20px;
             border-radius: 25px;
@@ -167,6 +169,8 @@
             cursor: pointer;
             transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
             user-select: none;
+            min-width: 75px;
+            text-align: center;
         }
 
         .num-card:hover, .num-card.speaking {
