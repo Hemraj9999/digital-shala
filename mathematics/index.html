@@ -98,6 +98,18 @@
             box-shadow: 0 12px 30px rgba(56, 239, 125, 0.4);
         }
 
+        /* रिकाम्या कार्ड्ससाठी डिझाईन */
+        .menu-card.empty-card {
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            opacity: 0.6;
+            cursor: pointer;
+        }
+
+        .menu-card.empty-card:hover {
+            border-color: #38ef7d;
+            opacity: 1;
+        }
+
         .card-icon {
             font-size: 45px;
             margin-bottom: 12px;
@@ -130,35 +142,84 @@
             <p style="margin-top: 8px; color: #aaa;">अभ्यास करण्यासाठी खालील घटकावर क्लिक करा</p>
         </div>
 
-        <!-- गणित घटकांची यादी (१ नंबरला १ ते १००० अंक) -->
+        <!-- गणित घटकांची यादी (१ चा पूर्ण + ९ रिकामे डॅशबोर्ड) -->
         <div class="dash-grid">
             
-            <!-- १. पहिले कार्ड: १ ते १००० अंक -->
+            <!-- १. पहिले कार्ड: 1 to 1000 Numbers -->
             <a href="numbers.html" class="menu-card">
                 <div class="card-icon">🔢</div>
-                <div class="card-title">१ ते १००० अंक</div>
-                <div class="card-desc">मराठी अंक ओळख, गट आणि ध्वनीसह अभ्यासा</div>
+                <div class="card-title">1 to 1000 Numbers</div>
+                <div class="card-desc">इंग्रजी अंक ओळख, गट आणि ध्वनीसह अभ्यासा</div>
             </a>
 
-            <!-- २. पाढे (भविष्यात जोडण्यासाठी) -->
-            <a href="#" class="menu-card" style="opacity: 0.6; cursor: not-allowed;">
-                <div class="card-icon">✖️</div>
-                <div class="card-title">पाढे (Tables)</div>
-                <div class="card-desc">१ ते ३० पाढे (लवकरच येत आहे)</div>
-            </a>
-
-            <!-- ३. बेरीज व वजाबाकी -->
-            <a href="#" class="menu-card" style="opacity: 0.6; cursor: not-allowed;">
+            <!-- २. रिकामे कार्ड २ -->
+            <a href="#" class="menu-card empty-card">
                 <div class="card-icon">➕</div>
-                <div class="card-title">बेरीज व वजाबाकी</div>
-                <div class="card-desc">चित्रांच्या सहाय्याने सोपी बेरीज-वजाबाकी</div>
+                <div class="card-title">घटक २</div>
+                <div class="card-desc">लवकरच येत आहे...</div>
+            </a>
+
+            <!-- ३. रिकामे कार्ड ३ -->
+            <a href="#" class="menu-card empty-card">
+                <div class="card-icon">✖️</div>
+                <div class="card-title">घटक ३</div>
+                <div class="card-desc">लवकरच येत आहे...</div>
+            </a>
+
+            <!-- ४. रिकामे कार्ड ४ -->
+            <a href="#" class="menu-card empty-card">
+                <div class="card-icon">➗</div>
+                <div class="card-title">घटक ४</div>
+                <div class="card-desc">लवकरच येत आहे...</div>
+            </a>
+
+            <!-- ५. रिकामे कार्ड ५ -->
+            <a href="#" class="menu-card empty-card">
+                <div class="card-icon">📐</div>
+                <div class="card-title">घटक ५</div>
+                <div class="card-desc">लवकरच येत आहे...</div>
+            </a>
+
+            <!-- ६. रिकामे कार्ड ६ -->
+            <a href="#" class="menu-card empty-card">
+                <div class="card-icon">📊</div>
+                <div class="card-title">घटक ६</div>
+                <div class="card-desc">लवकरच येत आहे...</div>
+            </a>
+
+            <!-- ७. रिकामे कार्ड ७ -->
+            <a href="#" class="menu-card empty-card">
+                <div class="card-icon">⏰</div>
+                <div class="card-title">घटक ७</div>
+                <div class="card-desc">लवकरच येत आहे...</div>
+            </a>
+
+            <!-- ८. रिकामे कार्ड ८ -->
+            <a href="#" class="menu-card empty-card">
+                <div class="card-icon">💰</div>
+                <div class="card-title">घटक ८</div>
+                <div class="card-desc">लवकरच येत आहे...</div>
+            </a>
+
+            <!-- ९. रिकामे कार्ड ९ -->
+            <a href="#" class="menu-card empty-card">
+                <div class="card-icon">🧮</div>
+                <div class="card-title">घटक ९</div>
+                <div class="card-desc">लवकरच येत आहे...</div>
+            </a>
+
+            <!-- १०. रिकामे कार्ड १० -->
+            <a href="#" class="menu-card empty-card">
+                <div class="card-icon">🎯</div>
+                <div class="card-title">घटक १०</div>
+                <div class="card-desc">लवकरच येत आहे...</div>
             </a>
 
         </div>
     </div>
 
     <script>
-        // Background Animation
+        // Background Animation (Three.js)
         try {
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
@@ -194,8 +255,13 @@
                 requestAnimationFrame(animateStars);
             }
             animateStars();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
         } catch(e) {}
     </script>
 </body>
 </html>
-
