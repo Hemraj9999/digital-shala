@@ -262,7 +262,7 @@
         let currentStart = 1;
         let currentEnd = 100;
         let isPlayingAll = false;
-        let playTimeout = null;
+        let playTimer = null;
 
         // Render 10 Groups (1-100, 101-200...)
         for (let i = 0; i < 10; i++) {
@@ -297,7 +297,7 @@
                 card.innerText = num;
                 card.onclick = () => {
                     stopPlayAll();
-                    speakNumber(num, card);
+                    speakSingleNumber(num, card);
                 };
                 numberGrid.appendChild(card);
             }
@@ -314,7 +314,7 @@
         }
 
         // Single Click Voice Function
-        function speakNumber(num, cardElement) {
+        function speakSingleNumber(num, cardElement) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 
@@ -350,68 +350,61 @@
                 let targetCard = document.getElementById(`num-${query}`);
                 if (targetCard) {
                     targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                    speakNumber(query, targetCard);
+                    speakSingleNumber(query, targetCard);
                 }
             }
         }
 
-        // Read all numbers (Fully Locked Sequential Reading)
+        // Read all numbers (Strict Time-Based Queueing)
         function togglePlayAll() {
             if (isPlayingAll) {
                 stopPlayAll();
             } else {
                 isPlayingAll = true;
                 document.getElementById('playAllBtn').innerText = '⏹️ Stop Reading';
-                speakStepByStep(currentStart);
+                playSequence(currentStart);
             }
         }
 
-        function speakStepByStep(num) {
+        function playSequence(num) {
             if (!isPlayingAll || num > currentEnd) {
                 stopPlayAll();
                 return;
             }
 
-            window.speechSynthesis.cancel(); // आधीचा सर्व आवाज बंद करा
+            // १. मागील सर्व आवाज व क्लासेस क्लिअर करा
+            window.speechSynthesis.cancel();
+            document.querySelectorAll('.num-card').forEach(c => c.classList.remove('speaking'));
 
+            // २. सध्याच्या अंकाची कार्ड सिलेक्ट व हायलाइट करा
             let card = document.getElementById(`num-${num}`);
+            if (card) {
+                card.classList.add('speaking');
+                card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+            }
+
+            // ३. बोलायला सांगा
             let msg = new SpeechSynthesisUtterance(num.toString());
             msg.lang = 'en-IN';
             msg.rate = 0.85;
-
-            // १. आवाज प्रत्यक्षात सुरू झाल्यावरच हायलाइट आणि स्क्रोल करा
-            msg.onstart = () => {
-                document.querySelectorAll('.num-card').forEach(c => c.classList.remove('speaking'));
-                if (card) {
-                    card.classList.add('speaking');
-                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-                }
-            };
-
-            // २. आवाज पूर्ण संपल्यावरच पुढच्या अंकाची रिक्वेस्ट पाठवा
-            msg.onend = () => {
-                if (card) card.classList.remove('speaking');
-                if (isPlayingAll) {
-                    playTimeout = setTimeout(() => {
-                        speakStepByStep(num + 1);
-                    }, 300); // नॅचरल ब्रेकसाठी ३००ms थांबून पुढचा अंक
-                }
-            };
-
-            // ३. काही तांत्रिक अडचण आल्यास सुरक्षितपणे पुढे जा
-            msg.onerror = () => {
-                if (card) card.classList.remove('speaking');
-                if (isPlayingAll) {
-                    speakStepByStep(num + 1);
-                }
-            };
-
             window.speechSynthesis.speak(msg);
+
+            // ४. अंकाची लांबी मोजून अचूक वेळ ठरवा
+            // १ ते ९९ साठी ९००ms पुरेशी आहे, १००० सारख्या मोठ्या अंकासाठी १२००ms
+            let speakDuration = num > 99 ? 1100 : 900; 
+
+            // ५. ब्राऊझरच्या बगवर न अवलंबून राहता कडक टाइमरने पुढच्या अंकावर जा
+            playTimer = setTimeout(() => {
+                if (card) card.classList.remove('speaking');
+                if (isPlayingAll) {
+                    playSequence(num + 1);
+                }
+            }, speakDuration);
         }
 
         function stopPlayAll() {
             isPlayingAll = false;
-            clearTimeout(playTimeout);
+            if (playTimer) clearTimeout(playTimer);
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
             }
