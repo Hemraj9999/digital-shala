@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>अंक ओळख - 1 to 1000</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+
+        body { 
+            background: #020205;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        #webgl-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none;
+        }
+
+        .main-container { max-width: 1100px; margin: 0 auto; position: relative; z-index: 10; }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+
+        .back-btn, .tool-btn { 
+            background: rgba(255, 255, 255, 0.08); 
+            border: 1px solid rgba(56, 239, 125, 0.5); 
+            color: #38ef7d;
+            padding: 10px 22px; 
+            border-radius: 30px; 
+            font-weight: 700; 
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 15px rgba(56, 239, 125, 0.2);
+            font-size: 14px; 
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover, .tool-btn:hover { 
+            background: rgba(56, 239, 125, 0.25); 
+            box-shadow: 0 0 25px rgba(56, 239, 125, 0.6); 
+        }
+
+        .header { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 25px 20px; 
+            border-radius: 30px; 
+            backdrop-filter: blur(25px);
+            margin-bottom: 25px; 
+        }
+
+        h1 { 
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 32px; 
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px rgba(56, 239, 125, 0.3);
+        }
+
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #38ef7d;
+            text-align: left;
+            padding-left: 10px;
+        }
+
+        /* 10 डॅशबोर्ड गट (Tabs) */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .dash-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(56, 239, 125, 0.3);
+            padding: 15px 10px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .dash-card:hover, .dash-card.active {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: #000000;
+            border-color: #38ef7d;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(56, 239, 125, 0.5);
+        }
+
+        /* अंकांचे Grid */
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+            gap: 12px;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .num-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(56, 239, 125, 0.2);
+            padding: 16px 8px;
+            border-radius: 15px;
+            backdrop-filter: blur(20px);
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffffff;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+            user-select: none;
+        }
+
+        .num-card:hover {
+            transform: scale(1.15);
+            background: rgba(56, 239, 125, 0.3);
+            border-color: #38ef7d;
+            box-shadow: 0 0 20px rgba(56, 239, 125, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="webgl-bg"></canvas>
+
+    <div class="main-container">
+        <div class="top-bar">
+            <a href="index.html" class="back-btn">⬅️ डॅशबोर्डवर जा</a>
+            <button class="tool-btn" onclick="toggleFullScreen()">📺 Fullscreen</button>
+        </div>
+
+        <div class="header">
+            <h1>🔢 अंक ओळख (1 to 1000) 🔢</h1>
+            <p style="margin-top: 8px; color: #aaa;">कोणत्याही गटावर क्लिक करून त्यातील 100 अंक अभ्यासा व ऐका</p>
+        </div>
+
+        <!-- गट निवडण्यासाठी 10 बटणे -->
+        <div class="section-title">📌 गट निवडा:</div>
+        <div class="dash-grid" id="dashGrid"></div>
+
+        <!-- निवडलेल्या गटातील अंक -->
+        <div class="section-title" id="currentGroupTitle">🔢 अंक: 1 to 100</div>
+        <div class="number-grid" id="numberGrid"></div>
+    </div>
+
+    <script>
+        // 1. Background Animation (Three.js)
+        try {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('webgl-bg'), antialias: true, alpha: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            let starGeo = new THREE.BufferGeometry();
+            let starCount = 1500;
+            let positions = new Float32Array(starCount * 3);
+
+            for(let i = 0; i < starCount; i++) {
+                positions[i*3] = (Math.random() - 0.5) * 1000;
+                positions[i*3+1] = (Math.random() - 0.5) * 1000;
+                positions[i*3+2] = Math.random() * 1000;
+            }
+
+            starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            let starMaterial = new THREE.PointsMaterial({ color: 0x38ef7d, size: 1.5, transparent: true, opacity: 0.6 });
+            let stars = new THREE.Points(starGeo, starMaterial);
+            scene.add(stars);
+            camera.position.z = 1;
+
+            function animateStars() {
+                let posArr = starGeo.attributes.position.array;
+                for(let i = 0; i < starCount; i++) {
+                    posArr[i*3+2] -= 2;
+                    if(posArr[i*3+2] < 0) posArr[i*3+2] = 1000;
+                }
+                starGeo.attributes.position.needsUpdate = true;
+                renderer.render(scene, camera);
+                requestAnimationFrame(animateStars);
+            }
+            animateStars();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        } catch(e) {
+            console.log(e);
+        }
+
+        const dashGrid = document.getElementById('dashGrid');
+        const numberGrid = document.getElementById('numberGrid');
+        const currentGroupTitle = document.getElementById('currentGroupTitle');
+
+        // 1 ते 10 गट (1-100, 101-200 ...) इंग्रजीत तयार करणे
+        for (let i = 0; i < 10; i++) {
+            let start = i * 100 + 1;
+            let end = (i + 1) * 100;
+            
+            let card = document.createElement('div');
+            card.className = `dash-card ${i === 0 ? 'active' : ''}`;
+            card.innerHTML = `${start} to ${end}`;
+            
+            card.onclick = () => {
+                document.querySelectorAll('.dash-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                loadNumbers(start, end);
+            };
+            
+            dashGrid.appendChild(card);
+        }
+
+        // निवडलेल्या गटाचे अंक दाखवणे
+        function loadNumbers(start, end) {
+            currentGroupTitle.innerText = `🔢 अंक: ${start} to ${end}`;
+            numberGrid.innerHTML = '';
+
+            for (let num = start; num <= end; num++) {
+                let card = document.createElement('div');
+                card.className = 'num-card';
+                card.innerText = num;
+                card.onclick = () => speakNumber(num);
+                numberGrid.appendChild(card);
+            }
+
+            if (typeof gsap !== 'undefined') {
+                gsap.from(".num-card", {
+                    scale: 0.6,
+                    opacity: 0,
+                    duration: 0.25,
+                    stagger: 0.003,
+                    ease: "power1.out"
+                });
+            }
+        }
+
+        // अंकांचा इंग्रजी/मराठी आवाज
+        function speakNumber(num) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let msg = new SpeechSynthesisUtterance(num.toString());
+                msg.lang = 'mr-IN'; // मराठी आवाजासाठी, जर इंग्रजीत हवा असेल तर 'en-IN' वापरा
+                window.speechSynthesis.speak(msg);
+            }
+        }
+
+        // सुरुवातीला 1 ते 100 अंक लोड करा
+        loadNumbers(1, 100);
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    </script>
+</body>
+</html>
+
