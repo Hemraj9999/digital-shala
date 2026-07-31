@@ -146,11 +146,11 @@
         /* अंकांचे Vertical Grid (उभी मांडणी) */
         .number-grid {
             display: grid;
-            grid-template-rows: repeat(10, auto); /* १० ओळी तयार होतील */
-            grid-auto-flow: column; /* अंकांचा प्रवाह उभ्या (Column) क्रमाने होईल */
+            grid-template-rows: repeat(10, auto);
+            grid-auto-flow: column;
             gap: 12px;
             justify-content: start;
-            overflow-x: auto; /* लहान स्क्रीनवर स्क्रोल करण्यासाठी */
+            overflow-x: auto;
             background: rgba(0, 0, 0, 0.3);
             padding: 20px;
             border-radius: 25px;
@@ -295,7 +295,10 @@
                 card.className = 'num-card';
                 card.id = `num-${num}`;
                 card.innerText = num;
-                card.onclick = () => speakNumber(num, card);
+                card.onclick = () => {
+                    stopPlayAll();
+                    speakNumber(num, card);
+                };
                 numberGrid.appendChild(card);
             }
 
@@ -310,7 +313,7 @@
             }
         }
 
-        // Voice output function
+        // Voice output function for single click
         function speakNumber(num, cardElement) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -319,8 +322,8 @@
                 if (cardElement) cardElement.classList.add('speaking');
 
                 let msg = new SpeechSynthesisUtterance(num.toString());
-                msg.lang = 'en-IN'; // Clear English pronunciation
-                msg.rate = 0.9; // Slightly slower speed for kids
+                msg.lang = 'en-IN';
+                msg.rate = 0.9;
 
                 msg.onend = () => {
                     if (cardElement) cardElement.classList.remove('speaking');
@@ -346,13 +349,13 @@
                 loadNumbers(start, end);
                 let targetCard = document.getElementById(`num-${query}`);
                 if (targetCard) {
-                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                     speakNumber(query, targetCard);
                 }
             }
         }
 
-        // Read all numbers sequentially
+        // Read all numbers sequentially (Improved Logic)
         function togglePlayAll() {
             if (isPlayingAll) {
                 stopPlayAll();
@@ -370,17 +373,46 @@
             }
 
             let card = document.getElementById(`num-${num}`);
-            speakNumber(num, card);
+            
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
 
-            playAllTimeout = setTimeout(() => {
-                readSequential(num + 1);
-            }, 1200);
+                document.querySelectorAll('.num-card').forEach(c => c.classList.remove('speaking'));
+                if (card) {
+                    card.classList.add('speaking');
+                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+
+                let msg = new SpeechSynthesisUtterance(num.toString());
+                msg.lang = 'en-IN';
+                msg.rate = 0.85;
+
+                msg.onend = () => {
+                    if (card) card.classList.remove('speaking');
+                    if (isPlayingAll) {
+                        playAllTimeout = setTimeout(() => {
+                            readSequential(num + 1);
+                        }, 250);
+                    }
+                };
+
+                msg.onerror = () => {
+                    if (card) card.classList.remove('speaking');
+                    if (isPlayingAll) {
+                        readSequential(num + 1);
+                    }
+                };
+
+                window.speechSynthesis.speak(msg);
+            }
         }
 
         function stopPlayAll() {
             isPlayingAll = false;
             clearTimeout(playAllTimeout);
-            window.speechSynthesis.cancel();
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
             document.querySelectorAll('.num-card').forEach(c => c.classList.remove('speaking'));
             document.getElementById('playAllBtn').innerText = '▶️ Read All';
         }
