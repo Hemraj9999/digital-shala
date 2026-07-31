@@ -262,7 +262,7 @@
         let currentStart = 1;
         let currentEnd = 100;
         let isPlayingAll = false;
-        let playInterval = null;
+        let playTimeout = null;
 
         // Render 10 Groups (1-100, 101-200...)
         for (let i = 0; i < 10; i++) {
@@ -355,61 +355,63 @@
             }
         }
 
-        // Read all numbers (Strict Synchronized Logic using Polling)
+        // Read all numbers (Fully Locked Sequential Reading)
         function togglePlayAll() {
             if (isPlayingAll) {
                 stopPlayAll();
             } else {
                 isPlayingAll = true;
                 document.getElementById('playAllBtn').innerText = '⏹️ Stop Reading';
-                startReadingLoop(currentStart);
+                speakStepByStep(currentStart);
             }
         }
 
-        function startReadingLoop(startNum) {
-            let currentNum = startNum;
+        function speakStepByStep(num) {
+            if (!isPlayingAll || num > currentEnd) {
+                stopPlayAll();
+                return;
+            }
 
-            function processNext() {
-                if (!isPlayingAll || currentNum > currentEnd) {
-                    stopPlayAll();
-                    return;
-                }
+            window.speechSynthesis.cancel(); // आधीचा सर्व आवाज बंद करा
 
-                // जर ब्राऊझर अजूनही मागचा अंक बोलत असेल, तर ५०ms थांबा आणि पुन्हा चेक करा
-                if (window.speechSynthesis.speaking) {
-                    playInterval = setTimeout(processNext, 50);
-                    return;
-                }
+            let card = document.getElementById(`num-${num}`);
+            let msg = new SpeechSynthesisUtterance(num.toString());
+            msg.lang = 'en-IN';
+            msg.rate = 0.85;
 
-                // जुने हायलाइट्स काढा
+            // १. आवाज प्रत्यक्षात सुरू झाल्यावरच हायलाइट आणि स्क्रोल करा
+            msg.onstart = () => {
                 document.querySelectorAll('.num-card').forEach(c => c.classList.remove('speaking'));
-
-                let card = document.getElementById(`num-${currentNum}`);
                 if (card) {
                     card.classList.add('speaking');
                     card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
                 }
+            };
 
-                // नवीन आवाज सुरू करा
-                let msg = new SpeechSynthesisUtterance(currentNum.toString());
-                msg.lang = 'en-IN';
-                msg.rate = 0.85;
+            // २. आवाज पूर्ण संपल्यावरच पुढच्या अंकाची रिक्वेस्ट पाठवा
+            msg.onend = () => {
+                if (card) card.classList.remove('speaking');
+                if (isPlayingAll) {
+                    playTimeout = setTimeout(() => {
+                        speakStepByStep(num + 1);
+                    }, 300); // नॅचरल ब्रेकसाठी ३००ms थांबून पुढचा अंक
+                }
+            };
 
-                window.speechSynthesis.speak(msg);
-                
-                currentNum++;
+            // ३. काही तांत्रिक अडचण आल्यास सुरक्षितपणे पुढे जा
+            msg.onerror = () => {
+                if (card) card.classList.remove('speaking');
+                if (isPlayingAll) {
+                    speakStepByStep(num + 1);
+                }
+            };
 
-                // पुढील अंकासाठी ५०ms नंतर स्थिती तपासा
-                playInterval = setTimeout(processNext, 100);
-            }
-
-            window.speechSynthesis.cancel();
-            processNext();
+            window.speechSynthesis.speak(msg);
         }
 
         function stopPlayAll() {
             isPlayingAll = false;
-            clearTimeout(playInterval);
+            clearTimeout(playTimeout);
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
             }
