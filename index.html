@@ -100,7 +100,7 @@
             border: 1px solid rgba(255, 255, 255, 0.12);
             padding: 28px 12px; border-radius: 28px; 
             backdrop-filter: blur(25px);
-            text-decoration: none; color: white; font-size: 19px; font-weight: bold;
+            text-decoration: none; color: white; font-size: 18px; font-weight: bold;
             display: flex; flex-direction: column; align-items: center; gap: 15px;
             cursor: pointer;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
@@ -127,16 +127,16 @@
         .english { border-bottom: 3px solid #00f2fe; }
         .english .icon { background: linear-gradient(135deg, #00f2fe, #4facfe); box-shadow: 0 10px 30px rgba(0, 242, 254, 0.6); }
 
-        /* मराठी माध्यम */
+        /* गणित / Mathematics */
         .maths-mr { border-bottom: 3px solid #38ef7d; }
         .maths-mr .icon { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 10px 30px rgba(56, 239, 125, 0.6); }
 
-        .science-mr { border-bottom: 3px solid #b224ef; }
-        .science-mr .icon { background: linear-gradient(135deg, #b224ef, #7579ff); box-shadow: 0 10px 30px rgba(178, 36, 239, 0.6); }
-
-        /* सेमी / इंग्रजी माध्यम (Mathematics & Science) */
         .maths-en { border-bottom: 3px solid #ff0844; }
         .maths-en .icon { background: linear-gradient(135deg, #ff0844, #ffb199); box-shadow: 0 10px 30px rgba(255, 8, 68, 0.6); }
+
+        /* विज्ञान / Science */
+        .science-mr { border-bottom: 3px solid #b224ef; }
+        .science-mr .icon { background: linear-gradient(135deg, #b224ef, #7579ff); box-shadow: 0 10px 30px rgba(178, 36, 239, 0.6); }
 
         .science-en { border-bottom: 3px solid #00c6ff; }
         .science-en .icon { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 0 10px 30px rgba(0, 198, 255, 0.6); }
@@ -161,48 +161,56 @@
         </div>
 
         <div class="subject-grid" id="subjectGrid">
-            <!-- भाषा -->
+            <!-- १. मराठी -->
             <div class="card-wrapper">
                 <a href="marathi/index.html" class="subject-card marathi" onclick="playClickSound()">
                     <span class="icon">🚩</span> <span class="subject-title">मराठी</span>
                 </a>
             </div>
+
+            <!-- २. हिंदी -->
             <div class="card-wrapper">
                 <a href="hindi/index.html" class="subject-card hindi" onclick="playClickSound()">
                     <span class="icon">🇮🇳</span> <span class="subject-title">हिंदी</span>
                 </a>
             </div>
+
+            <!-- ३. English -->
             <div class="card-wrapper">
                 <a href="english/index.html" class="subject-card english" onclick="playClickSound()">
                     <span class="icon">🔤</span> <span class="subject-title">English</span>
                 </a>
             </div>
 
-            <!-- मराठी माध्यम -->
+            <!-- ४. गणित -->
             <div class="card-wrapper">
                 <a href="maths/index.html" class="subject-card maths-mr" onclick="playClickSound()">
                     <span class="icon">🔢</span> <span class="subject-title">गणित</span>
                 </a>
             </div>
+
+            <!-- ५. Mathematics (गणितच्या बाजूला) -->
+            <div class="card-wrapper">
+                <a href="mathematics/index.html" class="subject-card maths-en" onclick="playClickSound()">
+                    <span class="icon">📐</span> <span class="subject-title">Mathematics</span>
+                </a>
+            </div>
+
+            <!-- ६. विज्ञान -->
             <div class="card-wrapper">
                 <a href="science/index.html" class="subject-card science-mr" onclick="playClickSound()">
                     <span class="icon">🔬</span> <span class="subject-title">विज्ञान</span>
                 </a>
             </div>
 
-            <!-- सेमी / इंग्रजी माध्यम (Mathematics & Science) -->
-            <div class="card-wrapper">
-                <a href="mathematics/index.html" class="subject-card maths-en" onclick="playClickSound()">
-                    <span class="icon">📐</span> <span class="subject-title">Mathematics</span>
-                </a>
-            </div>
+            <!-- ७. Science (विज्ञानच्या बाजूला) -->
             <div class="card-wrapper">
                 <a href="science_en/index.html" class="subject-card science-en" onclick="playClickSound()">
                     <span class="icon">🧪</span> <span class="subject-title">Science</span>
                 </a>
             </div>
 
-            <!-- सामाजिक शास्त्र -->
+            <!-- ८. सामाजिक शास्त्र -->
             <div class="card-wrapper">
                 <a href="social/index.html" class="subject-card social" onclick="playClickSound()">
                     <span class="icon">🌍</span> <span class="subject-title">सामाजिक शास्त्र</span>
