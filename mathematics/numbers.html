@@ -90,7 +90,6 @@
             align-items: center;
         }
 
-        /* 100 चे मुख्य गट (Tabs) */
         .dash-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
@@ -120,7 +119,6 @@
             box-shadow: 0 10px 25px rgba(56, 239, 125, 0.5);
         }
 
-        /* शोध आणि कंट्रोल बार */
         .controls-bar {
             display: flex;
             justify-content: space-between;
@@ -143,7 +141,6 @@
 
         .search-input::placeholder { color: #888; }
 
-        /* अंकांचे Vertical Grid (उभी मांडणी) */
         .number-grid {
             display: grid;
             grid-template-rows: repeat(10, auto);
@@ -212,7 +209,7 @@
     </div>
 
     <script>
-        // 1. Three.js Background Animation
+        // Three.js Background
         try {
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
@@ -263,7 +260,7 @@
         let currentEnd = 100;
         let isPlayingAll = false;
 
-        // Render 10 Groups (1-100, 101-200...)
+        // Render Groups
         for (let i = 0; i < 10; i++) {
             let start = i * 100 + 1;
             let end = (i + 1) * 100;
@@ -284,7 +281,22 @@
             dashGrid.appendChild(card);
         }
 
-        // Load numbers into grid
+        // Numbers to Words Converter (अचूक उच्चारासाठी)
+        function numberToWords(num) {
+            const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+            const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+
+            if (num === 0) return 'zero';
+            if (num < 20) return ones[num];
+            if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 !== 0 ? ' ' + ones[num % 10] : '');
+            if (num < 1000) {
+                let rem = num % 100;
+                return ones[Math.floor(num / 100)] + ' hundred' + (rem !== 0 ? ' ' + numberToWords(rem) : '');
+            }
+            if (num === 1000) return 'one thousand';
+            return num.toString();
+        }
+
         function loadNumbers(start, end) {
             currentGroupTitle.innerText = `🔢 Numbers: ${start} to ${end}`;
             numberGrid.innerHTML = '';
@@ -312,7 +324,6 @@
             }
         }
 
-        // Single Click Voice Function
         function speakSingleNumber(num, cardElement) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -320,8 +331,9 @@
                 document.querySelectorAll('.num-card').forEach(c => c.classList.remove('speaking'));
                 if (cardElement) cardElement.classList.add('speaking');
 
-                let msg = new SpeechSynthesisUtterance(num.toString());
-                msg.lang = 'en-IN';
+                let speechText = numberToWords(num);
+                let msg = new SpeechSynthesisUtterance(speechText);
+                msg.lang = 'en-US';
                 msg.rate = 0.85;
 
                 msg.onend = () => {
@@ -332,7 +344,6 @@
             }
         }
 
-        // Search number functionality
         function searchNumber() {
             stopPlayAll();
             let query = parseInt(document.getElementById('searchInput').value);
@@ -355,7 +366,7 @@
         }
 
         // ==========================================
-        // 🚀 १००% वर्किंग ASYNC SPEECH QUEUE ENGINE
+        // 🚀 १००% PERFECT READING ENGINE 
         // ==========================================
 
         async function togglePlayAll() {
@@ -365,12 +376,18 @@
                 isPlayingAll = true;
                 document.getElementById('playAllBtn').innerText = '⏹️ Stop Reading';
                 
-                // स्पीच इंजिन रीसेट करा
                 window.speechSynthesis.cancel();
                 await new Promise(r => setTimeout(r, 200));
 
                 for (let num = currentStart; num <= currentEnd; num++) {
                     if (!isPlayingAll) break;
+
+                    // Chrome मधील व्हॉईस इंजिन अडकू नये म्हणून दर १५ अंका नंतर रीसेट ट्रिगर
+                    if (num % 15 === 0) {
+                        window.speechSynthesis.pause();
+                        window.speechSynthesis.resume();
+                    }
+
                     await speakAsync(num);
                 }
                 
@@ -382,7 +399,6 @@
             return new Promise((resolve) => {
                 if (!isPlayingAll) return resolve();
 
-                // १. जुने हायलाइट काढा आणि नवीन अंकावर कर्सर/स्क्रीन आणा
                 document.querySelectorAll('.num-card').forEach(c => c.classList.remove('speaking'));
                 let card = document.getElementById(`num-${num}`);
                 if (card) {
@@ -390,35 +406,37 @@
                     card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
                 }
 
-                let msg = new SpeechSynthesisUtterance(num.toString());
-                msg.lang = 'en-IN';
+                // अंकाऐवजी इंग्रजी शब्द पाठवणे (उदा: '105' ऐवजी 'one hundred five')
+                let speechText = numberToWords(num);
+                let msg = new SpeechSynthesisUtterance(speechText);
+                msg.lang = 'en-US'; 
                 msg.rate = 0.85;
 
                 let completed = false;
                 
-                // ५ सेकंदाचा सेफ्टी टायमर - ब्राऊझर अडकला तर जबरदस्तीने सोडवेल
+                // लांब शब्दांसाठी वेळ कॅल्क्युलेट करणे
+                let maxWaitTime = num > 99 ? 1800 : 1200;
+
                 let safetyTimeout = setTimeout(() => {
                     if (!completed) {
                         completed = true;
                         if (card) card.classList.remove('speaking');
                         resolve();
                     }
-                }, 2500);
+                }, maxWaitTime);
 
                 const finish = () => {
                     if (!completed) {
                         completed = true;
                         clearTimeout(safetyTimeout);
                         if (card) card.classList.remove('speaking');
-                        // लहान नॅचरल पॉझ
-                        setTimeout(resolve, 200); 
+                        setTimeout(resolve, 150); 
                     }
                 };
 
                 msg.onend = finish;
                 msg.onerror = finish;
 
-                // ब्राऊझर बग टाळण्यासाठी synthesis.speak आधी Resume ट्रिगर करा
                 if (window.speechSynthesis.paused) {
                     window.speechSynthesis.resume();
                 }
@@ -436,7 +454,6 @@
             document.getElementById('playAllBtn').innerText = '▶️ Read All';
         }
 
-        // Initialize with 1 to 100
         loadNumbers(1, 100);
 
         function toggleFullScreen() {
