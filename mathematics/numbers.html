@@ -262,7 +262,6 @@
         let currentStart = 1;
         let currentEnd = 100;
         let isPlayingAll = false;
-        let playTimer = null;
 
         // Render 10 Groups (1-100, 101-200...)
         for (let i = 0; i < 10; i++) {
@@ -355,56 +354,81 @@
             }
         }
 
-        // Read all numbers (Strict Time-Based Queueing)
-        function togglePlayAll() {
+        // ==========================================
+        // 🚀 १००% वर्किंग ASYNC SPEECH QUEUE ENGINE
+        // ==========================================
+
+        async function togglePlayAll() {
             if (isPlayingAll) {
                 stopPlayAll();
             } else {
                 isPlayingAll = true;
                 document.getElementById('playAllBtn').innerText = '⏹️ Stop Reading';
-                playSequence(currentStart);
+                
+                // स्पीच इंजिन रीसेट करा
+                window.speechSynthesis.cancel();
+                await new Promise(r => setTimeout(r, 200));
+
+                for (let num = currentStart; num <= currentEnd; num++) {
+                    if (!isPlayingAll) break;
+                    await speakAsync(num);
+                }
+                
+                stopPlayAll();
             }
         }
 
-        function playSequence(num) {
-            if (!isPlayingAll || num > currentEnd) {
-                stopPlayAll();
-                return;
-            }
+        function speakAsync(num) {
+            return new Promise((resolve) => {
+                if (!isPlayingAll) return resolve();
 
-            // १. मागील सर्व आवाज व क्लासेस क्लिअर करा
-            window.speechSynthesis.cancel();
-            document.querySelectorAll('.num-card').forEach(c => c.classList.remove('speaking'));
-
-            // २. सध्याच्या अंकाची कार्ड सिलेक्ट व हायलाइट करा
-            let card = document.getElementById(`num-${num}`);
-            if (card) {
-                card.classList.add('speaking');
-                card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-            }
-
-            // ३. बोलायला सांगा
-            let msg = new SpeechSynthesisUtterance(num.toString());
-            msg.lang = 'en-IN';
-            msg.rate = 0.85;
-            window.speechSynthesis.speak(msg);
-
-            // ४. अंकाची लांबी मोजून अचूक वेळ ठरवा
-            // १ ते ९९ साठी ९००ms पुरेशी आहे, १००० सारख्या मोठ्या अंकासाठी १२००ms
-            let speakDuration = num > 99 ? 1100 : 900; 
-
-            // ५. ब्राऊझरच्या बगवर न अवलंबून राहता कडक टाइमरने पुढच्या अंकावर जा
-            playTimer = setTimeout(() => {
-                if (card) card.classList.remove('speaking');
-                if (isPlayingAll) {
-                    playSequence(num + 1);
+                // १. जुने हायलाइट काढा आणि नवीन अंकावर कर्सर/स्क्रीन आणा
+                document.querySelectorAll('.num-card').forEach(c => c.classList.remove('speaking'));
+                let card = document.getElementById(`num-${num}`);
+                if (card) {
+                    card.classList.add('speaking');
+                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
                 }
-            }, speakDuration);
+
+                let msg = new SpeechSynthesisUtterance(num.toString());
+                msg.lang = 'en-IN';
+                msg.rate = 0.85;
+
+                let completed = false;
+                
+                // ५ सेकंदाचा सेफ्टी टायमर - ब्राऊझर अडकला तर जबरदस्तीने सोडवेल
+                let safetyTimeout = setTimeout(() => {
+                    if (!completed) {
+                        completed = true;
+                        if (card) card.classList.remove('speaking');
+                        resolve();
+                    }
+                }, 2500);
+
+                const finish = () => {
+                    if (!completed) {
+                        completed = true;
+                        clearTimeout(safetyTimeout);
+                        if (card) card.classList.remove('speaking');
+                        // लहान नॅचरल पॉझ
+                        setTimeout(resolve, 200); 
+                    }
+                };
+
+                msg.onend = finish;
+                msg.onerror = finish;
+
+                // ब्राऊझर बग टाळण्यासाठी synthesis.speak आधी Resume ट्रिगर करा
+                if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                }
+
+                window.speechSynthesis.speak(msg);
+            });
         }
 
         function stopPlayAll() {
             isPlayingAll = false;
-            if (playTimer) clearTimeout(playTimer);
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
             }
