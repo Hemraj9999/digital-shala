@@ -355,7 +355,7 @@
             }
         }
 
-        // Read all numbers sequentially (Improved Logic)
+        // Read all numbers sequentially (Synchronized Highlight & Audio)
         function togglePlayAll() {
             if (isPlayingAll) {
                 stopPlayAll();
@@ -377,22 +377,28 @@
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
 
+                // १. आधीचे सगळे हायलाइट्स काढा
                 document.querySelectorAll('.num-card').forEach(c => c.classList.remove('speaking'));
+
                 if (card) {
+                    // २. फक्त चालू अंकावरच हायलाइट लावा
                     card.classList.add('speaking');
-                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    
+                    // ३. जर अंक स्क्रीनच्या बाहेर जात असेल तरच स्क्रोल करा
+                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
                 }
 
                 let msg = new SpeechSynthesisUtterance(num.toString());
                 msg.lang = 'en-IN';
                 msg.rate = 0.85;
 
+                // ४. आवाज पूर्ण संपल्यानंतरच पुढील अंकाकडे जा
                 msg.onend = () => {
                     if (card) card.classList.remove('speaking');
                     if (isPlayingAll) {
                         playAllTimeout = setTimeout(() => {
                             readSequential(num + 1);
-                        }, 250);
+                        }, 200);
                     }
                 };
 
